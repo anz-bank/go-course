@@ -18,14 +18,14 @@ Build and install this project with
 
     go install ./...
 
-execute its binary with
+Execute its binary with
 
     0_hello_world
 
-test it with
+Test it with
 
     go test ./...
 
-lint it with
+Lint it with
 
     golangci-lint run

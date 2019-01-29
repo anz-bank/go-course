@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	"strings"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -18,7 +18,7 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "Hallo du schöne Welt!\\n" // escape newline for easier string comparison
-	actual := strings.Replace(buf.String(), "\n", "\\n", -1)
+	expected := strconv.Quote("Hallo du schöne Welt!\n")
+	actual := strconv.Quote(buf.String())
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
