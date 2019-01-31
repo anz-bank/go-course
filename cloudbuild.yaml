@@ -1,14 +1,14 @@
 steps:
   - id: version
-    name: 'gcr.io/cloud-builders/go'
+    name: 'gcr.io/cloud-builders/go:debian'
     args: ['version']
     env: ['GOPATH=/workspace/_gopath', 'GO111MODULE=on']
   - id: test
-    name: 'gcr.io/cloud-builders/go'
-    args: ['test', '-v', '-coverprofile=coverage.out', '-covermode=atomic' , './...']
+    name: 'gcr.io/cloud-builders/go:debian'
+    args: ['test', '-v', '-race', '-coverprofile=coverage.out', '-covermode=atomic' , './...']
     env: ['GOPATH=/workspace/_gopath', 'GO111MODULE=on']
   - id: cover
-    name: 'gcr.io/cloud-builders/go'
+    name: 'gcr.io/cloud-builders/go:debian'
     env: ['GOPATH=/workspace/_gopath', 'GO111MODULE=on']
     entrypoint: 'sh'
     args:
