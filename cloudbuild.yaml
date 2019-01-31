@@ -13,4 +13,4 @@ steps:
     entrypoint: 'sh'
     args:
       - -c 
-      - "{ go tool cover -func=coverage.out | grep -s '^total:.*100.0%'; } || { echo 'FAIL - Coverage below 100%'; exit 1; }"
+      - "{ go tool cover -func=coverage.out | grep '^total:.*100.0%'; } || { echo 'FAIL - Coverage below 100%'; exit 1; }"
