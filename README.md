@@ -20,7 +20,7 @@ Build and install this project with
 
 Execute its binary with
 
-    0_hello_world
+    00_hello_world
 
 Test it with
 
