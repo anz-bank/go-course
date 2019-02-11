@@ -1,24 +1,24 @@
 package main
 
 import (
-"bytes"
-"strconv"
-"testing"
+	"bytes"
+	"strconv"
+	"testing"
 
-"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMainOutput(t *testing.T) {
-// Given
-r := require.New(t)
-var buf bytes.Buffer
-out = &buf
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
 
-// When
-main()
+	// When
+	main()
 
-// Then
-expected := strconv.Quote(`1
+	// Then
+	expected := strconv.Quote(`1
 1
 2
 3
@@ -26,6 +26,6 @@ expected := strconv.Quote(`1
 8
 13
 `)
-actual := strconv.Quote(buf.String())
-r.Equalf(expected, actual, "Unexpected output in main()")
+	actual := strconv.Quote(buf.String())
+	r.Equalf(expected, actual, "Unexpected output in main()")
 }
