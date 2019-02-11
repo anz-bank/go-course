@@ -10,7 +10,7 @@ var out io.Writer = os.Stdout
 
 func main() {
 
-	for num := 0; num < 10; num++ {
+	for num := 1; num < 10; num++ {
 		fmt.Fprintln(out, printNumber(num))
 	}
 
