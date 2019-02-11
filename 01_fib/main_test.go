@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"bytes"
 	"strconv"
 	"testing"
@@ -18,7 +19,7 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote("1 1 2 3 5 ")
-	actual := strconv.Quote(buf.String())
+	expected := strconv.Quote("1 1 2 3 5")
+	actual := strconv.Quote(strings.TrimSpace(buf.String()))
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
