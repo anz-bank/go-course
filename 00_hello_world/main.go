@@ -14,15 +14,13 @@ func main() {
 }
 
 func fibonacciSeries(number int) {
-	var firstNumber = 1
-	var secondNumber = 1
-	fmt.Fprintln(out, firstNumber)
-	fmt.Fprintln(out, secondNumber)
-	for count := 3; count <= number; count++ {
-		var sum = firstNumber + secondNumber
+	var a, b = 0, 1
+	fmt.Fprintln(out, a)
+	fmt.Fprintln(out, b)
+	for count := 0; count < number-2; count++ {
+		var sum = a + b
 		fmt.Fprintln(out, sum)
-		firstNumber = secondNumber
-		secondNumber = sum
+		a, b = b, sum
 
 	}
 }
