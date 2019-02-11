@@ -14,7 +14,8 @@ var (
 )
 
 func fib(n int) {
-	for i := 0; i < n; i++ {
+	fmt.Fprintln(out, num2)
+	for i := 1; i <= n; i++ {
 		sum = num1 + num2
 		num1, num2 = num2, sum
 		fmt.Fprintln(out, sum)
