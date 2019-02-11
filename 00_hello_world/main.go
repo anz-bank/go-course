@@ -12,13 +12,17 @@ func main() {
 	fib(7)
 }
 
-func fib(n int){
+func fib(n uint) {
+	if n == 0 {
+		return
+	}
 	f1 := 0
 	f2 := 1
-	fmt.Printf("%d\n",f2)
-	for counter := 1; counter < n; counter++ {
+	fmt.Fprintln(out, f2)
+	var counter uint = 1
+	for ; counter < n; counter++ {
 		next := f1 + f2
-		fmt.Printf("%d\n",next)
+		fmt.Fprintln(out, next)
 		f1 = f2
 		f2 = next
 	}
