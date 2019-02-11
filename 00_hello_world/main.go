@@ -11,7 +11,7 @@ var out io.Writer = os.Stdout
 func fib(i int) int {
 	var a = 0
 	var b = 1
-	fmt.Println(b)
+	fmt.Fprintln(out, b)
 	var sum int
 	for cnt := 0; cnt < i-1; cnt++ {
 		sum = a + b
