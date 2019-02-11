@@ -22,7 +22,7 @@ func fib(limit int) {
 		//fmt.Println(firstNo)
 		finalString += strconv.Itoa(firstNo)
 		temp := secondNo
-		secondNo = secondNo + firstNo
+		secondNo += firstNo
 		firstNo = temp
 	}
 	//fmt.Println(finalString)
