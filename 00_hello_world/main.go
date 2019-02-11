@@ -15,7 +15,7 @@ func fib(i int) int {
 	var sum int
 	for cnt := 0; cnt < i-1; cnt++ {
 		sum = a + b
-		fmt.Println(sum)
+		fmt.Fprintln(out, sum)
 		a = b
 		b = sum
 	}
@@ -23,6 +23,6 @@ func fib(i int) int {
 }
 
 func main() {
-	fmt.Fprintln(out, "Hallo du schöne Welt2!")
+	fmt.Fprintln(out, "Hallo du schöne Welt!")
 	fib(7)
 }
