@@ -8,8 +8,8 @@ import (
 
 var out io.Writer = os.Stdout
 
-//returns the fabinaci series
-func fabinaci(n int) {
+//prints the fibonacci series
+func fibonacci(n int) {
 	a, b := 0, 1
 	if n > 0 {
 		fmt.Fprintln(out, a)
@@ -25,5 +25,5 @@ func fabinaci(n int) {
 }
 
 func main() {
-	fabinaci(7)
+	fibonacci(7)
 }
