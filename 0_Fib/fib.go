@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
@@ -18,8 +19,11 @@ func Fibonacci(n int) []int {
 	}
 	return fib
 }
+func arrayToString(a []int, delim string) string {
+	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
+}
 
 func main() {
-	fmt.Fprint(out, "Fibonnaci Series of 7:", Fibonacci(7))
+	fmt.Fprint(out, "Fibonnaci Series of 7: ", arrayToString(Fibonacci(7), "-"))
 
 }

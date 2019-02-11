@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -18,8 +17,7 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	fibonnaciArray := []int{1, 1, 2, 3, 5, 8, 13}
-	expected := fmt.Sprint("Fibonnaci Series of 7:", fibonnaciArray)
+	expected := "Fibonnaci Series of 7: 1-1-2-3-5-8-13"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
