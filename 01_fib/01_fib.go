@@ -16,7 +16,7 @@ var (
 )
 
 func main() {
-	Fib(5)
+	Fib(7)
 	}
 		
 func Fib(n int) int {
