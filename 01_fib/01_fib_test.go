@@ -18,7 +18,14 @@ out = &buf
 main()
 
 // Then
-expected := strconv.Quote("1\n2\n3\n5\n8\n13\n21\n")
+expected := strconv.Quote(`1
+1
+2
+3
+5
+8
+13
+`)
 actual := strconv.Quote(buf.String())
 r.Equalf(expected, actual, "Unexpected output in main()")
 }
