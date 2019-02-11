@@ -14,14 +14,16 @@ func main() {
 }
 
 func fibonacci(n int) {
-
-	var sum int
-	var prev, cur int = 0, 1
+	prev, cur := 0, 1
 	var fibSeries string
 
 	for i := 1; i <= n; i++ {
-		// fmt.Println(prev)
-		fibSeries += strconv.Itoa(prev) + " "
+		sum := 0
+		if i == n {
+			fibSeries += strconv.Itoa(prev)
+		} else {
+			fibSeries += strconv.Itoa(prev) + " "
+		}
 		sum = prev + cur
 		prev = cur
 		cur = sum
