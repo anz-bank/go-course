@@ -14,16 +14,15 @@ func main() {
 
 func fib(n int) {
 
-	n1, n2 := 1, 1
+	if n <= 0 {
+		return
+	}
 
-	fibSeries := "0"
+	n1, n2, fibSeries := 1, 1, "0\n"
 
 	for i := 1; i < n; i++ {
-
-		fibSeries = fmt.Sprintf("%d %s %d", -n1, fibSeries, n1)
-
-		sum := n1 + n2
-		n1, n2 = n2, sum
+		fibSeries = fmt.Sprintf("%d\n%s%d\n", -n1, fibSeries, n1)
+		n1, n2 = n2, n1+n2
 	}
 
 	fmt.Fprint(out, fibSeries)

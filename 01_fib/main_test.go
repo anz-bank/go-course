@@ -18,7 +18,21 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "-8 -5 -3 -2 -1 -1 0 1 1 2 3 5 8"
+	expected := "-8\n-5\n-3\n-2\n-1\n-1\n0\n1\n1\n2\n3\n5\n8\n"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
+}
+
+func TestFibOutputWithZero(t *testing.T) {
+
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
+
+	// When
+	fib(0)
+
+	//Then
+	r.Equalf("", buf.String(), "Unexpected output in main()")
 }
