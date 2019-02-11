@@ -11,16 +11,12 @@ var out io.Writer = os.Stdout
 //prints the fibonacci series
 func fibonacci(n int) {
 	a, b := 0, 1
-	if n > 0 {
-		fmt.Fprintln(out, a)
-	}
-	if n >= 1 {
-		fmt.Fprintln(out, b)
-	}
-	for i := 2; i <= n; i++ {
-		fmt.Fprintln(out, a+b)
-		b = a + b
-		a = b - a
+
+	for i := 0; i <= n; i++ {
+		if a >= 1 {
+			fmt.Fprintln(out, a)
+		}
+		a, b = b, (a + b)
 	}
 }
 
