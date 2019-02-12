@@ -1,10 +1,26 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
+
+func TestMainOutput(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
+
+	// When
+	main()
+
+	// Then
+	expected := "Bubble:  [1 2 3 5] Insertion:  [1 2 3 5]\n"
+	actual := buf.String()
+	r.Equalf(expected, actual, "Unexpected output in main()")
+}
 
 func TestBubbleSort(t *testing.T) {
 	// Given
