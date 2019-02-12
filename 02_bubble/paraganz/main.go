@@ -9,7 +9,7 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(arr []int) []int {
-	var s []int
+	s := make([]int, len(arr))
 	copy(s, arr)
 	cnt := len(s)
 	for i := 0; i < cnt; i++ {
