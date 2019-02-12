@@ -10,17 +10,14 @@ var out io.Writer = os.Stdout
 
 func bubble(s []int) []int {
 	n := len(s)
-	sorted := false
-	for !sorted {
-		swapped := false
+	for {
+		if n == 0 {
+			break
+		}
 		for i := 0; i < n-1; i++ {
 			if s[i] > s[i+1] {
 				s[i+1], s[i] = s[i], s[i+1]
-				swapped = true
 			}
-		}
-		if !swapped {
-			sorted = true
 		}
 		n--
 	}
