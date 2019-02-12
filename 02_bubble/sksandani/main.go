@@ -9,29 +9,33 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fmt.Fprintln(out, "Bubble: ", bubble([]int{3, 2, 1, 5}), "Insertion: ", insertion([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, bubble([]int{3, 2, 1, 5}))
 }
 
 func bubble(s []int) []int {
 	n := len(s)
+	k := make([]int, n)
+	copy(k, s)
 	for j := n; j > 0; j-- {
 		for i := 1; i <= n-1; i++ {
-			if s[i-1] > s[i] {
-				s[i], s[i-1] = s[i-1], s[i]
+			if k[i-1] > k[i] {
+				k[i], k[i-1] = k[i-1], k[i]
 			}
 		}
 	}
-	return s
+	return k
 }
 
 func insertion(s []int) []int {
 	n := len(s)
+	k := make([]int, n)
+	copy(k, s)
 	for i := 1; i < n; i++ {
 		for j := i; j > 0; j-- {
-			if s[j-1] > s[j] {
-				s[j], s[j-1] = s[j-1], s[j]
+			if k[j-1] > k[j] {
+				k[j], k[j-1] = k[j-1], k[j]
 			}
 		}
 	}
-	return s
+	return k
 }
