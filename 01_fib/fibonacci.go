@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 )
 
 var out io.Writer = os.Stdout
@@ -14,12 +13,9 @@ func main() {
 }
 
 func fib(num int) {
-	num1, num2 := 0, 1
-
-	var result string
+	num1, num2 := 1, 1
 	for i := 0; i < num; i++ {
-		result += strconv.Itoa(num1)
-		num1, num2 = num2, num1+num2
 		fmt.Fprintln(out, num1)
+		num1, num2 = num2, num1+num2
 	}
 }
