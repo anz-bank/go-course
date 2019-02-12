@@ -8,9 +8,9 @@ import (
 
 var out io.Writer = os.Stdout
 
-func fib(i int) {
+func fib(n int) {
 	a, b := 1, 1
-	for cnt := 0; cnt < i; cnt++ {
+	for i := 0; i < n; i++ {
 		fmt.Fprintln(out, a)
 		a, b = b, a+b
 	}
