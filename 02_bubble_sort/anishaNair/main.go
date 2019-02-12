@@ -9,9 +9,6 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(n []int) []int {
-	if len(n) == 0 {
-		return n
-	}
 	for i := 0; i < len(n); i++ {
 		for j := 0; j < ((len(n) - i) - 1); j++ {
 			if n[j] > n[j+1] {
@@ -23,5 +20,5 @@ func bubble(n []int) []int {
 }
 
 func main() {
-	fmt.Fprintln(out, bubble([]int{3, 2, 1, 15, 13, 14, 50, 10}))
+	fmt.Fprintln(out, bubble([]int{3, 2, 1, 5}))
 }
