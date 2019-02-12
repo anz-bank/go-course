@@ -32,7 +32,7 @@ func TestBubbleSortOutput(t *testing.T) {
 
 	//Then
 	expected := []int{0, 2, 3, 6, 8, 9}
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, actual, "Unexpected output in bubble()")
 
 }
 
@@ -45,5 +45,5 @@ func TestBubbleSortOutputWithNegativeElements(t *testing.T) {
 
 	//Then
 	expected := []int{-10, -9, -6, -4, -3, -2}
-	r.Equalf(expected, actual, "Unexpected output in main(")
+	r.Equalf(expected, actual, "Unexpected output in bubble()")
 }
