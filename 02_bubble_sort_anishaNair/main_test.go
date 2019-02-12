@@ -32,7 +32,7 @@ func TestBubbleOutput(t *testing.T) {
 	// Then
 	expected := []int{1, 2, 3, 10, 13, 14, 15, 50}
 	actual := bubble([]int{3, 2, 1, 15, 13, 14, 50, 10})
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, actual, "Unexpected output in bubble()")
 }
 func TestBubbleOutputWithNegativeNumbers(t *testing.T) {
 	// Given
@@ -44,7 +44,7 @@ func TestBubbleOutputWithNegativeNumbers(t *testing.T) {
 	// Then
 	expected := []int{-3, -1, 2, 10, 13, 14, 15, 50}
 	actual := bubble([]int{-3, 2, -1, 15, 13, 14, 50, 10})
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, actual, "Unexpected output in bubble()")
 }
 
 func TestBubbleOutputWithZeros(t *testing.T) {
@@ -57,7 +57,7 @@ func TestBubbleOutputWithZeros(t *testing.T) {
 	// Then
 	expected := []int{0, 0}
 	actual := bubble([]int{0, 0})
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, actual, "Unexpected output in bubble()")
 }
 
 func TestBubbleOutputWithEmptyArray(t *testing.T) {
