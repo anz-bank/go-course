@@ -10,23 +10,15 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fibonacci(10)
+	fmt.Fprint(out, fibonacci(10))
 }
 
-func fibonacci(n int) {
-	prev, cur := 0, 1
+func fibonacci(n int) string {
 	var fibSeries string
-
+	a, b := 1, 1
 	for i := 1; i <= n; i++ {
-		sum := 0
-		if i == n {
-			fibSeries += strconv.Itoa(prev)
-		} else {
-			fibSeries += strconv.Itoa(prev) + " "
-		}
-		sum = prev + cur
-		prev = cur
-		cur = sum
+		fibSeries += strconv.Itoa(a)
+		a, b = b, a+b
 	}
-	fmt.Fprintln(out, fibSeries)
+	return fibSeries
 }
