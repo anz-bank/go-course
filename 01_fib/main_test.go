@@ -16,7 +16,7 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "0112358\n"
+	expected := "0\n1\n1\n2\n3\n5\n8\n"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
