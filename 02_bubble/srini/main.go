@@ -12,12 +12,18 @@ func bubble(sliceToSort []int) []int {
 	sliceLen := len(sliceToSort)
 
 	for i := 0; i < sliceLen-1; i++ {
+		stop := true
 		for j := 0; j < sliceLen-i-1; j++ {
 			if sliceToSort[j] > sliceToSort[j+1] {
 				t := sliceToSort[j]
 				sliceToSort[j] = sliceToSort[j+1]
 				sliceToSort[j+1] = t
+				stop = false
 			}
+		}
+		// we can stop once there is no sorting in inner loop
+		if stop {
+			break
 		}
 	}
 	return sliceToSort
