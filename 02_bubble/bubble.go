@@ -40,7 +40,7 @@ func insertionsort(items []int) []int {
 			if cs2[j-1] > cs2[j] {
 				cs2[j-1], cs2[j] = cs2[j], cs2[j-1]
 			}
-			j = j - 1
+			j--
 		}
 	}
 	return cs2
