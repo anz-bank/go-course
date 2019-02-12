@@ -18,7 +18,7 @@ func fib(n int) string {
 	for i := 2; i <= n-1; i++ {
 		f[i] = f[i-1] + f[i-2]
 	}
-	return strings.Trim(strings.Replace(fmt.Sprint(f), " ", " ", -1), "[]")
+	return strings.Trim(strings.Replace(fmt.Sprint(f), ",", " ", -1), "[]")
 }
 
 func main() {
