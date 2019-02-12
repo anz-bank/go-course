@@ -16,7 +16,7 @@ func TestBubble_PositiveNumbers(t *testing.T) {
 	b := []int{5, 2, 3, 4, 1}
 	actual := bubble(b)
 	expected := []int{1, 2, 3, 4, 5}
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, actual, "Unexpected output in bubble")
 }
 
 //To test the bubbleFunction negative numbers
@@ -28,7 +28,7 @@ func TestBubble_NegativeNumbers(t *testing.T) {
 	b := []int{-5, 2, 3, 0, 1, 4}
 	actual := bubble(b)
 	expected := []int{-5, 0, 1, 2, 3, 4}
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, actual, "Unexpected output in bubble")
 }
 
 //To test the main output
