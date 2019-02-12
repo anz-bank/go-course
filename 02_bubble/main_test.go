@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -19,6 +18,6 @@ func TestMainOutput(t *testing.T) {
 
 	// Then
 	expected := `[1 2 3 5]`
-	actual := strings.TrimSuffix(buf.String(), "\n")
+	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
