@@ -25,28 +25,24 @@ func TestMainOutput(t *testing.T) {
 func TestBubbleSortOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
 	// When
 	bubble([]int{3, 2, 1, 5})
 
 	// Then
-	expected := `[1 2 3 5]`
-	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	expected := []int{1, 2, 3, 5}
+	actual := bubble([]int{3, 2, 1, 5})
+	r.EqualValues(expected, actual, "Unexpected output in bubble()")
 }
 func TestInsertionSortOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
 	// When
 	insertion([]int{3, 2, 1, 5})
 
 	// Then
-	expected := `[1 2 3 5]`
-	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	expected := []int{1, 2, 3, 5}
+	actual := bubble([]int{3, 2, 1, 5})
+	r.Equalf(expected, actual, "Unexpected output in insertion()")
 }
