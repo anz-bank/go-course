@@ -8,7 +8,7 @@ import (
 
 var out io.Writer = os.Stdout
 
-func bubble(s []int) []int {
+func bubble(s []int) {
 	// length of the array
 	n := len(s)
 	swapped := true
@@ -26,9 +26,24 @@ func bubble(s []int) []int {
 			}
 		}
 	}
-	return s
+	fmt.Fprint(out, s)
+}
+
+func insertion(s []int) {
+	n := len(s)
+	for i := 1; i < n; i++ {
+		j := i
+		for j > 0 {
+			if s[j-1] > s[j] {
+				s[j-1], s[j] = s[j], s[j-1]
+			}
+			j = j - 1
+		}
+	}
+	fmt.Fprint(out, s)
 }
 
 func main() {
-	fmt.Fprint(out, bubble([]int{3, 2, 1, 5}))
+	bubble([]int{3, 2, 1, 5})
+	insertion([]int{3, 2, 1, 5})
 }
