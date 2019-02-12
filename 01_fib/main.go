@@ -8,20 +8,15 @@ import (
 
 var out io.Writer = os.Stdout
 
-func fib(i int) int {
-	a, b, c := 0, 1, 2
-	fmt.Fprintln(out, b)
-	sum := 0
-	for cnt := 0; cnt < i-1; cnt++ {
-		sum = a + b
-		fmt.Fprintln(out, sum)
-		a, b = b, sum
+func fib(i int) {
+	a, b := 1, 1
+	for cnt := 0; cnt < i; cnt++ {
+		fmt.Fprintln(out, a)
+		a, b = b, a+b
 	}
-	fmt.Print(c)
-	return sum
+	return
 }
 
 func main() {
-	fmt.Fprintln(out, "Hallo du schöne Welt!")
 	fib(7)
 }

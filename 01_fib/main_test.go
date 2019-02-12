@@ -18,8 +18,7 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote(`Hallo du schöne Welt!
-1
+	expected := strconv.Quote(`1
 1
 2
 3
