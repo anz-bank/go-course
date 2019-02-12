@@ -14,14 +14,12 @@ func main() {
 }
 
 func fib(num int) {
-	num1 := 0
-	num2 := num1 + 1
+	num1, num2 := 0, 1
+
 	var result string
 	for i := 0; i < num; i++ {
 		result += strconv.Itoa(num1)
-		temp := num2
-		num2 += num1
-		num1 = temp
+		num1, num2 = num2, num1+num2
 	}
 	fmt.Fprintln(out, result)
 }
