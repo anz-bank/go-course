@@ -16,7 +16,7 @@ func fib(n uint) {
 	if n == 0 {
 		return
 	}
-	f1,f2 := 0,1
+	f1, f2 := 0, 1
 	fmt.Fprintln(out, f2)
 	var counter uint = 1
 	for ; counter < n; counter++ {
