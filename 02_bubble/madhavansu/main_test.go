@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"reflect"
 	"strconv"
 	"testing"
 
@@ -47,25 +46,17 @@ func TestBubbleSort(t *testing.T) {
 	// Given
 	r := require.New(t)
 
-	var pass bool
 	for _, test := range testSet {
 		res := bubble(test["input"])
-		if !reflect.DeepEqual(res, test["output"]) {
-			pass = false
-		}
+		r.Equalf(test["output"], res, "Unexpected output in bubble()")
 	}
-	r.Equalf(pass, false, "Unexpected output in bubble()")
 }
 func TestInsertionSort(t *testing.T) {
 	// Given
 	r := require.New(t)
 
-	var pass bool
 	for _, test := range testSet {
 		res := insertion(test["input"])
-		if !reflect.DeepEqual(res, test["output"]) {
-			pass = false
-		}
+		r.Equalf(test["output"], res, "Unexpected output in insertion()")
 	}
-	r.Equalf(pass, false, "Unexpected output in insertion()")
 }
