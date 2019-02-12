@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMainOutput(t *testing.T) {
+func TestFibOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer

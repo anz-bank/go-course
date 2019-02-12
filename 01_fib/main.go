@@ -9,10 +9,10 @@ import (
 var out io.Writer = os.Stdout
 
 func fib(n int) {
-	var num1, num2 = 1, 1
+	a, b := 1, 1
 	for i := 0; i < n; i++ {
-		fmt.Fprintln(out, num1)
-		num1, num2 = num2, num1+num2
+		fmt.Fprintln(out, a)
+		a, b = b, a+b
 	}
 }
 
