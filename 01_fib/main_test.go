@@ -39,7 +39,7 @@ func TestNegativeNumber(t *testing.T) {
 	fib(-1)
 
 	actual := buf.String()
-	r.Empty(strings.TrimSpace(actual), "Unexpected output for negative number test")
+	r.Equalf("", actual, "Unexpected output for negative number test")
 }
 
 func TestZero(t *testing.T) {
@@ -52,7 +52,7 @@ func TestZero(t *testing.T) {
 	fib(0)
 
 	actual := buf.String()
-	r.Empty(strings.TrimSpace(actual), "Unexpected output for test with 0")
+	r.Equalf("", actual, "Unexpected output for test with 0")
 }
 func TestForOne(t *testing.T) {
 	// Given
