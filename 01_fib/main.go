@@ -14,7 +14,6 @@ func fib(i int) {
 		fmt.Fprintln(out, a)
 		a, b = b, a+b
 	}
-	return
 }
 
 func main() {
