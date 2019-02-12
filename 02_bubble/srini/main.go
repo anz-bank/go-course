@@ -9,43 +9,46 @@ import (
 var outWriter io.Writer = os.Stdout
 
 func bubble(sliceToSort []int) []int {
-	sliceLen := len(sliceToSort)
+	sortedSlice := make([]int, len(sliceToSort))
+	copy(sortedSlice, sliceToSort)
 
-	for i := 0; i < sliceLen-1; i++ {
-		stop := true
-		for j := 0; j < sliceLen-i-1; j++ {
-			if sliceToSort[j] > sliceToSort[j+1] {
-				t := sliceToSort[j]
-				sliceToSort[j] = sliceToSort[j+1]
-				sliceToSort[j+1] = t
-				stop = false
+	lastIndex := len(sortedSlice) - 1
+
+	for i := 0; i < lastIndex; i++ {
+		swapped := true
+		for j := 0; j < lastIndex-i; j++ {
+			if sortedSlice[j] > sortedSlice[j+1] {
+				sortedSlice[j+1], sortedSlice[j] = sortedSlice[j], sortedSlice[j+1]
+				swapped = false
 			}
 		}
 		// we can stop once there is no sorting in inner loop
-		if stop {
+		if swapped {
 			break
 		}
 	}
-	return sliceToSort
+	return sortedSlice
 }
 
 func insertion(sliceToSort []int) []int {
-	sliceLen := len(sliceToSort)
+	sortedSlice := make([]int, len(sliceToSort))
+	copy(sortedSlice, sliceToSort)
+
+	sliceLen := len(sortedSlice)
 	for i := 1; i < sliceLen; i++ {
-		key := sliceToSort[i]
+		key := sortedSlice[i]
 		j := i - 1
 
-		for j >= 0 && sliceToSort[j] > key {
-			sliceToSort[j+1] = sliceToSort[j]
-			j--
+		for ; j >= 0 && sortedSlice[j] > key; j-- {
+			sortedSlice[j+1] = sortedSlice[j]
 		}
-		sliceToSort[j+1] = key
+		sortedSlice[j+1] = key
 	}
-	return sliceToSort
+	return sortedSlice
 }
 
 func main() {
-	arrayToSorted := []int{3, 2, 1, 5}
-	sortedArray := bubble(arrayToSorted)
+	arrayToSort := []int{3, 2, 1, 5}
+	sortedArray := bubble(arrayToSort)
 	fmt.Fprint(outWriter, sortedArray)
 }
