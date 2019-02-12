@@ -34,8 +34,7 @@ func insertion(sliceToSort []int) []int {
 	sortedSlice := make([]int, len(sliceToSort))
 	copy(sortedSlice, sliceToSort)
 
-	sliceLen := len(sortedSlice)
-	for i := 1; i < sliceLen; i++ {
+	for i, sliceLen := 1, len(sortedSlice); i < sliceLen; i++ {
 		key := sortedSlice[i]
 		j := i - 1
 
