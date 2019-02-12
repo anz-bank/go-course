@@ -13,7 +13,9 @@ func main() {
 	fmt.Fprint(out, insertion([]int{3, 2, -2092, -5, 9, 0, 29, 19, -2, -2, -10}))
 }
 
-func bubble(arr []int) []int {
+func bubble(arrcopy []int) []int {
+	arr := make([]int, len(arrcopy))
+	copy(arr, arrcopy)
 	arrlen := len(arr)
 	for i := 0; i < arrlen-1; i++ {
 		for j := 0; j < arrlen-i-1; j++ {
@@ -25,7 +27,9 @@ func bubble(arr []int) []int {
 	return arr
 }
 
-func insertion(arr []int) []int {
+func insertion(arrcopy []int) []int {
+	arr := make([]int, len(arrcopy))
+	copy(arr, arrcopy)
 	arrlen := len(arr)
 	for i := 1; i < arrlen; i++ {
 		key := arr[i]

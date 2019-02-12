@@ -26,57 +26,51 @@ func TestMainOutput(t *testing.T) {
 }
 
 func TestBubbleAndInsertion(t *testing.T) {
-
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
 	out = &buf
 
-	mock := map[string]map[string][]int{
-		"bubble1": {
+	testSet := map[string]map[string][]int{
+		"testSet1": {
 			"input":  {3, 2, 1, -2, 10, 19, 0, 81, -29},
 			"output": {-29, -2, 0, 1, 2, 3, 10, 19, 81},
 		},
-		"bubble2": {
+		"testSet2": {
 			"input":  {3, 2, 1},
 			"output": {1, 2, 3},
 		},
-		"bubble3": {
+		"testSet3": {
 			"input":  {20, 40, 80, 100},
 			"output": {20, 40, 80, 100},
 		},
-		"bubble4": {
+		"testSet4": {
 			"input":  {-3, 20, 19210, 110},
 			"output": {-3, 20, 110, 19210},
 		},
-		"insertion1": {
+		"testSet5": {
 			"input":  {3, 2, 1, -2, 10, 19, 0, 81, -29},
 			"output": {-29, -2, 0, 1, 2, 3, 10, 19, 81},
 		},
-		"insertion2": {
+		"testSet6": {
 			"input":  {3, 2, 1},
 			"output": {1, 2, 3},
 		},
-		"insertion3": {
+		"testSet7": {
 			"input":  {20, 40, 80, 100},
 			"output": {20, 40, 80, 100},
 		},
-		"insertion4": {
+		"testSet8": {
 			"input":  {-3, 20, 19210, 110},
 			"output": {-3, 20, 110, 19210},
 		},
 	}
 
-	for k, group := range mock {
+	for k, test := range testSet {
 		var pass bool
-		if strings.HasPrefix(k, "bubble") {
-			res := bubble(group["input"])
-			if !reflect.DeepEqual(res, group["output"]) {
-				pass = false
-			}
-		} else if strings.HasPrefix(k, "insertion") {
-			res := insertion(group["input"])
-			if !reflect.DeepEqual(res, group["output"]) {
+		if strings.HasPrefix(k, "testSet") {
+			res := bubble(test["input"])
+			if !reflect.DeepEqual(res, test["output"]) {
 				pass = false
 			}
 		}
