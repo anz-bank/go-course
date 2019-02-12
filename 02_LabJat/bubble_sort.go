@@ -9,7 +9,6 @@ import (
 var out io.Writer = os.Stdout
 
 func bubbleSort(input []int) []int {
-
 	arLength := len(input)
 	for i := 0; i < arLength; i++ {
 
@@ -20,11 +19,9 @@ func bubbleSort(input []int) []int {
 		}
 
 	}
-
 	return input
 }
 func insertionSort(input []int) []int {
-
 	arLength := len(input)
 	var j int
 	for i := 0; i < arLength; i++ {
@@ -35,7 +32,6 @@ func insertionSort(input []int) []int {
 		}
 		input[j+1] = key
 	}
-
 	return input
 }
 
