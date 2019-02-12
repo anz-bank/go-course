@@ -10,7 +10,7 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fibonacciSeries(-5)
+	fibonacciSeries(7)
 }
 
 func fibonacciSeries(number int) {
