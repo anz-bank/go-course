@@ -23,7 +23,7 @@ func bubble(items []int) []int {
 		if !swapped {
 			sorted = true
 		}
-		n = n - 1
+		n -= 1
 	}
 	return items
 }
