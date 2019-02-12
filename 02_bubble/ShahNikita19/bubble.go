@@ -14,6 +14,8 @@ func main() {
 
 func bubbleSort(array []int) []int {
 	arrayLength := len(array)
+	copyArray := make([]int, len(array))
+	copy(copyArray, array)
 	for i := 0; i < arrayLength; i++ {
 		for j := 0; j < arrayLength-i-1; j++ {
 			if array[j] > array[j+1] {
