@@ -20,5 +20,5 @@ func TestMainOutput(t *testing.T) {
 	// Then
 	expected := `[1 2 3 5]`
 	actual := strings.TrimSuffix(buf.String(), "\n")
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, actual, "Unexpected output in main() ")
 }
