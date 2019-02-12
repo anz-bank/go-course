@@ -36,3 +36,33 @@ func TestInsertionSort(t *testing.T) {
 	actual := sortedList
 	r.Equalf(expected, actual, "Unexpected output in Insertion()")
 }
+
+func TestInsertionSortNegative(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	outWriter = &buf
+
+	// When
+	sortedList := insertion([]int{3, 2, 1, -4, -9, 5, 0})
+
+	// Then
+	expected := []int{-9, -4, 0, 1, 2, 3, 5}
+	actual := sortedList
+	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+}
+
+func TestBubbleSortNegative(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	outWriter = &buf
+
+	// When
+	sortedList := bubble([]int{3, 2, 1, -4, -9, 5, 0})
+
+	// Then
+	expected := []int{-9, -4, 0, 1, 2, 3, 5}
+	actual := sortedList
+	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+}

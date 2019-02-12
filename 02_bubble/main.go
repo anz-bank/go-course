@@ -31,7 +31,7 @@ func insertion(sliceToSort []int) []int {
 
 		for j >= 0 && sliceToSort[j] > key {
 			sliceToSort[j+1] = sliceToSort[j]
-			j = j - 1
+			j--
 		}
 		sliceToSort[j+1] = key
 	}
