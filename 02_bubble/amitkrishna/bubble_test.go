@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var sortingTests = []struct {
+var sortingTestsData = []struct {
 	n        []int // input
 	expected []int // expected result
 }{
@@ -16,17 +16,7 @@ var sortingTests = []struct {
 	{[]int{3, 2, 1, 5, 8}, []int{1, 2, 3, 5, 8}},
 }
 
-func TestBubbleSortOutput(t *testing.T) {
-	r := require.New(t)
-	for _, tt := range sortingTests {
-		actual := bubble(tt.n)
-		if reflect.DeepEqual(actual, tt.expected) {
-			r.Equalf(tt.expected, actual, "Unexpected output in main()")
-		}
-	}
-}
-
-func TestMainOutput(t *testing.T) {
+func TestBubbleSortMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -39,4 +29,24 @@ func TestMainOutput(t *testing.T) {
 	expected := "[1 2 3 5]"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
+}
+
+func TestBubbleSortOutput(t *testing.T) {
+	r := require.New(t)
+	for _, tt := range sortingTestsData {
+		actual := bubble(tt.n)
+		if reflect.DeepEqual(actual, tt.expected) {
+			r.Equalf(tt.expected, actual, "Unexpected output in main()")
+		}
+	}
+}
+
+func TestInsertionSortOutput(t *testing.T) {
+	r := require.New(t)
+	for _, tt := range sortingTestsData {
+		actual := insertionsort(tt.n)
+		if reflect.DeepEqual(actual, tt.expected) {
+			r.Equalf(tt.expected, actual, "Unexpected output in main()")
+		}
+	}
 }
