@@ -8,14 +8,14 @@ import (
 
 var out io.Writer = os.Stdout
 
-func main() {
-	fib(7)
+func fib(n int) {
+	a, b := 1, 1
+	for i := 0; i < n; i++ {
+		fmt.Fprintln(out, a)
+		a, b = b, a+b
+	}
 }
 
-func fib(n int) {
-	n1, n2 := 0, 1
-	for i := 0; i < n; i++ {
-		n1, n2 = n2, n1+n2
-		fmt.Fprint(out, " ", n1)
-	}
+func main() {
+	fib(7)
 }
