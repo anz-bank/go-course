@@ -23,8 +23,7 @@ func TestMainOutput(t *testing.T) {
 3
 5
 8
-13
-`
+13`
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
@@ -38,11 +37,8 @@ func TestNegativeNumber(t *testing.T) {
 	// When
 	fib(-1)
 
-	// Then
-	expected := `
-`
 	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Empty(actual, "Unexpected output in main()")
 }
 
 func TestZero(t *testing.T) {
@@ -54,11 +50,8 @@ func TestZero(t *testing.T) {
 	// When
 	fib(0)
 
-	// Then
-	expected := `
-`
 	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Empty(actual, "Unexpected output in main()")
 }
 func TestForOne(t *testing.T) {
 	// Given
@@ -70,8 +63,7 @@ func TestForOne(t *testing.T) {
 	fib(1)
 
 	// Then
-	expected := `1
-`
+	expected := `1`
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }

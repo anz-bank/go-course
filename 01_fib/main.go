@@ -11,7 +11,13 @@ import (
 var outWriter io.Writer = os.Stdout
 
 func calculateFib(n int) []int {
-	f0, f1, result := 1, 1, []int{}
+
+	//need to check for edge case to avoid array out of range
+	if n < 0 {
+		n = 0
+	}
+
+	f0, f1, result := 1, 1, make([]int, 0, n)
 
 	for i := 1; i <= n; i++ {
 		result = append(result, f0)
@@ -30,7 +36,7 @@ func printResult(arrayToPrint []int) {
 	for i := 0; i < len(arrayToPrint); i++ {
 		resultsAsStr = append(resultsAsStr, strconv.Itoa(arrayToPrint[i]))
 	}
-	fmt.Fprintln(outWriter, strings.Join(resultsAsStr, "\n"))
+	fmt.Fprint(outWriter, strings.Join(resultsAsStr, "\n"))
 }
 
 func main() {
