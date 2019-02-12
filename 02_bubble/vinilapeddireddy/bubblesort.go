@@ -10,17 +10,17 @@ var out io.Writer = os.Stdout
 
 // returns a sorted copy of int slice items using Bubble sort:
 func bubble(items []int) []int {
-
 	n := len(items)
-
+	tmp := make([]int, n)
+	copy(tmp, items)
 	for i := 0; i < n; i++ {
 		for j := n - 1; j >= i+1; j-- {
-			if items[j] < items[j-1] {
-				items[j], items[j-1] = items[j-1], items[j]
+			if tmp[j] < tmp[j-1] {
+				tmp[j], tmp[j-1] = tmp[j-1], tmp[j]
 			}
 		}
 	}
-	return items
+	return tmp
 }
 
 func main() {

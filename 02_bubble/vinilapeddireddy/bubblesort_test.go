@@ -31,6 +31,20 @@ func TestBubble_NegativeNumbers(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in bubble")
 }
 
+//To test the copying
+func TestBubble_DoesntModifyInput(t *testing.T) {
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
+	b := []int{-5, 2, 3, 0, 1, 4}
+	actual := bubble(b)
+
+	// Then
+	r.Equal([]int{-5, 0, 1, 2, 3, 4}, actual)
+	r.Equal([]int{-5, 2, 3, 0, 1, 4}, b)
+
+}
+
 //To test the main output
 func TestMainOutput(t *testing.T) {
 	// Given
