@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
-	"strings"
 )
 
 var outWriter io.Writer = os.Stdout
@@ -32,11 +30,9 @@ func fib(n int) {
 }
 
 func printResult(arrayToPrint []int) {
-	resultsAsStr := []string{}
 	for i := 0; i < len(arrayToPrint); i++ {
-		resultsAsStr = append(resultsAsStr, strconv.Itoa(arrayToPrint[i]))
+		fmt.Fprint(outWriter, fmt.Sprintf("%d\n", arrayToPrint[i]))
 	}
-	fmt.Fprint(outWriter, strings.Join(resultsAsStr, "\n"))
 }
 
 func main() {

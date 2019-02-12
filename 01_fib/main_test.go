@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -25,7 +26,7 @@ func TestMainOutput(t *testing.T) {
 8
 13`
 	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, strings.TrimSpace(actual), "Unexpected output in main()")
 }
 
 func TestNegativeNumber(t *testing.T) {
@@ -38,7 +39,7 @@ func TestNegativeNumber(t *testing.T) {
 	fib(-1)
 
 	actual := buf.String()
-	r.Empty(actual, "Unexpected output in main()")
+	r.Empty(strings.TrimSpace(actual), "Unexpected output for negative number test")
 }
 
 func TestZero(t *testing.T) {
@@ -51,7 +52,7 @@ func TestZero(t *testing.T) {
 	fib(0)
 
 	actual := buf.String()
-	r.Empty(actual, "Unexpected output in main()")
+	r.Empty(strings.TrimSpace(actual), "Unexpected output for test with 0")
 }
 func TestForOne(t *testing.T) {
 	// Given
@@ -65,5 +66,5 @@ func TestForOne(t *testing.T) {
 	// Then
 	expected := `1`
 	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(expected, strings.TrimSpace(actual), "Unexpected output for test with one")
 }
