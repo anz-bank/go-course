@@ -2,12 +2,13 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestInRageOutput(t *testing.T) {
+func TestInRageOutputBubbleSort(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -21,12 +22,9 @@ func TestInRageOutput(t *testing.T) {
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
-func TestEmptyArray(t *testing.T) {
+func TestEmptyArrayBubbleSort(t *testing.T) {
 	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
-
 	// When
 	outPut := bubbleSort([]int{})
 
@@ -35,11 +33,9 @@ func TestEmptyArray(t *testing.T) {
 	actual := 0
 	r.Equalf(len(outPut), actual, "Unexpected output in main()")
 }
-func TestSingleElementArray(t *testing.T) {
+func TestSingleElementArrayBubbleSort(t *testing.T) {
 	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
 	// When
 	outPut := bubbleSort([]int{1})
@@ -48,4 +44,63 @@ func TestSingleElementArray(t *testing.T) {
 
 	actual := 1
 	r.Equalf(len(outPut), actual, "Unexpected output in main()")
+}
+
+func TestSingleElementArrayInsertionSort(t *testing.T) {
+	// Given
+	r := require.New(t)
+
+	// When
+	outPut := insertionSort([]int{1})
+
+	// Then
+
+	actual := 1
+	r.Equalf(len(outPut), actual, "Unexpected output in main()")
+}
+
+func TestEmptyArrayInsertionSort(t *testing.T) {
+	// Given
+	r := require.New(t)
+
+	// When
+	outPut := insertionSort([]int{})
+
+	// Then
+
+	actual := 0
+	r.Equalf(len(outPut), actual, "Unexpected output in main()")
+}
+
+func TestRangeValuesArrayInsertionSort(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
+
+	// When
+	outPut := insertionSort([]int{3, 2, 1, 5})
+
+	// Then
+	outPut1 := outPut[0]
+	outPut2 := outPut[3]
+	actual1 := 1
+	actual2 := 5
+	r.Equalf(outPut1, actual1, "Unexpected output in main()")
+	r.Equalf(outPut2, actual2, "Unexpected output in main()")
+}
+
+func TestInRageOutputInsertionSort(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
+
+	// When
+	outPut := insertionSort([]int{3, 2, 1, 5})
+	fmt.Fprintln(out, outPut)
+	// Then
+	expected := "[1 2 3 5]\n"
+	actual := buf.String()
+	r.Equalf(expected, actual, "Unexpected output in main()")
 }

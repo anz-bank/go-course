@@ -23,6 +23,21 @@ func bubbleSort(input []int) []int {
 
 	return input
 }
+func insertionSort(input []int) []int {
+
+	arLength := len(input)
+	var j int
+	for i := 0; i < arLength; i++ {
+		key := input[i]
+
+		for j = i - 1; (j >= 0) && input[j] > key; j-- {
+			input[j+1] = input[j]
+		}
+		input[j+1] = key
+	}
+
+	return input
+}
 
 func main() {
 	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5}))
