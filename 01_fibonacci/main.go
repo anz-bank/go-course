@@ -14,7 +14,9 @@ func main() {
 	}
 }
 func fibinocci(x int) int {
-	if x < 2 {
+	if x <= 0 {
+		return 0
+	} else if x < 2 {
 		return x
 	}
 	return fibinocci(x-1) + fibinocci(x-2)

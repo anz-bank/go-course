@@ -13,7 +13,7 @@ func TestFibinocci(t *testing.T) {
 	r.Equal(1, fibinocci(2))
 	r.Equal(2, fibinocci(3))
 	r.Equal(0, fibinocci(0))
-	r.Equal(-1, fibinocci(-1))
+	r.Equal(0, fibinocci(-1))
 }
 
 func TestMainOutput(t *testing.T) {
