@@ -20,6 +20,6 @@ func fib(num int) {
 	for i := 0; i < num; i++ {
 		result += strconv.Itoa(num1)
 		num1, num2 = num2, num1+num2
+		fmt.Fprintln(out, num1)
 	}
-	fmt.Fprintln(out, result)
 }
