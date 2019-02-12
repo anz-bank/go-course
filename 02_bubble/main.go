@@ -14,8 +14,7 @@ func bubble(s []int) []int {
 		for j := i + 1; j < cnt; j++ {
 			if s[i] > s[j] {
 				tmp := s[i]
-				s[i] = s[j]
-				s[j] = tmp
+				s[i], s[j] = s[j], tmp
 				j--
 			}
 		}
