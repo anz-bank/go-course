@@ -9,9 +9,9 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(s []int) []int {
+	// length of array
 	n := len(s)
-	swapped := true
-	for swapped {
+	for swapped := true; swapped; {
 		swapped = false
 		for i := 1; i < n; i++ {
 			if s[i-1] > s[i] {
