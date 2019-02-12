@@ -2,25 +2,28 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 )
 
+var out io.Writer = os.Stdout
+
 func main() {
-	list := []int{6,3,2,8,1, -1,5}
-	fmt.Println("Before sorting = ",list);
+	list := []int{3, 2, 1, 5}
 	bubbleSort(list)
-	fmt.Println("After sorting = ",list);
+	fmt.Fprintln(out, "After sorting = ", list)
 }
 
 func bubbleSort(list []int) {
 	count := len(list)
-	swapedIndex := count
-	for swapedIndex > 1 {
-		for index := 1; index < count ; index ++ {
-			if list[index - 1] > list [index] {
-				list[index - 1], list[index] = list[index], list[index - 1]
-				swapedIndex = index
+	for count > 0 {
+		swappedIndex := 0
+		for index := 1; index < count; index++ {
+			if list[index-1] > list[index] {
+				list[index-1], list[index] = list[index], list[index-1]
+				swappedIndex = index
 			}
 		}
-		count--
+		count = swappedIndex
 	}
 }
