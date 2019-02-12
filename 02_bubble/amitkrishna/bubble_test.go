@@ -35,9 +35,7 @@ func TestBubbleSortOutput(t *testing.T) {
 	r := require.New(t)
 	for _, tt := range sortingTestsData {
 		actual := bubble(tt.n)
-		if reflect.DeepEqual(actual, tt.expected) {
-			r.Equalf(tt.expected, actual, "Unexpected output in main()")
-		}
+		r.ElementsMatchf(tt.expected, actual, "Unexpected output in main()")
 	}
 }
 
@@ -46,7 +44,7 @@ func TestInsertionSortOutput(t *testing.T) {
 	for _, tt := range sortingTestsData {
 		actual := insertionsort(tt.n)
 		if reflect.DeepEqual(actual, tt.expected) {
-			r.Equalf(tt.expected, actual, "Unexpected output in main()")
+			r.ElementsMatchf(tt.expected, actual, "Unexpected output in main()")
 		}
 	}
 }
