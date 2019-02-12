@@ -19,6 +19,7 @@ func TestMainOutput(t *testing.T) {
 	// Then
 	expected := "[1 2 3 5]"
 	actual := buf.String()
+
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 

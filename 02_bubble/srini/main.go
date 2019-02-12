@@ -37,7 +37,6 @@ func insertion(sliceToSort []int) []int {
 	for i, sliceLen := 1, len(sortedSlice); i < sliceLen; i++ {
 		key := sortedSlice[i]
 		j := i - 1
-
 		for ; j >= 0 && sortedSlice[j] > key; j-- {
 			sortedSlice[j+1] = sortedSlice[j]
 		}
