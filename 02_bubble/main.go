@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
@@ -23,5 +24,7 @@ func bubble(s []int) []int {
 }
 
 func main() {
-	fmt.Println(bubble([]int{3, 2, 1, 5}))
+	s := bubble([]int{3, 2, 1, 5})
+	v := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(s)), " "), "[]")
+	fmt.Fprintln(out, "["+v+"]")
 }
