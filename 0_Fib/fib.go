@@ -20,10 +20,9 @@ func Fibonacci(n int) []int {
 	return fib
 }
 func arrayToString(a []int, delim string) string {
-	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", delim, -1), "[]")
+	return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(a)), delim), "[]")
 }
 
 func main() {
-	fmt.Fprint(out, "Fibonnaci Series of 7: ", arrayToString(Fibonacci(7), "-"))
-
+	fmt.Fprint(out, arrayToString(Fibonacci(7), "\n"))
 }
