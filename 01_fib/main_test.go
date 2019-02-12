@@ -36,7 +36,7 @@ func TestNegativeNumber(t *testing.T) {
 	outWriter = &buf
 
 	// When
-	fibo(-1)
+	fib(-1)
 
 	// Then
 	expected := `
@@ -52,7 +52,7 @@ func TestZero(t *testing.T) {
 	outWriter = &buf
 
 	// When
-	fibo(0)
+	fib(0)
 
 	// Then
 	expected := `
@@ -67,7 +67,7 @@ func TestForOne(t *testing.T) {
 	outWriter = &buf
 
 	// When
-	fibo(1)
+	fib(1)
 
 	// Then
 	expected := `1

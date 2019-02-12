@@ -20,7 +20,7 @@ func calculateFib(n int) []int {
 	return result
 }
 
-func fibo(n int) {
+func fib(n int) {
 	//ideally this can be printed in main but lab needs to be printed inside the func
 	printResult(calculateFib(n))
 }
@@ -34,5 +34,5 @@ func printResult(arrayToPrint []int) {
 }
 
 func main() {
-	fibo(7)
+	fib(7)
 }
