@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestBubbleSortOutput(t *testing.T) {
@@ -31,4 +31,3 @@ func TestBubbleSortOutputWithNegValues(t *testing.T) {
 	// Then
 	assert.Equal([]int{-3, -1, 2, 5}, s)
 }
-
