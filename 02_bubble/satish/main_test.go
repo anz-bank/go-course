@@ -44,5 +44,5 @@ func TestInsertionSortOutput(t *testing.T) {
 	// Then
 	expected := []int{1, 2, 3, 5}
 	actual := bubble([]int{3, 2, 1, 5})
-	r.Equalf(expected, actual, "Unexpected output in insertion()")
+	r.EqualValues(expected, actual, "Unexpected output in insertion()")
 }
