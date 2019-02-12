@@ -31,6 +31,6 @@ func TestBubbleOutputForNegativeNumbers(t *testing.T) {
 	s := bubble([]int{-3, -2, -1, -5})
 
 	// Then
-	expected := []int([]int{-5, -3, -2, -1})
+	expected := []int{-5, -3, -2, -1}
 	r.Equalf(expected, s, "Unexpected output in main()")
 }
