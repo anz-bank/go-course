@@ -13,6 +13,9 @@ func main() {
 }
 
 func fib(limit int) {
+	if limit <= 0 {
+		fmt.Fprintln(out, "Invalid Input")
+	}
 	firstNo, secondNo := 0, 1
 	for i := 0; i < limit; i++ {
 		fmt.Fprintln(out, firstNo)
