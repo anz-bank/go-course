@@ -31,11 +31,12 @@ func print(m map[rune]int) {
 	sort.Ints(keys)
 	//Print
 	for _, k := range keys {
-		fmt.Printf("%s:%d\n", string(k), m[rune(k)])
+		fmt.Fprint(out, fmt.Sprintf("%s:%d\n", string(k), m[rune(k)]))
+
 	}
 }
 
 func main() {
-	result := letters("rwatrfkwe;lfkds;lfksd;aflksa;fl")
+	result := letters("aba")
 	print(result)
 }
