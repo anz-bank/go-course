@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TesRageOutputBubbleSort(t *testing.T) {
+func TestRageOutputBubbleSort(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
