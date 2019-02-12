@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -10,8 +9,6 @@ import (
 func TestBubbleSort(t *testing.T) {
 	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
 	// When
 	i := bubble([]int{3, 2, 1, 5}) // Then
@@ -23,8 +20,6 @@ func TestBubbleSort(t *testing.T) {
 func TestInsertionSort(t *testing.T) {
 	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
 	// When
 	i := insertion([]int{3, 2, 1, 5}) // Then
