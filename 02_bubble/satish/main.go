@@ -37,7 +37,7 @@ func insertion(s []int) {
 			if s[j-1] > s[j] {
 				s[j-1], s[j] = s[j], s[j-1]
 			}
-			j = j - 1
+			j--
 		}
 	}
 	fmt.Fprint(out, s)
