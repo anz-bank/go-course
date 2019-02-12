@@ -17,7 +17,14 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "1\n1\n2\n3\n5\n8\n13\n"
+	expected := `1
+1
+2
+3
+5
+8
+13
+`
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
@@ -32,7 +39,14 @@ func TestFibOutputForNegafibonacciNumbers(t *testing.T) {
 	fib(-7)
 
 	// Then
-	expected := "13\n-8\n5\n-3\n2\n-1\n1\n"
+	expected := `13
+-8
+5
+-3
+2
+-1
+1
+`
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
