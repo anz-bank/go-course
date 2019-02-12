@@ -12,11 +12,11 @@ func main() {
 	fmt.Fprint(out, bubble([]int{3, 2, 1, 5}))
 }
 
-func bubble(s []int) (sorted []int) {
-	sorted = make([]int, len(s))
+func bubble(s []int) []int {
+	sorted := make([]int, len(s))
 	copy(sorted, s)
-	swapped := true
-	for swapped {
+
+	for swapped := true; swapped; {
 		swapped = false
 		for i := 0; i < len(sorted)-1; i++ {
 			if sorted[i+1] < sorted[i] {
@@ -25,11 +25,11 @@ func bubble(s []int) (sorted []int) {
 			}
 		}
 	}
-	return
+	return sorted
 }
 
-func insertionSort(s []int) (sorted []int) {
-	sorted = make([]int, len(s))
+func insertionSort(s []int) []int {
+	sorted := make([]int, len(s))
 	copy(sorted, s)
 	for i := 1; i < len(sorted); i++ {
 		for j := i - 1; j >= 0; j-- {
@@ -38,5 +38,5 @@ func insertionSort(s []int) (sorted []int) {
 			}
 		}
 	}
-	return
+	return sorted
 }
