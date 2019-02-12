@@ -14,7 +14,7 @@ func letters(s string) map[rune]int {
 
 	for _, r := range s {
 		if _, ok := letterMap[r]; ok {
-			letterMap[r] = letterMap[r] + 1
+			letterMap[r]++
 		} else {
 			letterMap[r] = 1
 		}
