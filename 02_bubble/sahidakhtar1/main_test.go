@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -18,8 +17,8 @@ func TestMain(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote("After sorting =  [1 2 3 5]\n")
-	actual := strconv.Quote(buf.String())
+	expected := "After sorting =  [1 2 3 5]\n"
+	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
