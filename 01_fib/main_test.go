@@ -18,7 +18,15 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote("Hallo du schöne Welt!\n")
+	expected := strconv.Quote(`Hallo du schöne Welt!
+1
+1
+2
+3
+5
+8
+13
+`)
 	actual := strconv.Quote(buf.String())
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
