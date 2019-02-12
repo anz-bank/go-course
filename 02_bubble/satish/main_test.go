@@ -26,9 +26,6 @@ func TestBubbleSortOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 
-	// When
-	bubble([]int{3, 2, 1, 5})
-
 	// Then
 	expected := []int{1, 2, 3, 5}
 	actual := bubble([]int{3, 2, 1, 5})
@@ -38,11 +35,8 @@ func TestInsertionSortOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 
-	// When
-	insertion([]int{3, 2, 1, 5})
-
 	// Then
 	expected := []int{1, 2, 3, 5}
-	actual := bubble([]int{3, 2, 1, 5})
+	actual := insertion([]int{3, 2, 1, 5})
 	r.EqualValues(expected, actual, "Unexpected output in insertion()")
 }
