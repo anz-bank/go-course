@@ -25,6 +25,6 @@ func bubble(s []int) []int {
 
 func main() {
 	s := bubble([]int{3, 2, 1, 5})
-	v := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(s)), " "), "[]")
-	fmt.Fprintln(out, "["+v+"]")
+	v := strings.Join(strings.Fields(fmt.Sprint(s)), " ")
+	fmt.Fprintln(out, v)
 }
