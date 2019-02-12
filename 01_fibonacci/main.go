@@ -11,14 +11,14 @@ var out io.Writer = os.Stdout
 func main() {
 
 	for num := 1; num < 10; num++ {
-		fmt.Fprintln(out, printNumber(num))
+		fmt.Fprintln(out, fibinocci(num))
 	}
 
 }
-func printNumber(x int) int {
+func fibinocci(x int) int {
 	if x < 2 {
 		return x
 	}
-	return printNumber(x-1) + printNumber(x-2)
+	return fibinocci(x-1) + fibinocci(x-2)
 
 }

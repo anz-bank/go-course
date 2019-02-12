@@ -7,11 +7,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPrintNumber(t *testing.T) {
+func TestFibinocci(t *testing.T) {
 	r := require.New(t)
 
-	r.Equal(1, printNumber(2))
-	r.Equal(2, printNumber(3))
+	r.Equal(1, fibinocci(2))
+	r.Equal(2, fibinocci(3))
+	r.Equal(0, fibinocci(0))
+	r.Equal(-1, fibinocci(-1))
 }
 
 func TestMainOutput(t *testing.T) {
