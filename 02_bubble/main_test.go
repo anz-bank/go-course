@@ -37,7 +37,7 @@ func TestInsertionSort(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in Insertion()")
 }
 
-func TestInsertionSortNegative(t *testing.T) {
+func TestInsertionSortWithNegativeInt(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -52,7 +52,7 @@ func TestInsertionSortNegative(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in Insertion()")
 }
 
-func TestBubbleSortNegative(t *testing.T) {
+func TestBubbleSortWithNegativeInt(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -63,6 +63,65 @@ func TestBubbleSortNegative(t *testing.T) {
 
 	// Then
 	expected := []int{-9, -4, 0, 1, 2, 3, 5}
+	actual := sortedList
+	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+}
+
+func TestBubbleSortRepeatedInt(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	outWriter = &buf
+
+	// When
+	sortedList := bubble([]int{3, 2, 1, -4, -9, 5, 0, 3, 2})
+
+	// Then
+	expected := []int{-9, -4, 0, 1, 2, 2, 3, 3, 5}
+	actual := sortedList
+	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+}
+func TestInsertionSortRepeatedInt(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	outWriter = &buf
+
+	// When
+	sortedList := insertion([]int{3, 2, 1, -4, -9, 5, 0, 3, 2})
+
+	// Then
+	expected := []int{-9, -4, 0, 1, 2, 2, 3, 3, 5}
+	actual := sortedList
+	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+}
+
+func TestBubbleSortWithSingleInt(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	outWriter = &buf
+
+	// When
+	sortedList := bubble([]int{3})
+
+	// Then
+	expected := []int{3}
+	actual := sortedList
+	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+}
+
+func TestInsertionSortWithSingleInt(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	outWriter = &buf
+
+	// When
+	sortedList := insertion([]int{3})
+
+	// Then
+	expected := []int{3}
 	actual := sortedList
 	r.Equalf(expected, actual, "Unexpected output in Insertion()")
 }
