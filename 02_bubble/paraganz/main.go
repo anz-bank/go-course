@@ -8,7 +8,9 @@ import (
 
 var out io.Writer = os.Stdout
 
-func bubble(s []int) []int {
+func bubble(arr []int) []int {
+	var s []int
+	copy(s, arr)
 	cnt := len(s)
 	for i := 0; i < cnt; i++ {
 		for j := i + 1; j < cnt; j++ {

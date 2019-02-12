@@ -32,7 +32,7 @@ func TestBubbleOutput(t *testing.T) {
 
 	// Then
 	expected := []int{1, 2, 3, 5}
-	r.Equalf(expected, s, "Unexpected output in main()")
+	r.Equalf(expected, s, "Unexpected output in bubble()")
 }
 
 func TestBubbleOutputForNegativeNumbers(t *testing.T) {
@@ -46,5 +46,19 @@ func TestBubbleOutputForNegativeNumbers(t *testing.T) {
 
 	// Then
 	expected := []int{-5, -3, -2, -1}
-	r.Equalf(expected, s, "Unexpected output in main()")
+	r.Equalf(expected, s, "Unexpected output in bubble()")
+}
+
+func TestBubbleOutputIsNotInputObject(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
+
+	// When
+	arr := []int{-3, -2, -1, -5}
+	actual := bubble(arr)
+
+	// Then
+	r.NotEqualf(actual, arr, "Unexpected not copy in bubble()")
 }
