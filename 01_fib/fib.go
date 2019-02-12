@@ -2,9 +2,14 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
+	"strings"
 )
 
-func fib(n int) []int {
+var out io.Writer = os.Stdout
+
+func fib(n int) string {
 	f := make([]int, n)
 	if n < 2 {
 		f = f[0:2]
@@ -13,9 +18,9 @@ func fib(n int) []int {
 	for i := 2; i <= n-1; i++ {
 		f[i] = f[i-1] + f[i-2]
 	}
-	return f
+	return strings.Trim(strings.Replace(fmt.Sprint(f), " ", " ", -1), "[]")
 }
 
 func main() {
-	fmt.Println(fib(7))
+	fmt.Fprintf(out, "%v", fib(7))
 }
