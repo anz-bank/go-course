@@ -29,7 +29,7 @@ func bubble(items []int) []int {
 		bubble(smallerItems)
 		bubble(largerItems)
 
-		var merged []int = append(append(append([]int{}, smallerItems...), []int{items[pivotIndex]}...), largerItems...)
+		var merged = append(append(append([]int{}, smallerItems...), []int{items[pivotIndex]}...), largerItems...)
 
 		for j := 0; j < len(items); j++ {
 			items[j] = merged[j]
