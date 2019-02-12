@@ -9,11 +9,9 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-
 	for num := 1; num < 10; num++ {
 		fmt.Fprintln(out, fibinocci(num))
 	}
-
 }
 func fibinocci(x int) int {
 	if x < 2 {
