@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"sort"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
@@ -22,21 +23,22 @@ func letters(s string) map[rune]int {
 	return letterMap
 }
 
-func print(m map[rune]int) {
+func sortLetters(m map[rune]int) []string {
 	//Sort keys first
 	keys := []int{}
 	for k := range m {
 		keys = append(keys, int(k))
 	}
 	sort.Ints(keys)
-	//Print
-	for _, k := range keys {
-		fmt.Fprint(out, fmt.Sprintf("%s:%d\n", string(k), m[rune(k)]))
 
+	sortedKeys := make([]string, 0, len(keys))
+
+	for _, k := range keys {
+		sortedKeys = append(sortedKeys, fmt.Sprintf("%s:%d", string(k), m[rune(k)]))
 	}
+	return sortedKeys
 }
 
 func main() {
-	result := letters("aba")
-	print(result)
+	fmt.Fprint(out, strings.Join(sortLetters(letters("aba")), "\n"))
 }
