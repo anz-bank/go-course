@@ -8,6 +8,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var testInputs = []struct {
+	in []int
+	out []int
+}{
+	{[]int{0, 9, 8, 3, 6, 2}, []int{0, 2, 3, 6, 8, 9}},
+	{[]int{1, 2, 3, 4, 5, 10, 12}, []int{1, 2, 3, 4, 5, 10, 12}},
+	{[]int{12, 10, 5, 4, 3, 2, 1}, []int{1, 2, 3, 4, 5, 10, 12}},
+	{[]int{12, 10, 5, 4, 3, 5, 2, 1, 12, 10}, []int{1, 2, 3, 4, 5, 5, 10, 10, 12, 12}},
+	{[]int{-9, -10, -3, -4, -6, -2}, []int{-10, -9, -6, -4, -3, -2}}}
+
 func TestMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
@@ -24,26 +34,10 @@ func TestMainOutput(t *testing.T) {
 }
 
 func TestBubbleSortOutput(t *testing.T) {
-	// Given
-	r := require.New(t)
-
-	// when
-	actual := bubble([]int{0, 9, 8, 3, 6, 2})
-
-	//Then
-	expected := []int{0, 2, 3, 6, 8, 9}
-	r.Equalf(expected, actual, "Unexpected output in bubble()")
-
+   r := require.New(t)	
+   for _, t := range testInputs {
+	   actual := bubble(t.in)
+       r.ElementsMatch(t.out, actual)		
+   } 
 }
 
-func TestBubbleSortOutputWithNegativeElements(t *testing.T) {
-	//Given
-	r := require.New(t)
-
-	//when
-	actual := bubble([]int{-9, -10, -3, -4, -6, -2})
-
-	//Then
-	expected := []int{-10, -9, -6, -4, -3, -2}
-	r.Equalf(expected, actual, "Unexpected output in bubble()")
-}
