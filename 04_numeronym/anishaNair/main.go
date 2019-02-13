@@ -14,14 +14,14 @@ func main() {
 }
 
 func getNumeronyms(s ...string) []string {
-	var numeronyms []string
-	for _, i := range s {
-		target := strings.Trim(i, " ")
+	numeronyms := make([]string, len(s))
+	for index, i := range s {
+		target := []rune(strings.TrimSpace(i))
 		len := len(target)
 		if len <= 3 {
-			numeronyms = append(numeronyms, target)
+			numeronyms[index] = string(target)
 		} else {
-			numeronyms = append(numeronyms, fmt.Sprintf("%c%d%c", target[0], len-2, target[len-1]))
+			numeronyms[index] = fmt.Sprintf("%c%d%c", target[0], len-2, target[len-1])
 		}
 	}
 	return numeronyms

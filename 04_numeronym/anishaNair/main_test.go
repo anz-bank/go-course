@@ -11,12 +11,12 @@ var tests = []struct {
 	inputStrings  []string
 	outputStrings []string
 }{
-	{[]string{}, nil},
+	{[]string{}, []string{}},
 	{[]string{"accessibility", "Kubernetes", "abc"},
 		[]string{"a11y", "K8s", "abc"}},
 	{[]string{"!hdfdfgjdhf djfhdfh"},
-		[]string{"!17h"}},
-}
+		[]string{"!17h"}}, {[]string{"🦋😱😈😎🦖🤠😎😈🦖😎🐉🤠🦖🦋🦋🦋😈😎🐉🦖🤠😈🐉😎🤠😈🐉🤠😱🦋"},
+		[]string{"🦋28🦋"}}}
 
 func TestMainOutput(t *testing.T) {
 	// Given
