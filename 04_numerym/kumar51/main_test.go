@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func NumeroniumTest(t *testing.T) {
+func numeroniumTest(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -17,7 +17,7 @@ func NumeroniumTest(t *testing.T) {
 	main()
 
 	// Then
-	expected := "[ a11y K8s abc]\n"
+	expected := "[a11y K8s abc]\n"
 
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
@@ -34,7 +34,7 @@ func testNoArgument(t *testing.T) {
 	actual := len(m)
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
-func TestNumeroniumsSingleArg(t *testing.T) {
+func testNumeroniumsSingleArg(t *testing.T) {
 	// Given
 	r := require.New(t)
 
@@ -73,7 +73,6 @@ func lessThanThreeCharTesting(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-
 func threeCharTesting(t *testing.T) {
 	// Given
 	r := require.New(t)
@@ -87,16 +86,15 @@ func threeCharTesting(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-
-func TestGetNumeroniumsMultiCharString(t *testing.T) {
+func testGetNumeroniumsMultiCharString(t *testing.T) {
 	// Given
 	r := require.New(t)
 
 	// When
-	m := prepareResponse("Global Warming")
+	m := prepareResponse("Good morning")
 
 	// Then
-	expected := "G12g"
+	expected := "G10g"
 	actual := m
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
