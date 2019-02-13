@@ -9,8 +9,8 @@ import (
 )
 
 var tests = []struct {
-	input        IPAddr
-	outputString string
+	input    IPAddr
+	expected string
 }{
 	{IPAddr{8, 8, 8, 8}, "8.8.8.8"},
 	{IPAddr{1, 1}, "1.1.0.0"},
@@ -34,6 +34,6 @@ func TestStringer(t *testing.T) {
 	r := require.New(t)
 	for _, tt := range tests {
 		output := fmt.Sprintf("%v", tt.input)
-		r.Equal(tt.outputString, output)
+		r.Equal(tt.expected, output)
 	}
 }
