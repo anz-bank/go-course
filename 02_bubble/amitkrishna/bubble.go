@@ -15,17 +15,12 @@ func main() {
 func bubble(s []int) []int {
 	cs1 := make([]int, len(s))
 	copy(cs1, s)
-	end := len(cs1) - 1
-	for {
-		if end == 0 {
-			break
-		}
+	for end := len(cs1) - 1; end > 0; end-- {
 		for i := 0; i < len(cs1)-1; i++ {
 			if cs1[i] > cs1[i+1] {
 				cs1[i], cs1[i+1] = cs1[i+1], cs1[i]
 			}
 		}
-		end--
 	}
 	return cs1
 }
