@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
@@ -14,12 +15,12 @@ func main() {
 func numeronyms(vals ...string) []string {
 	var strcopy []string
 	for _, val := range vals {
+		val := []rune(strings.TrimSpace(val))
 		length := len(val)
 		if length > 3 {
-			first, last := val[0:1], val[length-1:]
-			strcopy = append(strcopy, fmt.Sprint(first, length-2, last))
+			strcopy = append(strcopy, fmt.Sprint(string(val[0:1]), length-2, string(val[length-1:])))
 		} else {
-			strcopy = append(strcopy, val)
+			strcopy = append(strcopy, string(val))
 		}
 	}
 	return strcopy
