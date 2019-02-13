@@ -13,7 +13,9 @@ var testMatrix = []struct {
 }{
 	{[]string{"abba", "accessibility", "Kubernetes", "abc"}, []string{"a2a", "a11y", "K8s", "abc"}},
 	{[]string{"abb a"}, []string{"a3a"}},
-	{[]string{""}, []string{""}}}
+	{[]string{""}, []string{""}},
+	{[]string{"£€€€§‡®"}, []string{"£5®"}},
+	{[]string{"ßäöüÄÖÜ"}, []string{"ß5Ü"}}}
 
 func TestMainOutput(t *testing.T) {
 	// Given
@@ -35,6 +37,6 @@ func TestLetters(t *testing.T) {
 	r := require.New(t)
 	for _, testData := range testMatrix {
 		letters := numeronyms(testData.input...)
-		r.Equal(letters, testData.output)
+		r.Equal(testData.output, letters)
 	}
 }
