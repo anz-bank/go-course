@@ -66,10 +66,10 @@ func TestBubbleSortWithOriginalValue(t *testing.T) {
 	r := require.New(t)
 
 	// When
-	sortedList := bubbleSort([]int{3, 2, 1, 5})
+	originalList := []int{3, 2, 1, 5}
+	bubbleSort(originalList)
 
 	// Then
-	expected := []int{1, 2, 3, 5}
-	actual := sortedList
-	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+	expected := []int{3, 2, 1, 5}
+	r.Equalf(expected, originalList, "Unexpected output in Insertion()")
 }
