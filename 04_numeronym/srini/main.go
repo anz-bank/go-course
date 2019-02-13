@@ -18,7 +18,7 @@ func numeronyms(vals ...string) []string {
 
 func generateNumeronym(input string) string {
 	inputLen := len(input)
-	//minimum 4 chars are requried
+	//minimum 4 chars are required
 	if inputLen < 4 {
 		return input
 	}
