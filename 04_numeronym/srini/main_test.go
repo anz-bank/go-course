@@ -32,11 +32,11 @@ func TestMainOutput(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-func TestLetters(t *testing.T) {
+func TestNumeronyms(t *testing.T) {
 	// Given
 	r := require.New(t)
 	for _, testData := range testMatrix {
-		letters := numeronyms(testData.input...)
-		r.Equal(testData.output, letters)
+		numeronymsVal := numeronyms(testData.input...)
+		r.Equal(testData.output, numeronymsVal)
 	}
 }
