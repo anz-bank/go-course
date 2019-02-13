@@ -12,15 +12,11 @@ var out io.Writer = os.Stdout
 
 func numeronyms(vals ...string) []string {
 	var arr = make([]string, len(vals))
-	for i := 0; i < len(vals); i++ {
-		val := vals[i]
-		if len(vals[i]) > 3 {
-			val = val[1:]
-			print(val)
-			val = val[:len(val)-1]
-			arr[i] = string(vals[i][0]) + strconv.Itoa(utf8.RuneCountInString(val)) + string(vals[i][len(vals[i])-1])
+	for pos, val := range vals {
+		if len(val) > 3 {
+			arr[pos] = string(val[0]) + strconv.Itoa(utf8.RuneCountInString(val)-2) + string(val[len(val)-1])
 		} else {
-			arr[i] = val
+			arr[pos] = val
 		}
 	}
 	return arr
