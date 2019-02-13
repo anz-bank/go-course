@@ -11,7 +11,6 @@ var out io.Writer = os.Stdout
 func main() {
 	fmt.Fprint(out, numeronyms("accessibility", "Kubernetes", "abc"))
 }
-
 func numeronyms(vals ...string) []string {
 	var strcopy []string
 	for _, val := range vals {
@@ -22,7 +21,6 @@ func numeronyms(vals ...string) []string {
 		} else {
 			strcopy = append(strcopy, val)
 		}
-
 	}
 	return strcopy
 }

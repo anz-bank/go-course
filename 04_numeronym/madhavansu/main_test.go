@@ -33,7 +33,6 @@ func TestMainOutput(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
-
 func TestNumeronyms(t *testing.T) {
 	// Given
 	r := require.New(t)
