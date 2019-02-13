@@ -2,23 +2,30 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-var numeronymInputData = []struct {
-	n        []string // input
-	expected []string // expected result
+var testData = []struct {
+	i        IPAddr // input
+	expected string // expected result
 }{
-	{[]string{"accessibility", "Kubernetes", "abc"}, []string{"a11y", "K8s", "abc"}},
-	{[]string{"a", "b", "abc", "abcd"}, []string{"a", "b", "abc", "a2d"}},
+	{IPAddr{127, 0, 0, 1}, "127.0.0.1"},
+	{IPAddr{0, 0, 0, 1}, "0.0.0.1"},
+	{IPAddr{0, 0, 0, 0}, "0.0.0.0"},
+	{IPAddr{0, 0, 0, 1}, "0.0.0.1"},
 }
 
 func TestNumeronymOutput(t *testing.T) {
 	r := require.New(t)
-	for _, tt := range numeronymInputData {
-		actual := numeronyms(tt.n...)
+	var buf bytes.Buffer
+	out = &buf
+	for _, tt := range testData {
+		buf.Reset()
+		fmt.Fprint(out, tt.i)
+		actual := buf.String()
 		r.Equalf(tt.expected, actual, "Unexpected output in main()")
 	}
 }
@@ -33,7 +40,7 @@ func TestLettersMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "[a11y K8s abc]"
+	expected := "127.0.0.1"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
