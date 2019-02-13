@@ -8,8 +8,8 @@ import (
 )
 
 var tests = []struct {
-	inputStrings  []string
-	outputStrings []string
+	inputStrings   []string
+	expectedOutput []string
 }{
 	{[]string{}, []string{}},
 	{[]string{"accessibility", "Kubernetes", "abc"},
@@ -35,7 +35,7 @@ func TestMainOutput(t *testing.T) {
 func TestGetNumeronyms(t *testing.T) {
 	r := require.New(t)
 	for _, tt := range tests {
-		output := getNumeronyms(tt.inputStrings...)
-		r.Equal(tt.outputStrings, output)
+		output := numeronyms(tt.inputStrings...)
+		r.Equal(tt.expectedOutput, output)
 	}
 }
