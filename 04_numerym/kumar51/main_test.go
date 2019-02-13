@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-
 func TestOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
