@@ -16,7 +16,7 @@ func main() {
 
 func bubbleSort(list []int) []int {
 	count := len(list)
-	var sortedList []int = make([]int, count)
+	sortedList := make([]int, count)
 	copy(sortedList, list)
 	for count > 0 {
 		swappedIndex := 0
