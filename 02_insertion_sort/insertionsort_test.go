@@ -35,11 +35,9 @@ func TestInsertionSortOutputWithNegValues(t *testing.T) {
 func TestBubbleSortCopyFail(t *testing.T) {
 	// Given
 	assert := assert.New(t)
-
 	// When
 	input := []int{3, 2, 1, 5}
 	sortedArray := insertion(input)
-	
 	// Then
-	assert.NotEqual(input, sortedArray)	
+	assert.NotEqual(input, sortedArray)
 }
