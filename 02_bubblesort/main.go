@@ -9,19 +9,16 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(items []int) []int {
-	n := len(items)
-	sorted := false
-
-	for !sorted {
-		swapped := false
-		for i := 0; i < n-1; i++ {
-			if items[i] > items[i+1] {
-				items[i+1], items[i] = items[i], items[i+1]
-				swapped = true
-			}
+	n := len(items) - 1
+	for {
+		if n <= 0 {
+			break
 		}
-		if !swapped {
-			sorted = true
+
+		for i := 0; i < n; i++ {
+			if items[i] > items[i+1] {
+				items[i], items[i+1] = items[i+1], items[i]
+			}
 		}
 		n--
 	}
