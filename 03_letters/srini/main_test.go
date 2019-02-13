@@ -15,15 +15,15 @@ var testMatrix = []struct {
 	{"", map[rune]int{}, []string{}},
 
 	{"abba",
-		map[rune]int{rune('a'): 2, rune('b'): 2},
+		map[rune]int{('a'): 2, ('b'): 2},
 		[]string{"a:2", "b:2"}},
 
 	{"abb a",
-		map[rune]int{rune(' '): 1, rune('a'): 2, rune('b'): 2},
+		map[rune]int{(' '): 1, ('a'): 2, ('b'): 2},
 		[]string{" :1", "a:2", "b:2"}},
 
 	{"£€€€§‡®😎",
-		map[rune]int{rune('£'): 1, rune('‡'): 1, rune('®'): 1, rune('€'): 3, rune('§'): 1, rune('😎'): 1},
+		map[rune]int{('£'): 1, ('‡'): 1, ('®'): 1, ('€'): 3, ('§'): 1, ('😎'): 1},
 		[]string{"£:1", "§:1", "®:1", "‡:1", "€:3", "😎:1"}}}
 
 func TestMainOutput(t *testing.T) {
