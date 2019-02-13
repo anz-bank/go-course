@@ -11,9 +11,10 @@ var tests = []struct {
 	inputStrings  []string
 	outputStrings []string
 }{
-	{[]string{}, nil},
+	{[]string{}, []string{}},
 	{[]string{"accessibility", "Kubernetes", "abc", "charecters"}, []string{"a11y", "K8s", "abc", "c8s"}},
 	{[]string{"!!&^#*&+"}, []string{"!6+"}},
+	{[]string{"🦋🦋!&^#*&+🦋"}, []string{"ð17\u008b"}},
 	{[]string{"a1y", "K8s", "a1c", "c8s"}, []string{"a1y", "K8s", "a1c", "c8s"}},
 }
 
