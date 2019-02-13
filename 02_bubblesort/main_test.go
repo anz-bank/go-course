@@ -57,3 +57,15 @@ func TestBubbleSortOutputWithDuplicates(t *testing.T) {
 	// Then
 	assert.Equal([]int{1, 2, 2, 5}, s)
 }
+
+func TestBubbleSortCopyFailure(t *testing.T) {
+	// Given
+	assert := assert.New(t)
+
+	// When
+	input := []int{2, 2, 1, 5}
+	sortedArray := bubble(input)
+	
+	// Then
+	assert.NotEqual(input, sortedArray)	
+}
