@@ -8,15 +8,13 @@ import (
 
 var out io.Writer = os.Stdout
 
+// IPAddr export
 type IPAddr [4]byte
 
 func main() {
-	// fmt.Println(iPAddr{127, 0, 0, 1})
-	hosts := map[string]IPAddr{
-		"loopback":  {127, 0, 0, 1},
-		"googleDNS": {8, 8, 8, 8},
-	}
-	for _, ip := range hosts {
-		fmt.Fprint(out, ip)
-	}
+	fmt.Fprint(out, IPAddr{127, 0, 0, 1})
+}
+
+func (ipAddr IPAddr) String() string {
+	return fmt.Sprintf("%d.%d.%d.%d", ipAddr[0], ipAddr[1], ipAddr[2], ipAddr[3])
 }

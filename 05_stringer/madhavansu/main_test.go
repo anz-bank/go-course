@@ -18,7 +18,7 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote(`[127 0 0 1][8 8 8 8]`)
+	expected := strconv.Quote(`127.0.0.1`)
 	actual := strconv.Quote(buf.String())
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
