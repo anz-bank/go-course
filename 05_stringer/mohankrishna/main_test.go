@@ -16,7 +16,7 @@ var tests = []struct {
 	{IPAddr{1}, "1.0.0.0"},
 	{IPAddr{}, "0.0.0.0"}}
 
-func TestLettersMainOutput(t *testing.T) {
+func TestMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer

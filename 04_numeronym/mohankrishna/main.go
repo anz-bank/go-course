@@ -16,12 +16,12 @@ func main() {
 func numeronyms(vals ...string) []string {
 	numeronyms := make([]string, len(vals))
 	for pos, value := range vals {
-		trimmedVal := strings.TrimSpace(value)
+		trimmedVal := []rune(strings.TrimSpace(value))
 		length := len(trimmedVal)
 		if length > 3 {
-			numeronyms[pos] = fmt.Sprintf("%c%d%c", trimmedVal[0], len(trimmedVal)-2, trimmedVal[length-1])
+			numeronyms[pos] = fmt.Sprintf("%c%d%c", trimmedVal[0], length-2, trimmedVal[length-1])
 		} else {
-			numeronyms[pos] = trimmedVal
+			numeronyms[pos] = string(trimmedVal)
 		}
 	}
 	return numeronyms
