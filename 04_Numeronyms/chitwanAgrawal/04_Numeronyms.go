@@ -13,7 +13,6 @@ func main() {
 func numeronyms(vals ...string) []string {
 	resultSlice := []string{}
     for _, val := range vals {
-		//fmt.Println("value ", val)
 		if len(val) < 4 {
 			resultSlice = append(resultSlice, val)
 		} else {
