@@ -35,8 +35,8 @@ func TestLettersMainOutput(t *testing.T) {
 func TestGetNumeronyms(t *testing.T) {
 	r := require.New(t)
 	for _, tt := range tests {
-		input := []string(tt.inputStrings)
-		output := getNumeronyms(input...)
+		//input := []string(tt.inputStrings)
+		output := getNumeronyms(tt.inputStrings...)
 		r.Equal(tt.outputStrings, output)
 	}
 }
