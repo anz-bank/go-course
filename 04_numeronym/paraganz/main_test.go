@@ -15,9 +15,11 @@ var tests = []struct {
 	{"accessibility", []string{"a11y"}},
 	{"accessibility testing", []string{"a19g"}},
 	{"abc", []string{"abc"}},
+	{"abcd", []string{"a2d"}},
 	{"a", []string{"a"}},
 	{"", []string{""}},
 	{" ", []string{" "}},
+	{"abc⌘ef", []string{"a4f"}},
 }
 
 func TestMainOutput(t *testing.T) {
