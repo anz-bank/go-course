@@ -13,10 +13,8 @@ func TestMainOutput(t *testing.T) {
 	r := require.New(t)
 	var buf bytes.Buffer
 	out = &buf
-
 	// When
 	main()
-
 	// Then
 	expected := "[1 2 3 5]"
 	actual := buf.String()
@@ -26,9 +24,18 @@ func TestBubbleSortNegativeValues(t *testing.T) {
 	//Given
 	assert := assert.New(t)
 	//when
-	sortedArray := bubble([]int{-3, -2, -1, -5})
-
+	input := []int{-3, -2, -1, -5}
+	sortedArray := bubble(input)
 	//Then
 	assert.Equal([]int{-5, -3, -2, -1}, sortedArray)
+}
 
+func TestSliceCopyFailure(t *testing.T) {
+	//Given
+	assert := assert.New(t)
+	//when
+	input := []int{1, 2, 3, 5}
+	sortedArray := bubble(input)
+	//Then
+	assert.NotEqual(assert, input, sortedArray)
 }
