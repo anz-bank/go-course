@@ -18,14 +18,12 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := `127.0.0.1`
-	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
+	r.Equalf(`127.0.0.1`, buf.String(), "Unexpected output in main()")
 }
 
 var s = []struct {
-	input  IPAddr
-	output string
+	input    IPAddr
+	expected string
 }{
 
 	{IPAddr{127, 0, 0, 1}, "127.0.0.1"},
@@ -42,8 +40,6 @@ func TestIPAddrInterface(t *testing.T) {
 
 	// When
 	for _, v := range s {
-		expected := fmt.Sprint(v.input)
-		actual := v.output
-		r.Equalf(expected, actual, "Unexpected output in IPAddr()")
+		r.Equalf(v.expected, fmt.Sprint(v.input), "Unexpected output in IPAddr()")
 	}
 }

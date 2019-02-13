@@ -15,6 +15,6 @@ func main() {
 	fmt.Fprint(out, IPAddr{127, 0, 0, 1})
 }
 
-func (ipAddr IPAddr) String() string {
-	return fmt.Sprintf("%d.%d.%d.%d", ipAddr[0], ipAddr[1], ipAddr[2], ipAddr[3])
+func (i IPAddr) String() string {
+	return fmt.Sprintf("%d.%d.%d.%d", i[0], i[1], i[2], i[3])
 }

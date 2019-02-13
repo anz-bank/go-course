@@ -13,15 +13,15 @@ func main() {
 	fmt.Fprint(out, numeronyms("accessibility", "Kubernetes", "abc"))
 }
 func numeronyms(vals ...string) []string {
-	strcopy := make([]string, len(vals))
+	s := make([]string, len(vals))
 	for k, val := range vals {
-		val := []rune(strings.TrimSpace(val))
+		val := []rune(strings.Trim(val, "\n\t\\ "))
 		length := len(val)
 		if length > 3 {
-			strcopy[k] = fmt.Sprint(string(val[0]), length-2, string(val[length-1]))
+			s[k] = fmt.Sprint(string(val[0]), length-2, string(val[length-1]))
 		} else {
-			strcopy[k] = string(val)
+			s[k] = string(val)
 		}
 	}
-	return strcopy
+	return s
 }
