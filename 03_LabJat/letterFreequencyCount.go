@@ -19,7 +19,7 @@ func letters(input string) map[rune]int {
 	return m
 }
 func sortedLetters(m map[rune]int) []string {
-	var keys []string
+	var keys = make([]string, 0)
 	for k, v := range m {
 		keys = append(keys, string(k)+":"+strconv.Itoa(v))
 	}
