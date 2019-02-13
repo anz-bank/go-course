@@ -10,20 +10,23 @@ var out io.Writer = os.Stdout
 
 func main() {
 	list := []int{3, 2, 1, 5}
-	bubbleSort(list)
-	fmt.Fprintln(out, "After sorting = ", list)
+	sortedList := bubbleSort(list)
+	fmt.Fprintln(out, sortedList)
 }
 
-func bubbleSort(list []int) {
+func bubbleSort(list []int) []int {
 	count := len(list)
+	var sortedList []int = make([]int, count)
+	copy(sortedList, list)
 	for count > 0 {
 		swappedIndex := 0
 		for index := 1; index < count; index++ {
-			if list[index-1] > list[index] {
-				list[index-1], list[index] = list[index], list[index-1]
+			if sortedList[index-1] > sortedList[index] {
+				sortedList[index-1], sortedList[index] = sortedList[index], sortedList[index-1]
 				swappedIndex = index
 			}
 		}
 		count = swappedIndex
 	}
+	return sortedList
 }
