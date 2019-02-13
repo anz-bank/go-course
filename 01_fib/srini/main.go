@@ -11,7 +11,7 @@ var outWriter io.Writer = os.Stdout
 func calculateFib(n int) []int {
 	//need to check for edge case to avoid array out of range
 	if n < 0 {
-		n = 0
+		return []int{}
 	}
 
 	f0, f1, result := 1, 1, make([]int, 0, n)
