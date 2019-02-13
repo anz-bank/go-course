@@ -8,7 +8,7 @@ import (
 )
 
 
-func testOutput(t *testing.T) {
+func TestOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -23,6 +23,7 @@ func testOutput(t *testing.T) {
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
+
 func TestNumeroniumsNoArgs(t *testing.T) {
 	// Given
 	r := require.New(t)
