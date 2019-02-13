@@ -9,8 +9,8 @@ import (
 )
 
 var tests = []struct {
-	input      IPAddr
-	numeronyms string
+	input  IPAddr
+	output string
 }{
 	{IPAddr{1, 2, 2, 2}, "1.2.2.2"},
 	{IPAddr{1}, "1.0.0.0"},
@@ -31,7 +31,7 @@ func TestLettersMainOutput(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-func TestLettersMapAndSort(t *testing.T) {
+func TestIPAddressFmtInterfaceImpl(t *testing.T) {
 	r := require.New(t)
 	var buf bytes.Buffer
 	out = &buf
@@ -40,6 +40,6 @@ func TestLettersMapAndSort(t *testing.T) {
 		buf.Reset()
 		fmt.Fprint(out, tt.input)
 		actual := buf.String()
-		r.EqualValues(tt.numeronyms, actual)
+		r.EqualValues(tt.output, actual)
 	}
 }
