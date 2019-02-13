@@ -47,7 +47,8 @@ func TestBubbleSort(t *testing.T) {
 func TestBubbleSortInput(t *testing.T) {
 	r := require.New(t)
 	for _, tt := range testData {
-		input := tt.in
+		input := make([]int, len(tt.in))
+		copy(input, tt.in)
 		bubbleSort(tt.in)
 		r.Equalf(input, tt.in, "Test case fails")
 	}
