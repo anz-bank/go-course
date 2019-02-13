@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
@@ -28,7 +29,7 @@ func numeronyms(vals ...string) []string {
 
 func getNumeronyms(val string) string {
 	var buffer bytes.Buffer
-	in := val
+	in := strings.Trim(val, " ")
 	if len(in) <= 3 {
 		buffer.WriteString(in)
 	} else {

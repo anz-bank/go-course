@@ -12,7 +12,7 @@ var tests = []struct {
 	numeronymsOutput []string
 }{
 	{[]string{}, []string{}},
-	{[]string{"", "+12345", "-1234"}, []string{"", "+45", "-34"}},
+	{[]string{" 12345", "+12345", "-1234"}, []string{"135", "+45", "-34"}},
 	{[]string{"accessibility", "Kubernetes", "abc"}, []string{"a11y", "K8s", "abc"}}}
 
 func TestLettersMainOutput(t *testing.T) {
