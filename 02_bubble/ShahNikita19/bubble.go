@@ -13,15 +13,14 @@ func main() {
 }
 
 func bubbleSort(array []int) []int {
-	arrayLength := len(array)
 	copyArray := make([]int, len(array))
 	copy(copyArray, array)
-	for i := 0; i < arrayLength; i++ {
-		for j := 0; j < arrayLength-i-1; j++ {
-			if array[j] > array[j+1] {
-				array[j], array[j+1] = array[j+1], array[j]
+	for i := 0; i < len(copyArray); i++ {
+		for j := 0; j < len(copyArray)-i-1; j++ {
+			if copyArray[j] > copyArray[j+1] {
+				copyArray[j], copyArray[j+1] = copyArray[j+1], copyArray[j]
 			}
 		}
 	}
-	return array
+	return copyArray
 }

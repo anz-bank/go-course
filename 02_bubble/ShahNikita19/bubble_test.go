@@ -60,3 +60,16 @@ func TestBubbleSortWithZeros(t *testing.T) {
 	actual := bubbleSort([]int{0, 0})
 	r.Equalf(expected, actual, "Unexpected output in bubble()")
 }
+
+func TestBubbleSortWithOriginalValue(t *testing.T) {
+	// Given
+	r := require.New(t)
+
+	// When
+	sortedList := bubbleSort([]int{3, 2, 1, 5})
+
+	// Then
+	expected := []int{1, 2, 3, 5}
+	actual := sortedList
+	r.Equalf(expected, actual, "Unexpected output in Insertion()")
+}
