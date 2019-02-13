@@ -9,7 +9,6 @@ import (
 var out io.Writer = os.Stdout
 
 func numeronyms(vals ...string) []string {
-	//numeronyms := []string{}
 	numeronyms := make([]string, len(vals))
 	for i, val := range vals {
 		numeronyms[i] = generateNumeronym(val)
