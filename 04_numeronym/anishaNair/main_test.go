@@ -18,7 +18,7 @@ var tests = []struct {
 		[]string{"!17h"}},
 }
 
-func TestLettersMainOutput(t *testing.T) {
+func TestMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -35,7 +35,6 @@ func TestLettersMainOutput(t *testing.T) {
 func TestGetNumeronyms(t *testing.T) {
 	r := require.New(t)
 	for _, tt := range tests {
-		//input := []string(tt.inputStrings)
 		output := getNumeronyms(tt.inputStrings...)
 		r.Equal(tt.outputStrings, output)
 	}
