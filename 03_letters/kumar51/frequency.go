@@ -17,11 +17,10 @@ func main() {
 func letters(s string) map[rune]int {
 	letterMap := make(map[rune]int)
 	for _, char := range s {
-		
 		letterMap[char]++
 	}
-	
 	return letterMap
+
 }
 
 func sortLetters(m map[rune]int) []string {

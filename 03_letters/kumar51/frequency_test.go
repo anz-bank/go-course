@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var tests = []struct {
-	inputString   string
+var test = []struct {
+	input   string
 	lettersMap    map[rune]int
 	sortedStrings []string
 }{
@@ -22,6 +22,8 @@ var tests = []struct {
 	{"😱😈😎🦖🤠😎😈😎🐉🤠🦖😈😎🐉🦖🤠😈🐉😎🤠😈🐉🤠😱🦋",
 		map[rune]int{'🦋': 1, '😱': 2, '😈': 5, '😎': 5, '🦖': 3, '🤠': 5, '🐉': 4},
 		[]string{"🐉:4", "😈:5", "😎:5", "😱:2", "🤠:5", "🦋:1", "🦖:3"}}}
+		
+
 
 func TestLettersMainOutput(t *testing.T) {
 	// Given
@@ -40,12 +42,13 @@ b:1
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-func TestLettersMapAndSort(t *testing.T) {
+func TestMapAndSort(t *testing.T) {
 	r := require.New(t)
-	for _, k := range tests {
-		outMap := letters(k.inputString)
+	for _, k := range test {
+		outMap := letters(k.input)
 		r.Equal(k.lettersMap, outMap)
 		outStrings := sortLetters(k.lettersMap)
 		r.EqualValues(k.sortedStrings, outStrings)
 	}
 }
+
