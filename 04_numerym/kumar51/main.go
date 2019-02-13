@@ -16,16 +16,16 @@ func main() {
 func numeronyms(vals ...string) []string {
 	var result = make([]string, 0)
 	for _, val := range vals {
-		result = append(result, prepareResponse(val))
+		result = append(result, getResponse(val))
 	}
 	return result
 }
 
-func prepareResponse(value string) string {
-	lenght := len(value)
-	if lenght <= 3 {
-		return value
+func getResponse(val string) string {
+	lenght := len(val)
+	if lenght < 4 {
+		return val
 	}
-	res := string(value[0]) + strconv.Itoa(lenght-2) + string(value[lenght-1])
+	res := string(val[0]) + strconv.Itoa(lenght-2) + string(val[lenght-1])
 	return res
 }
