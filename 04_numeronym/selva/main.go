@@ -23,7 +23,7 @@ func nemeronyms(vals ...string) []string {
 					num++
 				}
 				if j == len(temp)-1 {
-					num = num - 1
+					num--
 					temp1 = temp1 + strconv.Itoa(num) + string(r)
 				}
 			}
