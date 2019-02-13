@@ -31,12 +31,19 @@ func createNumeronym(s string) string {
 		strings.Contains(trimedString, "\n") {
 		return s
 	}
-	if len(trimedString) <= 3 {
+	var count int
+	var s1, s2 string
+	for i, v := range trimedString {
+		count++
+		if i == 0 {
+			s1 = string(v)
+		}
+		s2 = string(v)
+	}
+	if count <= 3 {
 		numeronym = trimedString
 	} else {
-		numeronym += trimedString[:1]
-		numeronym += strconv.Itoa(len(trimedString) - 2)
-		numeronym += trimedString[len(trimedString)-1:]
+		numeronym = s1 + strconv.Itoa(count-2) + s2
 	}
 	return numeronym
 }

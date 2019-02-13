@@ -58,6 +58,11 @@ func TestCreateNumeronym(t *testing.T) {
 		{"abc\\tefhjb", "a8b"},
 		{"abc\nefhjb", "abc\nefhjb"},
 		{"abcefhjb\n", "a6b"},
+		{"世🖖界", "世🖖界"},
+		{"世", "世"},
+		{"a世🖖界bc", "a4c"},
+		{"世abc", "世2c"},
+		{"abc世", "a2世"},
 	}
 	r := require.New(t)
 	for _, tt := range testData {
