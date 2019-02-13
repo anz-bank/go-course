@@ -2,69 +2,69 @@ package main
 
 import (
 	"bytes"
-	"strings"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestMainOutput(t *testing.T) {
+func TestFibOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
-	outWriter = &buf
+	out = &buf
 
 	// When
 	main()
 
 	// Then
-	expected := `1
+	expected := strconv.Quote(`1
 1
 2
 3
 5
 8
-13`
-	actual := buf.String()
-	r.Equalf(expected, strings.TrimSpace(actual), "Unexpected output in main()")
+13
+`)
+	actual := strconv.Quote(buf.String())
+	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-func TestNegativeNumber(t *testing.T) {
+func TestFibOutputWithZero(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
-	outWriter = &buf
-
-	// When
-	fib(-1)
-
-	actual := buf.String()
-	r.Equalf("", actual, "Unexpected output for negative number test")
-}
-
-func TestZero(t *testing.T) {
-	// Given
-	r := require.New(t)
-	var buf bytes.Buffer
-	outWriter = &buf
+	out = &buf
 
 	// When
 	fib(0)
 
-	actual := buf.String()
-	r.Equalf("", actual, "Unexpected output for test with 0")
+	//Then
+	r.Equalf("", buf.String(), "Unexpected output in main()")
 }
-func TestForOne(t *testing.T) {
+
+func TestFibOutputWithNegativeOne(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
-	outWriter = &buf
+	out = &buf
+
+	// When
+	fib(-1)
+
+	//Then
+	r.Equalf("", buf.String(), "Unexpected output in main()")
+}
+
+func TestFibOutputWithOne(t *testing.T) {
+	// Given
+	r := require.New(t)
+	var buf bytes.Buffer
+	out = &buf
 
 	// When
 	fib(1)
 
-	// Then
-	expected := `1`
-	actual := buf.String()
-	r.Equalf(expected, strings.TrimSpace(actual), "Unexpected output for test with one")
+	//Then
+	r.Equalf("1\n", buf.String(), "Unexpected output in main()")
 }
