@@ -8,10 +8,12 @@ import (
 
 var out io.Writer = os.Stdout
 
-type IPAddr [4]byte
+type MyByte byte
+
+type IPAddr [4]MyByte
 
 func (i IPAddr) String() string {
-	return fmt.Sprintf("%v.%v.%v.%v", i[0], i[1], i[2], i[3])
+	return fmt.Sprintf("%d.%d.%d.%d", i[0], i[1], i[2], i[3])
 }
 
 func main() {
