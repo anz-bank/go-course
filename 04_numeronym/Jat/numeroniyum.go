@@ -10,7 +10,7 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fmt.Fprintln(out, numeronyms("", "ab", "abc", "amala", "Kubernetes"))
+	fmt.Fprintln(out, numeronyms("accessibility", "Kubernetes", "abc"))
 }
 
 func numeronyms(vals ...string) []string {
@@ -22,6 +22,7 @@ func numeronyms(vals ...string) []string {
 }
 
 func getNumeronym(val string) string {
+
 	lenght := len(val)
 	if lenght <= 3 {
 		return val

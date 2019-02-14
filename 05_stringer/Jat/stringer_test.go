@@ -21,4 +21,5 @@ func TestStringerOutput(t *testing.T) {
 
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
+
 }

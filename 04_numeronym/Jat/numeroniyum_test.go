@@ -7,6 +7,26 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var tests = []struct {
+	inputStrings []string
+	numeronyms   []string
+}{
+	{[]string{}, []string{}},
+	{[]string{""}, []string{""}},
+	{[]string{"Internationalization", "Localization", "Multilingualization", "accessibility",
+		"Canonicalization", "interoperability", "Personalization", "Virtualization"},
+		[]string{"I18n", "L10n", "M17n", "a11y", "C14n", "i14y", "P13n", "V12n"}},
+	{[]string{"Internationalization ", " Personalization"}, []string{"I19 ", " 14n"}},
+	{[]string{"Accessibility Localization"}, []string{"A24n"}},
+	{[]string{" accessibility localization "}, []string{" 26 "}}}
+
+func TestNumeronyms(t *testing.T) {
+	r := require.New(t)
+	for _, tt := range tests {
+		actual := numeronyms(tt.inputStrings...)
+		r.EqualValues(tt.numeronyms, actual)
+	}
+}
 func TestNumeroniumMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
@@ -17,7 +37,7 @@ func TestNumeroniumMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "[ ab abc a3a K8s]\n"
+	expected := "[a11y K8s abc]\n"
 
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
