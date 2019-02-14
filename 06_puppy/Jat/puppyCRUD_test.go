@@ -48,7 +48,7 @@ func TestCreatandReadandDeletePuppySuccess(t *testing.T) {
 	// When
 	pupStore := MapStore{}
 	pupStore.Initialize()
-	npup := pupStore.Create("BullDog", "brown", "Tyson")
+	npup := pupStore.Create("BullDog", "brown", "Tyson1")
 	pupStore.Delete(npup)
 	// Then
 	expected := 0
@@ -78,7 +78,7 @@ func TestUpdateNonExisting(t *testing.T) {
 	pupStore.Initialize()
 	pupStore1.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
-	npup.Value = "Mike"
+	npup.Value = "Mike2"
 	res := pupStore1.Update(npup)
 	// Then
 	expected := -1
@@ -94,7 +94,7 @@ func TestDeleteNonExisting(t *testing.T) {
 	pupStore.Initialize()
 	pupStore1.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
-	npup.Value = "Mike"
+	npup.Value = "Michel"
 	res := pupStore1.Delete(npup)
 	// Then
 	expected := -1
@@ -134,11 +134,11 @@ func TestCreatandUpdateandReadSyncPuppySuccess(t *testing.T) {
 	pupStore := SyncMapStore{}
 	pupStore.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
-	npup.Value = "Mike"
+	npup.Value = "Ted"
 	pupStore.Update(npup)
 	upupup := pupStore.Read(npup.ID)
 	// Then
-	expected := "Mike"
+	expected := "Ted"
 	actual := upupup.Value
 	r.EqualValues(expected, actual, "Unexpected output in TestMapCreation Success")
 }
@@ -151,7 +151,7 @@ func TestUpdateNonSyncExisting(t *testing.T) {
 	pupStore.Initialize()
 	pupStore1.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
-	npup.Value = "Mike"
+	npup.Value = "DD"
 	res := pupStore1.Update(npup)
 	// Then
 	expected := -1
@@ -167,7 +167,7 @@ func TestDeleteNonSyncExisting(t *testing.T) {
 	pupStore.Initialize()
 	pupStore1.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
-	npup.Value = "Mike"
+	npup.Value = "MM"
 	res := pupStore1.Delete(npup)
 	// Then
 	expected := -1
