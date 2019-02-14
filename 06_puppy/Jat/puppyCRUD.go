@@ -38,6 +38,25 @@ func main() {
 	pupSyncStore.Delete(pupSync5)
 	pupSyncStore.Create("Woulf", "Ash", "Togo")
 	fmt.Fprintln(out, fmt.Sprintf("Items remaining in Store %d", len(pupStore.m)))
+	pupStore3 := MapStore{}
+	initStore(&pupStore3)
+	accessInterface(&pupStore3)
+}
+func initStore(i Initializer) {
+	i.Initialize()
+}
+
+func accessInterface(s Storer) {
+	pup1 := s.Create("Beagle", "brown", "Sam")
+	pup2 := s.Read(pup1.ID)
+	pup2.Value = "Bingo"
+	s.Update(pup2)
+	s.Read(1)
+	pup4 := s.Create("Bull", "brown", "Tyson")
+	pup5 := s.Read(pup4.ID)
+	s.Delete(pup1)
+	s.Delete(pup5)
+	s.Create("rottweiler", "black", "Tipu")
 }
 
 type Puppy struct {
