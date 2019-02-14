@@ -3,7 +3,11 @@ env:
   - GO111MODULE=on
 go:
   - 1.11.x
+before_script:
+  - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.13.2
 script:
-  - go test -v -race  -coverprofile=coverage.txt -covermode=atomic ./...
+  - golangci-lint run
+  - go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+  - "{ go tool cover -func=coverage.out | grep '^total:.*100.0%'; } || { echo 'FAIL - Coverage below 100%'; exit 1; }"
 after_success:
   - bash <(curl -s https://codecov.io/bash)

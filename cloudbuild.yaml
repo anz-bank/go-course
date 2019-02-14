@@ -1,0 +1,16 @@
+steps:
+  - id: version
+    name: 'gcr.io/cloud-builders/go:debian'
+    args: ['version']
+    env: ['GOPATH=/workspace/_gopath', 'GO111MODULE=on']
+  - id: test
+    name: 'gcr.io/cloud-builders/go:debian'
+    args: ['test', '-v', '-race', '-coverprofile=coverage.out', '-covermode=atomic' , './...']
+    env: ['GOPATH=/workspace/_gopath', 'GO111MODULE=on']
+  - id: cover
+    name: 'gcr.io/cloud-builders/go:debian'
+    env: ['GOPATH=/workspace/_gopath', 'GO111MODULE=on']
+    entrypoint: 'sh'
+    args:
+      - -c 
+      - "{ go tool cover -func=coverage.out | grep '^total:.*100.0%'; } || { echo 'FAIL - Coverage below 100%'; exit 1; }"
