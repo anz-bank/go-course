@@ -24,7 +24,7 @@ type MapStore struct {
 
 func newMapStore() *MapStore {
 	ms := MapStore{}
-	ms.m = make(map[uint]Puppy, 0)
+	ms.m = make(map[uint]Puppy)
 	return &ms
 }
 func (ms *MapStore) CreatePuppy(p Puppy) {
@@ -52,7 +52,7 @@ func (ms *MapStore) DeletePuppy(id uint) bool {
 
 //Map Store Ends
 
-//Sync Store Ends
+//Sync Store Starts
 type SyncStore struct {
 	sync.Mutex
 	sync.Map
@@ -94,7 +94,7 @@ func (m *SyncStore) DeletePuppy(id uint) bool {
 //Sync Store Ends
 
 func main() {
-	ms := newMapStore()
+	var ms Storer = newMapStore()
 	p1 := Puppy{1, "Bulldog", "White", "100"}
 	p2 := Puppy{2, "Poddle", "Black", "200"}
 	ms.CreatePuppy(p1)
@@ -107,11 +107,10 @@ func main() {
 	fmt.Println(rp1)
 	rp2 := ms.ReadPuppy(2)
 	fmt.Println(rp2)
-	ms.DeletePuppy(2)
-	rp2 = ms.ReadPuppy(2)
-	fmt.Println(rp2)
+	delete := ms.DeletePuppy(2)
+	fmt.Println(delete)
 
-	s := newSyncStore()
+	var s Storer = newSyncStore()
 	p4 := Puppy{4, "Beagle", "White", "400"}
 	p5 := Puppy{5, "Pug", "Black", "500"}
 	s.CreatePuppy(p4)
@@ -122,8 +121,7 @@ func main() {
 	s.UpdatePuppy(4, p4)
 	rp4 = s.ReadPuppy(4)
 	fmt.Println(rp4)
-	s.DeletePuppy(5)
-	rp5 := s.ReadPuppy(5)
-	fmt.Println(rp5)
+	delete = s.DeletePuppy(5)
+	fmt.Println(delete)
 
 }
