@@ -23,7 +23,7 @@ func numeronyms(vals ...string) []string {
 }
 
 func createNumeronym(s string) string {
-	trimedString := strings.TrimSpace(s)
+	trimedString := strings.Trim(s, "\n\t ")
 	var numeronym string
 	//If the string contains space or \t or \n then it will return the same string
 	if strings.ContainsAny(trimedString, " \t\n") {
