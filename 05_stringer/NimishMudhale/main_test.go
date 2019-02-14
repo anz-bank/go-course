@@ -30,6 +30,8 @@ var cases = []struct {
 	{IPAddr{100, 100, 100, 0}, "100.100.100.0"},
 	{IPAddr{0, 0, 0, 0}, "0.0.0.0"},
 	{IPAddr{110, 52, 32, 31}, "110.52.32.31"},
+	{IPAddr{1, 2}, "1.2.0.0"},
+	{IPAddr{}, "0.0.0.0"},
 }
 
 func TestInputs(t *testing.T) {

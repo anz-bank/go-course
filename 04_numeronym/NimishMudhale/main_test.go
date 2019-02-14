@@ -28,7 +28,7 @@ var cases = []struct {
 	{[]string{"internationalization", "Administration", "consumability"}, []string{"i18n", "A12n", "c11y"}},
 	{[]string{}, []string{}},
 	{[]string{""}, []string{""}},
-	{[]string{"🦄☣🦄☣"}, []string{"ð12£"}},
+	{[]string{"🦄☣🦄☣"}, []string{"🦄2☣"}},
 }
 
 func TestInputs(t *testing.T) {
