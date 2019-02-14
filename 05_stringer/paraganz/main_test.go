@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -28,8 +27,8 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote("127.0.0.1\n")
-	actual := strconv.Quote(buf.String())
+	expected := "127.0.0.1\n"
+	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
@@ -41,8 +40,8 @@ func TestStringOutput(t *testing.T) {
 	for _, tt := range tests {
 		buf.Reset()
 		fmt.Fprint(out, tt.in)
-		expected := strconv.Quote(tt.out)
-		actual := strconv.Quote(buf.String())
+		expected := tt.out
+		actual := buf.String()
 		r.EqualValues(expected, actual)
 	}
 }

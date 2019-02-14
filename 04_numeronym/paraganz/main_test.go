@@ -32,8 +32,8 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote("[a11y K8s abc]\n")
-	actual := strconv.Quote(buf.String())
+	expected := "[a11y K8s abc]\n"
+	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
