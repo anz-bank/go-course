@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,6 +19,8 @@ var tests = []struct {
 	{"", []string{""}},
 	{" ", []string{" "}},
 	{"abc⌘ef", []string{"a4f"}},
+	{" abcd", []string{"a2d"}},
+	{"⌘abcef❤", []string{"⌘5❤"}},
 }
 
 func TestMainOutput(t *testing.T) {
