@@ -37,7 +37,7 @@ func TestCreatandReadPuppySuccess(t *testing.T) {
 	pupStore := MapStore{}
 	pupStore.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
-	pup := pupStore.Read(npup.Id)
+	pup := pupStore.Read(npup.ID)
 	// Then
 	expected := "Tyson"
 	actual := pup.Value
@@ -63,7 +63,7 @@ func TestCreatandUpdateandReadPuppySuccess(t *testing.T) {
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
 	npup.Value = "Mike"
 	pupStore.Update(npup)
-	upupup := pupStore.Read(npup.Id)
+	upupup := pupStore.Read(npup.ID)
 	// Then
 	expected := "Mike"
 	actual := upupup.Value
@@ -109,7 +109,7 @@ func TestCreatandReadPuppySyncSuccess(t *testing.T) {
 	pupStore := SyncMapStore{}
 	pupStore.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
-	pup := pupStore.Read(npup.Id)
+	pup := pupStore.Read(npup.ID)
 	// Then
 	expected := "Tyson"
 	actual := pup.Value
@@ -122,7 +122,7 @@ func TestCreatandReadandDeleteSyncPuppySuccess(t *testing.T) {
 	pupStore.Initialize()
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
 	pupStore.Delete(npup)
-	npup1 := pupStore.Read(npup.Id)
+	npup1 := pupStore.Read(npup.ID)
 	// Then
 	expected := npup1.Value
 	actual := ""
@@ -136,7 +136,7 @@ func TestCreatandUpdateandReadSyncPuppySuccess(t *testing.T) {
 	npup := pupStore.Create("BullDog", "brown", "Tyson")
 	npup.Value = "Mike"
 	pupStore.Update(npup)
-	upupup := pupStore.Read(npup.Id)
+	upupup := pupStore.Read(npup.ID)
 	// Then
 	expected := "Mike"
 	actual := upupup.Value

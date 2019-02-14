@@ -12,13 +12,15 @@ var out io.Writer = os.Stdout
 func main() {
 	pupStore := MapStore{}
 	pupStore.Initialize()
+	pupSyncStore := SyncMapStore{}
+	pupSyncStore.Initialize()
 	pup1 := pupStore.Create("Beagle", "brown", "Sam")
-	pup2 := pupStore.Read(pup1.Id)
+	pup2 := pupStore.Read(pup1.ID)
 	pup2.Value = "Bingo"
 	pupStore.Update(pup2)
 	pupStore.Read(1)
 	pup4 := pupStore.Create("Bull", "brown", "Tyson")
-	pup5 := pupStore.Read(pup4.Id)
+	pup5 := pupStore.Read(pup4.ID)
 	pupStore.Delete(pup1)
 	pupStore.Delete(pup5)
 	pupStore.Create("rottweiler", "black", "Tipu")
@@ -26,7 +28,7 @@ func main() {
 }
 
 type Puppy struct {
-	Id     int
+	ID     int
 	Breed  string
 	Colour string
 	Value  string
@@ -59,19 +61,19 @@ func (store *MapStore) Create(breed string, colour string, value string) Puppy {
 	return newPup
 }
 func (store MapStore) Update(pup Puppy) int {
-	_, ok := store.m[pup.Id]
+	_, ok := store.m[pup.ID]
 	if !ok {
 		return -1
 	}
-	store.m[pup.Id] = pup
+	store.m[pup.ID] = pup
 	return 0
 }
 func (store MapStore) Delete(pup Puppy) int {
-	_, ok := store.m[pup.Id]
+	_, ok := store.m[pup.ID]
 	if !ok {
 		return -1
 	}
-	delete(store.m, pup.Id)
+	delete(store.m, pup.ID)
 	return 0
 }
 
@@ -100,19 +102,19 @@ func (store *SyncMapStore) Create(breed string, colour string, value string) Pup
 	return newPup
 }
 func (store *SyncMapStore) Update(pup Puppy) int {
-	_, ok := store.m.Load(pup.Id)
+	_, ok := store.m.Load(pup.ID)
 	if !ok {
 		return -1
 	}
-	store.m.Store(pup.Id, pup)
+	store.m.Store(pup.ID, pup)
 	return 0
 }
 func (store *SyncMapStore) Delete(pup Puppy) int {
-	_, ok := store.m.Load(pup.Id)
+	_, ok := store.m.Load(pup.ID)
 	if !ok {
 		return -1
 	}
-	store.m.Delete(pup.Id)
+	store.m.Delete(pup.ID)
 	return 0
 }
 
