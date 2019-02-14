@@ -37,6 +37,7 @@ func TestMainOutput(t *testing.T) {
 	// Then
 	r.Equalf(`[a11y K8s abc]`, buf.String(), "Unexpected output in main()")
 }
+
 func TestNumeronyms(t *testing.T) {
 	// Given
 	r := require.New(t)
