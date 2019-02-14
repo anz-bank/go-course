@@ -12,9 +12,9 @@ type Puppy struct {
 
 type Storer interface {
 	CreatePuppy(Puppy)
-	ReadPuppy(int) Puppy
-	UpdatePuppy(int, Puppy)
-	DeletePuppy(int) bool
+	ReadPuppy(uint) Puppy
+	UpdatePuppy(uint, Puppy)
+	DeletePuppy(uint) bool
 }
 
 //Map Store Starts
@@ -74,10 +74,7 @@ func (m *SyncStore) ReadPuppy(id uint) Puppy {
 	if !ok {
 		return Puppy{}
 	}
-	puppy, ok := p.(Puppy)
-	if !ok {
-		return Puppy{}
-	}
+	puppy := p.(Puppy)
 	return puppy
 }
 func (m *SyncStore) UpdatePuppy(id uint, p Puppy) {
@@ -98,8 +95,8 @@ func (m *SyncStore) DeletePuppy(id uint) bool {
 
 func main() {
 	ms := newMapStore()
-	p1 := Puppy{1, "Puppy1", "White", "100"}
-	p2 := Puppy{2, "Puppy2", "Black", "200"}
+	p1 := Puppy{1, "Bulldog", "White", "100"}
+	p2 := Puppy{2, "Poddle", "Black", "200"}
 	ms.CreatePuppy(p1)
 	ms.CreatePuppy(p2)
 	rp1 := ms.ReadPuppy(1)
@@ -115,8 +112,8 @@ func main() {
 	fmt.Println(rp2)
 
 	s := newSyncStore()
-	p4 := Puppy{4, "Puppy5", "White", "400"}
-	p5 := Puppy{5, "Puppy4", "Black", "500"}
+	p4 := Puppy{4, "Beagle", "White", "400"}
+	p5 := Puppy{5, "Pug", "Black", "500"}
 	s.CreatePuppy(p4)
 	s.CreatePuppy(p5)
 	rp4 := s.ReadPuppy(4)
