@@ -19,7 +19,8 @@ var tests = []struct {
 	{[]string{" Internationalization ", " Personalization "}, []string{"I18n", "P13n"}},
 	{[]string{"Accessibility Localization"}, []string{"A24n"}},
 	{[]string{" accessibility localization "}, []string{"a24n"}},
-	{[]string{"अआइईउऊऋऌऍऎएऐऑऒओऔकखगघ"}, []string{"अ18घ"}}}
+	{[]string{"अआइईउऊऋऌऍऎएऐऑऒओऔकखगघ"}, []string{"अ18घ"}},
+	{[]string{"⌘abcef❤"}, []string{"⌘5❤"}}}
 
 func TestNumeronymsMainOutput(t *testing.T) {
 	// Given
