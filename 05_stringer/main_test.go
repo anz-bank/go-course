@@ -2,15 +2,14 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
 var testMatrix = []struct {
-	input  IPAddr
-	output string
+	input          IPAddr
+	expectedOutput string
 }{
 	{IPAddr{255, 123, 39, 40}, "255.123.39.40"},
 	{IPAddr{255, 0, 0, 0}, "255.0.0.0"},
@@ -35,12 +34,8 @@ func TestMainOutput(t *testing.T) {
 func TestStringer(t *testing.T) {
 	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
 	for _, testData := range testMatrix {
-		buf.Reset()
-		fmt.Fprint(out, testData.input)
-		r.EqualValues(testData.output, buf.String())
+		r.EqualValues(testData.expectedOutput, testData.input.String())
 	}
 }
