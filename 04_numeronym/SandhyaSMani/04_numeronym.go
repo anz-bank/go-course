@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
-	"unicode/utf8"
 )
 
 var out io.Writer = os.Stdout
@@ -21,7 +19,7 @@ func numeronyms(vals ...string) []string {
 		if lengthVal < 4 {
 			numeronymsArray = append(numeronymsArray, val)
 		} else {
-			numeronymsArray = append(numeronymsArray, string(val[0])+strconv.Itoa(utf8.RuneCountInString(val)-2)+string(val[len(val)-1]))
+			numeronymsArray = append(numeronymsArray, fmt.Sprintf("%c%d%c", val[0], lengthVal-2, val[lengthVal-1]))
 		}
 	}
 	return numeronymsArray
