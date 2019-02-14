@@ -21,6 +21,7 @@ var tests = []struct {
 	{"abc⌘ef", []string{"a4f"}},
 	{" abcd", []string{"a2d"}},
 	{"⌘abcef❤", []string{"⌘5❤"}},
+	{"abcd ", []string{"a2d"}},
 }
 
 func TestMainOutput(t *testing.T) {
