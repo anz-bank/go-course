@@ -12,8 +12,7 @@ var out io.Writer = os.Stdout
 func main() {
 	pupStore := MapStore{}
 	pupStore.Initialize()
-	pupSyncStore := SyncMapStore{}
-	pupSyncStore.Initialize()
+
 	pup1 := pupStore.Create("Beagle", "brown", "Sam")
 	pup2 := pupStore.Read(pup1.ID)
 	pup2.Value = "Bingo"
@@ -24,6 +23,20 @@ func main() {
 	pupStore.Delete(pup1)
 	pupStore.Delete(pup5)
 	pupStore.Create("rottweiler", "black", "Tipu")
+
+	pupSyncStore := SyncMapStore{}
+	pupSyncStore.Initialize()
+
+	pupSync1 := pupSyncStore.Create("Pom", "Black", "Sim")
+	pupSync2 := pupSyncStore.Read(pupSync1.ID)
+	pupSync2.Value = "Dingo"
+	pupSyncStore.Update(pupSync2)
+	pupSyncStore.Read(1)
+	pupSync4 := pupSyncStore.Create("Pug", "white", "Dim")
+	pupSync5 := pupSyncStore.Read(pupSync4.ID)
+	pupSyncStore.Delete(pupSync1)
+	pupSyncStore.Delete(pupSync5)
+	pupSyncStore.Create("Woulf", "Ash", "Togo")
 	fmt.Fprintln(out, fmt.Sprintf("Items remaining in Store %d", len(pupStore.m)))
 }
 
@@ -78,7 +91,7 @@ func (store MapStore) Delete(pup Puppy) int {
 }
 
 func (store MapStore) Read(id int) Puppy {
-	pup, _ := store.m[id]
+	pup := store.m[id]
 	return pup
 }
 
