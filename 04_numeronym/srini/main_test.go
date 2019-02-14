@@ -13,6 +13,10 @@ var testMatrix = []struct {
 }{
 	{[]string{"abba", "accessibility", "Kubernetes", "abc"}, []string{"a2a", "a11y", "K8s", "abc"}},
 	{[]string{"abb a"}, []string{"a3a"}},
+	{[]string{" abb a"}, []string{" 4a"}},
+	{[]string{"   abb a"}, []string{" 6a"}},
+	{[]string{"abb a "}, []string{"a4 "}},
+	{[]string{"abb a   "}, []string{"a6 "}},
 	{[]string{""}, []string{""}},
 	{[]string{"£€€€§‡®"}, []string{"£5®"}},
 	{[]string{"ßäöüÄÖÜ"}, []string{"ß5Ü"}}}
