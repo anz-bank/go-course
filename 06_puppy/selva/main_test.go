@@ -17,8 +17,10 @@ func TestPuppyMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "Create Puppy breed = German Shepherd, Colour = white\nUpdate Puppy breed = Pug, Colour = Black\n" +
-		"Delete Puppy breed = , Colour = \n============================================\nPuppy breed = Bulldog, Colour = white\n" +
+	expected := "Create Puppy breed = German Shepherd, Colour = white\n" +
+		"Update Puppy breed = Pug, Colour = Black\n" +
+		"Delete Puppy breed = , Colour = \n============================================\n" +
+		"Puppy breed = Bulldog, Colour = white\n" +
 		"Update Puppy breed = Poodle, Colour = Brown\nDelete Puppy breed = , Colour = \n"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
