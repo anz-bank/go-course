@@ -34,9 +34,7 @@ func createNumeronym(s string) string {
 	if count <= 3 {
 		numeronym = trimedString
 	} else {
-		s1 := runes[0]
-		s2 := runes[len(runes)-1]
-		numeronym = string(s1) + strconv.Itoa(count-2) + string(s2)
+		numeronym = string(runes[0]) + strconv.Itoa(count-2) + string(runes[len(runes)-1])
 	}
 	return numeronym
 }
