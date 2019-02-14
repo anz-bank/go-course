@@ -26,24 +26,17 @@ func createNumeronym(s string) string {
 	trimedString := strings.TrimSpace(s)
 	var numeronym string
 	//If the string contains space or \t or \n then it will return the same string
-	if strings.Contains(trimedString, " ") ||
-		strings.Contains(trimedString, "\t") ||
-		strings.Contains(trimedString, "\n") {
+	if strings.ContainsAny(trimedString, " & \t &\n") {
 		return s
 	}
-	var count int
-	var s1, s2 string
-	for i, v := range trimedString {
-		count++
-		if i == 0 {
-			s1 = string(v)
-		}
-		s2 = string(v)
-	}
+	runes := []rune(trimedString)
+	count := len(runes)
 	if count <= 3 {
 		numeronym = trimedString
 	} else {
-		numeronym = s1 + strconv.Itoa(count-2) + s2
+		s1 := runes[0]
+		s2 := runes[len(runes)-1]
+		numeronym = string(s1) + strconv.Itoa(count-2) + string(s2)
 	}
 	return numeronym
 }
