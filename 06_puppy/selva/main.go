@@ -9,8 +9,7 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	var store Storer
-	store = NewSyncStore()
+	var store Storer = NewSyncStore()
 	ID := store.CreatePuppy(Puppy{2, "German Shepherd", "white", 200})
 	v := store.ReadPuppy(ID)
 	fmt.Fprintf(out, "Create Puppy breed = %s, Colour = %s\n", v.Breed, v.Colour)

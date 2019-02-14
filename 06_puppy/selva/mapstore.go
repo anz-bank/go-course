@@ -22,8 +22,7 @@ func (ms *MapStore) CreatePuppy(pup Puppy) int {
 
 //ReadPuppy to read
 func (ms *MapStore) ReadPuppy(pupID int) Puppy {
-	pupData, _ := ms.m[pupID]
-	return pupData
+	return ms.m[pupID]
 }
 
 //UpdatePuppy to read
