@@ -23,7 +23,7 @@ func (s *syncStore) createPuppy(in Puppy) {
 	s.Store(in.id, in)
 }
 
-func (s *syncStore) readPuppy(id uint32) Puppy {
+func (s *syncStore) readPuppy(id uint) Puppy {
 	pd, ok := s.Load(id)
 	if !ok {
 		fmt.Printf("No puppy exists\n")
@@ -32,28 +32,28 @@ func (s *syncStore) readPuppy(id uint32) Puppy {
 	return p
 }
 
-func (s *syncStore) updatePuppy(id uint32, in Puppy) {
+func (s *syncStore) updatePuppy(id uint, in Puppy) {
 	s.Store(in.id, in)
 }
 
-func (s *syncStore) deletePuppy(id uint32) {
+func (s *syncStore) deletePuppy(id uint) {
 	s.Delete(id)
 }
 
 // Map Store
 type mapStore struct {
-	ms map[uint32]Puppy
+	ms map[uint]Puppy
 }
 
 func newMapStore() *mapStore {
-	return &mapStore{make(map[uint32]Puppy)}
+	return &mapStore{make(map[uint]Puppy)}
 }
 
 func (m *mapStore) createPuppy(in Puppy) {
 	m.ms[in.id] = in
 }
 
-func (m *mapStore) readPuppy(id uint32) Puppy {
+func (m *mapStore) readPuppy(id uint) Puppy {
 	p, ok := m.ms[id]
 	if !ok {
 		fmt.Printf("No puppy exists\n")
@@ -61,11 +61,11 @@ func (m *mapStore) readPuppy(id uint32) Puppy {
 	return p
 }
 
-func (m *mapStore) updatePuppy(id uint32, in Puppy) {
+func (m *mapStore) updatePuppy(id uint, in Puppy) {
 	m.ms[id] = in
 }
 
-func (m *mapStore) deletePuppy(id uint32) {
+func (m *mapStore) deletePuppy(id uint) {
 	_, ok := m.ms[id]
 	if ok {
 		delete(m.ms, id)
