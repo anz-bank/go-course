@@ -12,7 +12,7 @@ var out io.Writer = os.Stdout
 func numeronym(vals ...string) []string {
 	numeronymArray := make([]string, len(vals))
 	for i, val := range vals {
-		target := strings.Trim(val, "\n\t")
+		target := strings.Trim(val, "\n\t ")
 		len := len(target)
 		if len <= 3 {
 			numeronymArray[i] = target
