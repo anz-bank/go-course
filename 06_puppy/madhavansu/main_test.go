@@ -1,5 +1,9 @@
 package main
-
+/**
+* Map store implemented in below scenarios
+* Dynamic Map ID: MapStore implementation of Storer backed by a map
+* Static Map ID: SyncStore implementation of Storer backed by a sync.Map
+*/
 import (
 	"bytes"
 	"testing"
@@ -11,12 +15,14 @@ import (
 
 type storerImpl int
 
+var mapID uint
+
 const (
 	mem storerImpl = iota
 )
 
 var (
-	puppy107 = func() Puppy {
+	puppyIN = func() Puppy {
 		return Puppy{
 			id:    107,
 			breed: "Slinky",
@@ -24,7 +30,23 @@ var (
 			value: 12999,
 		}
 	}
-	modifiedPuppy107 = func() Puppy {
+	puppyOut1 = func() Puppy {
+		return Puppy{
+			id:    1,
+			breed: "Slinky",
+			color: "purple",
+			value: 12999,
+		}
+	}
+	puppyOut2 = func() Puppy {
+		return Puppy{
+			id:    2,
+			breed: "Slinky",
+			color: "purple",
+			value: 12999,
+		}
+	}
+	modifiedpuppyIN = func() Puppy {
 		return Puppy{
 			id:    107,
 			breed: "Labrador Retriever",
@@ -52,8 +74,9 @@ var (
 
 type storerSuite struct {
 	suite.Suite
-	syncstore, mapstore Storer
-	impl                storerImpl
+	syncstore Storer
+	mapstore  StorerMap
+	impl      storerImpl
 }
 
 func (s *storerSuite) SetupTest() {
@@ -61,12 +84,12 @@ func (s *storerSuite) SetupTest() {
 	case mem:
 		// create a sync store
 		s.syncstore = newSyncStore()
-		syncpup := puppy107()
+		syncpup := puppyIN()
 		s.syncstore.createPuppy(syncpup)
 		// create a map store
 		s.mapstore = newMapStore()
-		mappup := puppy107()
-		s.mapstore.createPuppy(mappup)
+		mappup := puppyIN()
+		mapID = s.mapstore.createPuppy(mappup)
 	default:
 		panic("Unrecognised storer implementation")
 	}
@@ -78,12 +101,13 @@ func (s *storerSuite) TestReadPuppySuccessful() {
 
 	// when
 	syncPuppy := s.syncstore.readPuppy(107)
-	mapPuppy := s.mapstore.readPuppy(107)
+	mapPuppy := s.mapstore.readPuppy(mapID)
 
 	// then
-	expectedpuppy := puppy107()
-	assert.Equal(expectedpuppy, syncPuppy, "store should return a puppy identical to puppy107")
-	assert.Equal(expectedpuppy, mapPuppy, "store should return a puppy identical to puppy107")
+	expectedSyncPuppy := puppyIN()
+	expectedMapPuppy := puppyOut1()
+	assert.Equal(expectedSyncPuppy, syncPuppy, "store should return a puppy identical to puppyIN")
+	assert.Equal(expectedMapPuppy, mapPuppy, "store should return a puppy identical to puppyIN")
 }
 
 func (s *storerSuite) TestReadPuppy_IDDoesNotExist() {
@@ -106,19 +130,19 @@ func (s *storerSuite) TestCreatePuppySuccessful() {
 
 	// when
 	s.syncstore.createPuppy(newPuppy)
-	s.mapstore.createPuppy(newPuppy)
+	mapID = s.mapstore.createPuppy(puppyIN())
 
 	// then
 	createdSyncPuppy := s.syncstore.readPuppy(108)
-	createdMapPuppy := s.mapstore.readPuppy(108)
+	createdMapPuppy := s.mapstore.readPuppy(mapID)
 	assert.Equal(newPuppy, createdSyncPuppy, "Created puppy should be identical to the one passed to Create")
-	assert.Equal(newPuppy, createdMapPuppy, "Created puppy should be identical to the one passed to Create")
+	assert.Equal(puppyOut2(), createdMapPuppy, "Created puppy should be identical to the one passed to Create")
 }
 
 func (s *storerSuite) TestUpdatePuppySuccessful() {
 	// given
 	assert := tassert.New(s.T())
-	testModifiedPuppy := modifiedPuppy107()
+	testModifiedPuppy := modifiedpuppyIN()
 
 	// when
 	s.syncstore.updatePuppy(107, testModifiedPuppy)
@@ -175,8 +199,8 @@ Sync Store
 ~~~~~~~~~
 Map Store
 ~~~~~~~~~
-104 :  {104 Pug brown 0.91}
-105 :  {0   0}
-106 :  {106 Beagle brown 0.91}`
+1  :  {1 Pug brown 0.91}
+2  :  {0   0}
+3 :  {3 Beagle brown 0.91}`
 	r.Equalf(expected, buf.String(), "Unexpected output in main()")
 }
