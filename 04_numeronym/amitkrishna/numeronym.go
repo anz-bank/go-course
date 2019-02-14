@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 )
 
 var out io.Writer = os.Stdout
@@ -14,15 +13,15 @@ func main() {
 }
 
 func numeronyms(vals ...string) []string {
-	var slice []string
-	var s string
-	for _, val := range vals {
-		if len(val) < 4 {
-			s = val
+	numeronyms := make([]string, len(vals))
+
+	for pos, val := range vals {
+		var y = []rune(val)
+		if len(y) < 4 {
+			numeronyms[pos] = val
 		} else {
-			s = string(val[0]) + strconv.Itoa(len(val)-2) + string(val[len(val)-1])
+			numeronyms[pos] = fmt.Sprintf("%c%d%c", y[0], len(y)-2, y[len(y)-1])
 		}
-		slice = append(slice, s)
 	}
-	return slice
+	return numeronyms
 }

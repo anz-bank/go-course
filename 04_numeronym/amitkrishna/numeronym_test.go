@@ -11,8 +11,12 @@ var numeronymInputData = []struct {
 	n        []string // input
 	expected []string // expected result
 }{
-	{[]string{"accessibility", "Kubernetes", "abc"}, []string{"a11y", "K8s", "abc"}},
-	{[]string{"a", "b", "abc", "abcd"}, []string{"a", "b", "abc", "a2d"}},
+	// {[]string{"accessibility", "Kubernetes", "abc"}, []string{"a11y", "K8s", "abc"}},
+	// {[]string{"a", "b", "abc", "abcd"}, []string{"a", "b", "abc", "a2d"}},
+	// {[]string{"a", "", "abc", "abcd"}, []string{"a", "", "abc", "a2d"}},
+	// {[]string{"a", "b", "abc", "a cd"}, []string{"a", "b", "abc", "a2d"}},
+	// {[]string{" ", "b", "abc", "a cd"}, []string{" ", "b", "abc", "a2d"}},
+	{[]string{"Hello", "世界", "你好好好", "अआइईउऊऋऌऍऎएऐऑऒओऔकखगघ"}, []string{"H3o", "世界", "你2好", "अ18घ"}},
 }
 
 func TestNumeronymOutput(t *testing.T) {
