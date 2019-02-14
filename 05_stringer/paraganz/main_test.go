@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -34,14 +33,8 @@ func TestMainOutput(t *testing.T) {
 
 func TestStringOutput(t *testing.T) {
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
 	for _, tt := range tests {
-		buf.Reset()
-		fmt.Fprint(out, tt.in)
-		expected := tt.out
-		actual := buf.String()
-		r.EqualValues(expected, actual)
+		r.Equal(tt.out, tt.in.String())
 	}
 }
