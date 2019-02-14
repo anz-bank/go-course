@@ -1,9 +1,5 @@
 package main
-/**
-* Map store implemented in below scenarios
-* Dynamic Map ID: MapStore implementation of Storer backed by a map
-* Static Map ID: SyncStore implementation of Storer backed by a sync.Map
-*/
+
 import (
 	"bytes"
 	"testing"
@@ -13,6 +9,11 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+/**
+* Map store implemented in below scenarios
+* Dynamic Map ID: MapStore implementation of Storer backed by a map
+* Static Map ID: SyncStore implementation of Storer backed by a sync.Map
+ */
 type storerImpl int
 
 var mapID uint
