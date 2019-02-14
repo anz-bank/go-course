@@ -6,13 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var nemeronymsTest = []struct {
-	in  []string
-	out []string
-}{
-	{[]string{"accessibility", "internationalisation"}, []string{"a11y", "i18n"}},
-}
-
 var numeronymsTest = []struct {
 	in          []string
 	expectedOut []string
