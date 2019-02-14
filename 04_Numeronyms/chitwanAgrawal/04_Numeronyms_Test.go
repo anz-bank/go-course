@@ -7,12 +7,10 @@ import (
 )
 
 var testInputs = []struct {
-	in []string
-	out []string 
+	in  []string
+	out []string
 }{
-	{[]string{`1234`, `32232`, `#@$@#$@`, "a", "accessibility", ""},[]string{`124`, `332`, `#5@`, "a", "a11y", ""}}}
-	
-
+	{[]string{`1234`, `32232`, `#@$@#$@`, "a", "accessibility", ""}, []string{`124`, `332`, `#5@`, "a", "a11y", ""}}}
 
 func TestNumronyms(t *testing.T) {
 	// Given
@@ -21,4 +19,4 @@ func TestNumronyms(t *testing.T) {
 		actual := numeronyms(t.in...)
 		r.EqualValues(actual, t.out)
 	}
-}	
+}
