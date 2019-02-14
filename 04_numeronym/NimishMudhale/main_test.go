@@ -22,11 +22,20 @@ func TestMainOutput(t *testing.T) {
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-func TestEmptyInputs(t *testing.T) {
-	// Given
+var cases = []struct {
+	in, out []string
+}{
+	{[]string{"internationalization", "Administration", "consumability"}, []string{"i18n", "A12n", "c11y"}},
+	{[]string{}, []string{}},
+	{[]string{""}, []string{""}},
+	{[]string{"🦄☣🦄☣"}, []string{"ð12£"}},
+}
+
+func TestInputs(t *testing.T) {
+	//Given
 	assert := assert.New(t)
-	// When
-	numeronymArray := numeronym()
-	// Then
-	assert.Equal([]string{}, numeronymArray)
+	for _, e := range cases {
+		res := numeronym(e.in...)
+		assert.Equal(e.out, res)
+	}
 }

@@ -21,12 +21,22 @@ func TestMainOutput(t *testing.T) {
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
-func TestDefaultValues(t *testing.T) {
+
+var cases = []struct {
+	in  IPAddr
+	out string
+}{
+	{IPAddr{10, 0, 0, 0}, "10.0.0.0"},
+	{IPAddr{100, 100, 100, 0}, "100.100.100.0"},
+	{IPAddr{0, 0, 0, 0}, "0.0.0.0"},
+	{IPAddr{110, 52, 32, 31}, "110.52.32.31"},
+}
+
+func TestInputs(t *testing.T) {
+	//Given
 	assert := assert.New(t)
-	ip := IPAddr{}
-	// When
-	actual := ip.String()
-	// Then
-	expected := fmt.Sprint("0.0.0.0")
-	assert.Equal(expected, actual)
+	for _, e := range cases {
+		res := IPAddr.String(e.in)
+		assert.Equal(e.out, res)
+	}
 }
