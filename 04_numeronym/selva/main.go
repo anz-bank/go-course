@@ -4,38 +4,28 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
 
-func nemeronyms(vals ...string) []string {
-	cp := make([]string, len(vals))
-	for i := 0; i < len(vals); i++ {
-		temp := vals[i]
-		if len(temp) > 3 {
-			temp1 := ""
-			num := 0
-			for j, r := range temp {
-				if j == 0 {
-					temp1 = string(r)
-				} else {
-					num++
-				}
-				if j == len(temp)-1 {
-					num--
-					temp1 = temp1 + strconv.Itoa(num) + string(r)
-				}
-			}
-			cp[i] = temp1
-		} else {
-			cp[i] = temp
-		}
-
+func numeronyms(vals ...string) []string {
+	s := make([]string, len(vals))
+	for i, val := range vals {
+		s[i] = numeronym(val)
 	}
-	return cp
+	return s
+}
+
+func numeronym(val string) string {
+	runes := []rune(strings.Trim(val, "\n\t "))
+	l := len(runes)
+	if l < 4 {
+		return string(runes)
+	}
+	return fmt.Sprintf("%c%d%c", runes[0], l-2, runes[l-1])
 }
 
 func main() {
-	fmt.Fprint(out, nemeronyms("accessibility", "Kubernetes", "abc", "abcd"))
+	fmt.Fprint(out, numeronyms("accessibility", "Kubernetes", "abc", "abcd"))
 }
