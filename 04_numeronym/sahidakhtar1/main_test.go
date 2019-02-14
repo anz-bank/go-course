@@ -63,6 +63,7 @@ func TestCreateNumeronym(t *testing.T) {
 		{"a世🖖界bc", "a4c"},
 		{"世abc", "世2c"},
 		{"abc世", "a2世"},
+		{"⌘abcef♥", "⌘5♥"},
 	}
 	r := require.New(t)
 	for _, tt := range testData {
