@@ -15,7 +15,7 @@ func main() {
 }
 
 func letters(s string) map[rune]int {
-	m := make(map[rune]int)
+	m := map[rune]int{}
 	for _, v := range s {
 		m[v]++
 	}
