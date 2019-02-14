@@ -77,7 +77,8 @@ type Storer interface {
 
 //Map Store
 type MapStore struct {
-	m map[int]Puppy
+	m    map[int]Puppy
+	sqid int
 }
 
 //Initializer Implementation for Mapstore
@@ -87,7 +88,8 @@ func (store *MapStore) Initialize() {
 
 //Storer  Implementation for Mapstore
 func (store *MapStore) Create(breed string, colour string, value string) Puppy {
-	id := len(store.m) + 1
+	store.sqid++
+	id := store.sqid
 	newPup := Puppy{id, breed, colour, value}
 	store.m[id] = newPup
 	return newPup
