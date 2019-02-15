@@ -45,8 +45,6 @@ func (s *syncStore) updatePuppy(id uint, in Puppy) {
 }
 
 func (s *syncStore) deletePuppy(id uint) {
-	s.Lock()
-	defer s.Unlock()
 	s.Delete(id)
 }
 
@@ -80,10 +78,7 @@ func (m *mapStore) updatePuppy(id uint, in Puppy) {
 }
 
 func (m *mapStore) deletePuppy(id uint) {
-	_, ok := m.ms[id]
-	if ok {
-		delete(m.ms, id)
-	}
+	delete(m.ms, id)
 }
 
 func main() {
@@ -120,5 +115,5 @@ func main() {
 	// Update puppy
 	puppyID = m.createPuppy(Puppy{106, "Boxer", "black", "45000.98"})
 	m.updatePuppy(puppyID, Puppy{puppyID, "Beagle", "brown", "0.91"})
-	fmt.Fprint(out, puppyID, " :  ", m.readPuppy(puppyID))
+	fmt.Fprintln(out, puppyID, " : ", m.readPuppy(puppyID))
 }
