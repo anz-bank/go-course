@@ -1,7 +1,8 @@
 package main
 
 type MapStore struct {
-	m map[uint]Puppy
+	m     map[uint]Puppy
+	maxID uint
 }
 
 func newMapStore() *MapStore {
@@ -9,12 +10,11 @@ func newMapStore() *MapStore {
 	ms.m = make(map[uint]Puppy)
 	return &ms
 }
-func (ms *MapStore) CreatePuppy(p Puppy) {
-	_, ok := ms.m[p.ID]
-	if ok {
-		return
-	}
+func (ms *MapStore) CreatePuppy(p Puppy) uint {
+	ms.maxID++
+	p.ID = ms.maxID
 	ms.m[p.ID] = p
+	return p.ID
 }
 func (ms *MapStore) ReadPuppy(id uint) Puppy {
 	return ms.m[id]

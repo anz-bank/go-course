@@ -6,7 +6,7 @@ type Puppy struct {
 }
 
 type Storer interface {
-	CreatePuppy(Puppy)
+	CreatePuppy(Puppy) uint
 	ReadPuppy(uint) Puppy
 	UpdatePuppy(uint, Puppy)
 	DeletePuppy(uint) bool

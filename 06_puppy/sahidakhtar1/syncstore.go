@@ -5,17 +5,19 @@ import "sync"
 type SyncStore struct {
 	sync.Mutex
 	sync.Map
+	maxID uint
 }
 
 func newSyncStore() *SyncStore {
 	return &SyncStore{}
 }
-func (m *SyncStore) CreatePuppy(p Puppy) {
+func (m *SyncStore) CreatePuppy(p Puppy) uint {
 	m.Lock()
 	defer m.Unlock()
-	if _, ok := m.Load(p.ID); !ok {
-		m.Store(p.ID, p)
-	}
+	m.maxID++
+	p.ID = m.maxID
+	m.Store(p.ID, p)
+	return p.ID
 }
 
 func (m *SyncStore) ReadPuppy(id uint) Puppy {
