@@ -93,6 +93,7 @@ func (s *storerSuite) SetupTest() {
 	}
 }
 
+// Sync map based test suit
 func (s *storerSuite) TestReadPuppySuccessful() {
 	// given
 	assert := tassert.New(s.T())
@@ -154,7 +155,7 @@ func (s *storerSuite) TestDeletePuppySuccessful() {
 	assert.Equal(puppyEmpty(), storedSyncPuppy, "Stored pet should be equal to the modified pet")
 }
 
-////////////////////////////////
+// Map based test suit
 func (s *storerSuite) TestMapReadPuppySuccessful() {
 	// given
 	assert := tassert.New(s.T())
