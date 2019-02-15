@@ -9,6 +9,11 @@ import (
 
 var out io.Writer = os.Stdout
 
+/**
+* Storer implementation in below scenarios
+* Dynamic Map ID: MapStore implementation of Storer backed by a map
+* Static Map ID: SyncStore implementation of Storer backed by a sync.Map
+ */
 //Sync store
 type syncStore struct {
 	sync.Mutex
@@ -19,14 +24,17 @@ func newSyncStore() *syncStore {
 	return &syncStore{}
 }
 
-func (s *syncStore) createPuppy(in Puppy) {
+func (s *syncStore) createPuppy(in Puppy) uint {
+	s.Lock()
+	defer s.Unlock()
 	s.Store(in.id, in)
+	return in.id
 }
 
 func (s *syncStore) readPuppy(id uint) Puppy {
 	pd, ok := s.Load(id)
 	if !ok {
-		fmt.Printf("No puppy exists\n")
+		return Puppy{}
 	}
 	p, _ := pd.(Puppy)
 	return p
@@ -37,6 +45,8 @@ func (s *syncStore) updatePuppy(id uint, in Puppy) {
 }
 
 func (s *syncStore) deletePuppy(id uint) {
+	s.Lock()
+	defer s.Unlock()
 	s.Delete(id)
 }
 
@@ -47,7 +57,7 @@ type mapStore struct {
 }
 
 func newMapStore() *mapStore {
-	return &mapStore{make(map[uint]Puppy), 0}
+	return &mapStore{ms: make(map[uint]Puppy)}
 }
 
 func (m *mapStore) createPuppy(in Puppy) uint {
@@ -60,7 +70,7 @@ func (m *mapStore) createPuppy(in Puppy) uint {
 func (m *mapStore) readPuppy(id uint) Puppy {
 	p, ok := m.ms[id]
 	if !ok {
-		fmt.Printf("No puppy exists\n")
+		return Puppy{}
 	}
 	return p
 }
@@ -77,38 +87,38 @@ func (m *mapStore) deletePuppy(id uint) {
 }
 
 func main() {
+	var puppyID uint
 	// Sync storer
 	var s Storer = newSyncStore()
 	fmt.Fprintln(out, "~~~~~~~~~~")
 	fmt.Fprintln(out, "Sync Store")
 	fmt.Fprintln(out, "~~~~~~~~~~")
 	// Create/Read puppy
-	s.createPuppy(Puppy{101, "Poodle", "red", 18000})
-	fmt.Fprintln(out, "101 : ", s.readPuppy(101))
+	puppyID = s.createPuppy(Puppy{101, "Poodle", "red", "18000"})
+	fmt.Fprintln(out, "101 : ", s.readPuppy(puppyID))
 	// Delete puppy
-	s.createPuppy(Puppy{102, "Bulldog", "brownish", 9999})
-	s.deletePuppy(102)
-	fmt.Fprintln(out, "102 : ", s.readPuppy(102))
+	puppyID = s.createPuppy(Puppy{102, "Bulldog", "brownish", "9999"})
+	s.deletePuppy(puppyID)
+	fmt.Fprintln(out, "102 : ", s.readPuppy(puppyID))
 	// Update puppy
-	s.createPuppy(Puppy{103, "Labrador Retriever", "purple", 987})
-	s.updatePuppy(103, Puppy{103, "German Shepherd", "red", 4533})
-	fmt.Fprintln(out, "103 : ", s.readPuppy(103))
+	puppyID = s.createPuppy(Puppy{103, "Labrador Retriever", "purple", "987"})
+	s.updatePuppy(puppyID, Puppy{puppyID, "German Shepherd", "red", "4533"})
+	fmt.Fprintln(out, "103 : ", s.readPuppy(puppyID))
 
 	// Map storer
-	var m StorerMap = newMapStore()
-	var puppyID uint
+	var m Storer = newMapStore()
 	fmt.Fprintln(out, "~~~~~~~~~")
 	fmt.Fprintln(out, "Map Store")
 	fmt.Fprintln(out, "~~~~~~~~~")
 	// Create/Read puppy
-	puppyID = m.createPuppy(Puppy{104, "Pug", "brown", 0.91})
+	puppyID = m.createPuppy(Puppy{104, "Pug", "brown", "0.91"})
 	fmt.Fprintln(out, puppyID, " : ", m.readPuppy(puppyID))
 	// Delete puppy
-	puppyID = m.createPuppy(Puppy{105, "Beagle", "yellowish", 1233})
+	puppyID = m.createPuppy(Puppy{105, "Beagle", "yellowish", "1233"})
 	m.deletePuppy(puppyID)
 	fmt.Fprintln(out, puppyID, " : ", m.readPuppy(puppyID))
 	// Update puppy
-	puppyID = m.createPuppy(Puppy{106, "Boxer", "black", 45000.98})
-	m.updatePuppy(puppyID, Puppy{puppyID, "Beagle", "brown", 0.91})
+	puppyID = m.createPuppy(Puppy{106, "Boxer", "black", "45000.98"})
+	m.updatePuppy(puppyID, Puppy{puppyID, "Beagle", "brown", "0.91"})
 	fmt.Fprint(out, puppyID, " :  ", m.readPuppy(puppyID))
 }
