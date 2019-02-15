@@ -2,23 +2,21 @@ package main
 
 import (
 	"bytes"
-	"fmt"
-	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-var tests = []struct {
-	in  IPAddr
-	out string
+var testMatrix = []struct {
+	input          IPAddr
+	expectedOutput string
 }{
-	{IPAddr{127, 0, 0, 1}, "127.0.0.1"},
-	{IPAddr{}, "0.0.0.0"},
-	{IPAddr{1, 1, 1, 1}, "1.1.1.1"},
+	{IPAddr{255, 123, 39, 40}, "255.123.39.40"},
+	{IPAddr{255, 0, 0, 0}, "255.0.0.0"},
+	{IPAddr{0, 123, 39, 40}, "0.123.39.40"},
 }
 
-func TestIPAddressOutput(t *testing.T) {
+func TestMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -28,21 +26,16 @@ func TestIPAddressOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := strconv.Quote("127.0.0.1\n")
-	actual := strconv.Quote(buf.String())
+	expected := `12.23.23.24`
+	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-func TestStringOutput(t *testing.T) {
+func TestStringer(t *testing.T) {
+	// Given
 	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
 
-	for _, tt := range tests {
-		buf.Reset()
-		fmt.Fprint(out, tt.in)
-		expected := strconv.Quote(tt.out)
-		actual := strconv.Quote(buf.String())
-		r.EqualValues(expected, actual)
+	for _, testData := range testMatrix {
+		r.EqualValues(testData.expectedOutput, testData.input.String())
 	}
 }

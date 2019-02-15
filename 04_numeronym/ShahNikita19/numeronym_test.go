@@ -11,11 +11,17 @@ var testMatrix = []struct {
 	input  []string
 	output []string
 }{
-	{[]string{"accessibility", "Kubernetes", "abc"}, []string{"a11y", "K8s", "abc"}},
+	{[]string{"abba", "accessibility", "Kubernetes", "abc"}, []string{"a2a", "a11y", "K8s", "abc"}},
 	{[]string{"abb a"}, []string{"a3a"}},
-	{[]string{""}, []string{""}}}
+	{[]string{" abb a"}, []string{" 4a"}},
+	{[]string{"   abb a"}, []string{" 6a"}},
+	{[]string{"abb a "}, []string{"a4 "}},
+	{[]string{"abb a   "}, []string{"a6 "}},
+	{[]string{""}, []string{""}},
+	{[]string{"£€€€§‡®"}, []string{"£5®"}},
+	{[]string{"ßäöüÄÖÜ"}, []string{"ß5Ü"}}}
 
-func TestNumeronym(t *testing.T) {
+func TestMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -29,12 +35,11 @@ func TestNumeronym(t *testing.T) {
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
-
-func TestLetters(t *testing.T) {
+func TestNumeronyms(t *testing.T) {
 	// Given
 	r := require.New(t)
 	for _, testData := range testMatrix {
-		letters := numeronymsFind(testData.input...)
-		r.Equal(letters, testData.output)
+		numeronymsVal := numeronymsFind(testData.input...)
+		r.Equal(testData.output, numeronymsVal)
 	}
 }

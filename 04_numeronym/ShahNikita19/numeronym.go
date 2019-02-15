@@ -13,17 +13,19 @@ func main() {
 }
 
 func numeronymsFind(vals ...string) []string {
-	numeronyms := []string{}
-	for _, val := range vals {
-		numeronyms = append(numeronyms, generateNumeronym(val))
+	numeronyms := make([]string, len(vals))
+	for i, val := range vals {
+		numeronyms[i] = generateNumeronym(val)
 	}
 	return numeronyms
 }
 
 func generateNumeronym(input string) string {
-	inputSize := len(input)
-	if inputSize <= 3 {
+	runeRep := []rune(input)
+	inputLen := len(runeRep)
+	//minimum 4 chars are required
+	if inputLen < 4 {
 		return input
 	}
-	return fmt.Sprintf("%c%d%c", input[0], inputSize-2, input[inputSize-1])
+	return fmt.Sprintf("%c%d%c", runeRep[0], inputLen-2, runeRep[inputLen-1])
 }
