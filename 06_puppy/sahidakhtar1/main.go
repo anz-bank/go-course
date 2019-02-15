@@ -2,99 +2,11 @@ package main
 
 import (
 	"fmt"
-	"sync"
 )
-
-type Puppy struct {
-	ID                   uint
-	Breed, Colour, Value string
-}
-
-type Storer interface {
-	CreatePuppy(Puppy)
-	ReadPuppy(uint) Puppy
-	UpdatePuppy(uint, Puppy)
-	DeletePuppy(uint) bool
-}
-
-//Map Store Starts
-type MapStore struct {
-	m map[uint]Puppy
-}
-
-func newMapStore() *MapStore {
-	ms := MapStore{}
-	ms.m = make(map[uint]Puppy)
-	return &ms
-}
-func (ms *MapStore) CreatePuppy(p Puppy) {
-	_, ok := ms.m[p.ID]
-	if ok {
-		return
-	}
-	ms.m[p.ID] = p
-}
-func (ms *MapStore) ReadPuppy(id uint) Puppy {
-	return ms.m[id]
-}
-func (ms *MapStore) UpdatePuppy(id uint, p Puppy) {
-	ms.m[id] = p
-}
-
-func (ms *MapStore) DeletePuppy(id uint) bool {
-	_, ok := ms.m[id]
-	if !ok {
-		return false
-	}
-	delete(ms.m, id)
-	return true
-}
-
-//Map Store Ends
-
-//Sync Store Starts
-type SyncStore struct {
-	sync.Mutex
-	sync.Map
-}
-
-func newSyncStore() *SyncStore {
-	return &SyncStore{}
-}
-func (m *SyncStore) CreatePuppy(p Puppy) {
-	m.Lock()
-	defer m.Unlock()
-	if _, ok := m.Load(p.ID); !ok {
-		m.Store(p.ID, p)
-	}
-}
-
-func (m *SyncStore) ReadPuppy(id uint) Puppy {
-	p, ok := m.Load(id)
-	if !ok {
-		return Puppy{}
-	}
-	puppy := p.(Puppy)
-	return puppy
-}
-func (m *SyncStore) UpdatePuppy(id uint, p Puppy) {
-	m.Store(id, p)
-}
-
-func (m *SyncStore) DeletePuppy(id uint) bool {
-	m.Lock()
-	defer m.Unlock()
-	if _, ok := m.Load(id); !ok {
-		return false
-	}
-	m.Delete(id)
-	return true
-}
-
-//Sync Store Ends
 
 func main() {
 	var ms Storer = newMapStore()
+	// var ms Storer = newMapStore()
 	p1 := Puppy{1, "Bulldog", "White", "100"}
 	p2 := Puppy{2, "Poddle", "Black", "200"}
 	ms.CreatePuppy(p1)
