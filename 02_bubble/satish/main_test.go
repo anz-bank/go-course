@@ -17,7 +17,7 @@ func TestMainInputOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := `[1 2 3 5][1 2 3 5][3 2 1 5]`
+	expected := "[1 2 3 5]\n"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
@@ -43,8 +43,8 @@ func TestInsertionSortOutput(t *testing.T) {
 }
 
 var tests = []struct {
-	in  []int
-	out []int
+	in          []int
+	expectedOut []int
 }{
 	{[]int{}, []int{}},
 	{[]int{1}, []int{1}},
@@ -56,8 +56,11 @@ func TestBubbleSortEdgeCases(t *testing.T) {
 	r := require.New(t)
 
 	for _, tt := range tests {
+		expectedIn := make([]int, len(tt.in))
+		copy(expectedIn, tt.in)
 		out := bubble(tt.in)
-		r.ElementsMatch(tt.out, out)
+		r.Equal(expectedIn, tt.in) // ensure tt.in has not been modified
+		r.Equal(tt.expectedOut, out)
 	}
 }
 
@@ -65,7 +68,10 @@ func TestInsertionSortEdgeCases(t *testing.T) {
 	r := require.New(t)
 
 	for _, tt := range tests {
-		out := bubble(tt.in)
-		r.ElementsMatch(tt.out, out)
+		expectedIn := make([]int, len(tt.in))
+		copy(expectedIn, tt.in)
+		out := insertion(tt.in)
+		r.Equal(expectedIn, tt.in) // ensure tt.in has not been modified
+		r.Equal(tt.expectedOut, out)
 	}
 }

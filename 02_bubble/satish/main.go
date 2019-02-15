@@ -55,7 +55,5 @@ func insertion(s []int) []int {
 
 func main() {
 	a := []int{3, 2, 1, 5}
-	fmt.Fprint(out, bubble(a))
-	fmt.Fprint(out, insertion(a))
-	fmt.Fprint(out, a)
+	fmt.Fprintln(out, bubble(a))
 }
