@@ -9,38 +9,48 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	mapStorage := CreateStore()
-	syncStorage := CreateSyncStore()
+	mapStorage := NewMapStore()
+	syncStorage := NewSyncStore()
 
-	puppy := Puppy{
-		ID:     11,
-		Breed:  "Sheep herder",
-		Colour: "Brown",
-		Value:  1000,
+	puppy := func() Puppy {
+		return Puppy{
+			ID:     11,
+			Breed:  "Sheep herder",
+			Colour: "Brown",
+			Value:  1000,
+		}
 	}
 
 	//Map store
-	mapStorage.CreatePuppy(&puppy)
-	fmt.Fprintln(out, *mapStorage.ReadPuppy(11))
+	newPup := puppy()
+	err := mapStorage.CreatePuppy(&newPup)
 
-	puppy.Value = 10000
+	if err == nil {
+		pup, err := mapStorage.ReadPuppy(newPup.ID)
+		if err == nil {
+			fmt.Fprintln(out, *pup)
+		}
 
-	mapStorage.UpdatePuppy(puppy.ID, &puppy)
-	fmt.Fprintln(out, *mapStorage.ReadPuppy(11))
-
-	mapStorage.DeletePuppy(puppy.ID)
-	fmt.Fprintln(out, *mapStorage.ReadPuppy(11))
+		ok, _ := mapStorage.DeletePuppy(pup.ID)
+		if ok {
+			_, err = mapStorage.DeletePuppy(11)
+			fmt.Fprintln(out, err)
+		}
+	}
 
 	//Sync.map store
-	puppy.Value = 1000
-	syncStorage.CreatePuppy(&puppy)
-	fmt.Fprintln(out, *syncStorage.ReadPuppy(11))
+	newPup = puppy()
+	err = syncStorage.CreatePuppy(&newPup)
+	if err == nil {
+		pup, err := syncStorage.ReadPuppy(11)
+		if err == nil {
+			fmt.Fprintln(out, *pup)
+		}
 
-	puppy.Value = 10000
-
-	syncStorage.UpdatePuppy(puppy.ID, &puppy)
-	fmt.Fprintln(out, *syncStorage.ReadPuppy(11))
-
-	syncStorage.DeletePuppy(puppy.ID)
-	fmt.Fprintln(out, *syncStorage.ReadPuppy(11))
+		ok, _ := syncStorage.DeletePuppy(pup.ID)
+		if ok {
+			_, err = mapStorage.DeletePuppy(11)
+			fmt.Fprintln(out, err)
+		}
+	}
 }
