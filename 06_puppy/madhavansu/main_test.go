@@ -239,6 +239,17 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := "~~~~~~~~~~\nSync Store\n~~~~~~~~~~\n101 :  {101 Poodle red 18000}\n102 :  {0   }\n103 :  {103 German Shepherd red 4533}\n~~~~~~~~~\nMap Store\n~~~~~~~~~\n1  :  {1 Pug brown 0.91}\n2  :  {0   }\n3  :  {3 Beagle brown 0.91}\n"
+	expected := `~~~~~~~~~~
+Sync Store
+~~~~~~~~~~
+101 :  {101 Poodle red 18000}
+102 :  {0   }
+103 :  {103 German Shepherd red 4533}
+~~~~~~~~~
+Map Store
+~~~~~~~~~
+1  :  {1 Pug brown 0.91}
+2  :  {0   }
+3  :  {3 Beagle brown 0.91}` + "\n"
 	r.Equalf(expected, buf.String(), "Unexpected output in main()")
 }
