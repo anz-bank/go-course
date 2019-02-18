@@ -57,7 +57,7 @@ func (syncStr *SyncStore) UpdatePuppy(id int, puppy *Puppy) error {
 		syncStr.Store(id, PuppyRecord{id, *puppy})
 		return nil
 	}
-	return fmt.Errorf("No puppy exists with id %d", id)
+	return fmt.Errorf("no puppy exists with id %d", id)
 }
 
 //DeletePuppy Delete a puppy
@@ -69,7 +69,7 @@ func (syncStr *SyncStore) DeletePuppy(id int) error {
 		syncStr.Delete(id)
 		return nil
 	}
-	return fmt.Errorf("Could not delete the puppy with %d", id)
+	return fmt.Errorf("could not delete the puppy with %d", id)
 }
 
 //ReadPuppyRecord Read a puppy
@@ -79,5 +79,5 @@ func (syncStr *SyncStore) ReadPuppyRecord(id int) (*PuppyRecord, error) {
 		puppyRecord, _ := val.(PuppyRecord)
 		return &puppyRecord, nil
 	}
-	return nil, fmt.Errorf("No puppy exists with id %d", id)
+	return nil, fmt.Errorf("no puppy exists with id %d", id)
 }

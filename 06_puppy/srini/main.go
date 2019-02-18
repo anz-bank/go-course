@@ -39,7 +39,7 @@ func main() {
 	}
 	//Update the puppy color to black
 	labrodar.colour = "black"
-	mapStore.UpdatePuppy(1, &labrodar)
+	err = mapStore.UpdatePuppy(1, &labrodar)
 	if err == nil {
 		fmt.Fprintln(out, fmt.Sprintf("Update the puppy color in map store %v", labrodar))
 	} else {

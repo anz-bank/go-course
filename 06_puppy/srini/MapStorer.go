@@ -54,7 +54,7 @@ func (mapStore *MapStore) ReadPuppyRecord(id int) (*PuppyRecord, error) {
 	if ok {
 		return &puppyRecord, nil
 	}
-	return nil, fmt.Errorf("No puppy exists with id %d", id)
+	return nil, fmt.Errorf("no puppy exists with id %d", id)
 }
 
 //UpdatePuppy Update a puppy
@@ -65,7 +65,7 @@ func (mapStore *MapStore) UpdatePuppy(id int, puppy *Puppy) error {
 		mapStore.ms[strconv.Itoa(ID)] = *puppyRecord
 		return nil
 	}
-	return fmt.Errorf("No puppy exists with id %d", id)
+	return fmt.Errorf("no puppy exists with id %d", id)
 }
 
 //DeletePuppy Delete a puppy
@@ -76,5 +76,5 @@ func (mapStore *MapStore) DeletePuppy(id int) error {
 		return nil
 	}
 
-	return fmt.Errorf("Could not delete the puppy with %d", id)
+	return fmt.Errorf("could not delete the puppy with %d", id)
 }

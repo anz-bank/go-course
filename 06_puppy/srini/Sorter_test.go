@@ -22,8 +22,6 @@ func TestStorerImpls(t *testing.T) {
 	suite.Run(t, &mapSuite)
 }
 
-type storerImpl int
-
 var (
 	labrodar          = Puppy{"Labrodar", "Red", 34343.43}
 	poddle            = Puppy{"Poddle", "White", 3343.43}
@@ -49,7 +47,7 @@ func (s *storerSuite) TestUpdatePuppy() {
 	assert := tassert.New(s.T())
 	id := s.store.CreatePuppy(&chihuahua)
 	myNewPuppy, _ := s.store.ReadPuppy(id)
-	s.store.UpdatePuppy(id, &modifiedChihuahua)
+	_ = s.store.UpdatePuppy(id, &modifiedChihuahua)
 	udpatedPuppy, _ := s.store.ReadPuppy(id)
 	assert.NotEqual(myNewPuppy, udpatedPuppy, "Update failed")
 	assert.Equal(udpatedPuppy.colour, "Red", "Update failed")
@@ -57,7 +55,7 @@ func (s *storerSuite) TestUpdatePuppy() {
 
 func (s *storerSuite) TestDeletePuppy() {
 	assert := tassert.New(s.T())
-	s.store.DeletePuppy(1)
+	_ = s.store.DeletePuppy(1)
 	actual, _ := s.store.ReadPuppy(1)
 	assert.Nil(actual, "Deletion of puppy failed")
 }
