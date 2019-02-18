@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sync"
 )
 
 var out io.Writer = os.Stdout
@@ -14,73 +13,6 @@ var out io.Writer = os.Stdout
 * Dynamic Map ID: MapStore implementation of Storer backed by a map
 * Static Map ID: SyncStore implementation of Storer backed by a sync.Map
  */
-//Sync store
-type syncStore struct {
-	sync.Mutex
-	sync.Map
-}
-
-func newSyncStore() *syncStore {
-	return &syncStore{}
-}
-
-func (s *syncStore) createPuppy(in Puppy) uint {
-	s.Lock()
-	defer s.Unlock()
-	s.Store(in.id, in)
-	return in.id
-}
-
-func (s *syncStore) readPuppy(id uint) Puppy {
-	pd, ok := s.Load(id)
-	if !ok {
-		return Puppy{}
-	}
-	p, _ := pd.(Puppy)
-	return p
-}
-
-func (s *syncStore) updatePuppy(id uint, in Puppy) {
-	s.Store(in.id, in)
-}
-
-func (s *syncStore) deletePuppy(id uint) {
-	s.Delete(id)
-}
-
-// Map Store
-type mapStore struct {
-	ms    map[uint]Puppy
-	mapID uint
-}
-
-func newMapStore() *mapStore {
-	return &mapStore{ms: make(map[uint]Puppy)}
-}
-
-func (m *mapStore) createPuppy(in Puppy) uint {
-	m.mapID++
-	in.id = m.mapID
-	m.ms[in.id] = in
-	return m.mapID
-}
-
-func (m *mapStore) readPuppy(id uint) Puppy {
-	p, ok := m.ms[id]
-	if !ok {
-		return Puppy{}
-	}
-	return p
-}
-
-func (m *mapStore) updatePuppy(id uint, in Puppy) {
-	m.ms[id] = in
-}
-
-func (m *mapStore) deletePuppy(id uint) {
-	delete(m.ms, id)
-}
-
 func main() {
 	var puppyID uint
 	// Sync storer
