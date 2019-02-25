@@ -19,7 +19,7 @@ func numeronyms(s ...string) []string {
 }
 
 func numeronym(s string) string {
-	c := []rune{}
+	c := make([]rune, 0, len(s))
 	for _, r := range s {
 		if !unicode.IsSpace(r) {
 			c = append(c, r)
