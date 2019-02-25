@@ -4,16 +4,19 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	types "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
+	"github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy/store"
 )
 
 var out io.Writer = os.Stdout
 
 func main() {
-	mapStorage := NewMapStore()
-	syncStorage := NewSyncStore()
+	mapStorage := store.NewMapStore()
+	syncStorage := store.NewSyncStore()
 
-	puppy := func() Puppy {
-		return Puppy{
+	puppy := func() types.Puppy {
+		return types.Puppy{
 			ID:     11,
 			Breed:  "Sheep herder",
 			Colour: "Brown",
@@ -30,10 +33,9 @@ func main() {
 		if err == nil {
 			fmt.Fprintln(out, *pup)
 		}
-
-		ok, _ := mapStorage.DeletePuppy(pup.ID)
-		if ok {
-			_, err = mapStorage.DeletePuppy(11)
+		err = mapStorage.DeletePuppy(pup.ID)
+		if err == nil {
+			err = mapStorage.DeletePuppy(11)
 			fmt.Fprintln(out, err)
 		}
 	}
@@ -46,10 +48,9 @@ func main() {
 		if err == nil {
 			fmt.Fprintln(out, *pup)
 		}
-
-		ok, _ := syncStorage.DeletePuppy(pup.ID)
-		if ok {
-			_, err = mapStorage.DeletePuppy(11)
+		err = syncStorage.DeletePuppy(pup.ID)
+		if err == nil {
+			err = mapStorage.DeletePuppy(11)
 			fmt.Fprintln(out, err)
 		}
 	}

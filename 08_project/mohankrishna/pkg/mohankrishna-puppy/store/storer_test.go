@@ -1,11 +1,10 @@
 package store
 
 import (
-	"bytes"
 	"testing"
 
+	pup "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
 	tassert "github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -14,19 +13,20 @@ type storerImpl int
 const (
 	maps storerImpl = iota
 	smaps
+	levelDB
 )
 
 var (
-	puppy1 = func() Puppy {
-		return Puppy{
+	puppy1 = func() pup.Puppy {
+		return pup.Puppy{
 			ID:     0x1234,
 			Breed:  "Sheep herder",
 			Colour: "Brown",
 			Value:  1000,
 		}
 	}
-	puppy2 = func() Puppy {
-		return Puppy{
+	puppy2 = func() pup.Puppy {
+		return pup.Puppy{
 			ID:     0x1236,
 			Breed:  "Sheep herder",
 			Colour: "Brown",
@@ -41,8 +41,7 @@ type storerSuite struct {
 	impl  storerImpl
 }
 
-func (s *storerSuite) SetupTest() {
-
+func (s *storerSuite) SetupSuite() {
 	switch s.impl {
 	case maps:
 		// create a map store
@@ -50,6 +49,9 @@ func (s *storerSuite) SetupTest() {
 	case smaps:
 		// create a sync map store
 		s.store = NewSyncStore()
+	case levelDB:
+		// create a level db store
+		s.store = NewLevelDBStore()
 	default:
 		panic("Unrecognised storer implementation")
 	}
@@ -60,9 +62,37 @@ func (s *storerSuite) SetupTest() {
 	}
 }
 
+func (s *storerSuite) TearDownSuite() {
+	db, ok := s.store.(*LevelDBStore)
+	if ok {
+		iter := db.ldb.NewIterator(nil, nil)
+		for iter.Next() {
+			_ = db.ldb.Delete(iter.Key(), nil)
+		}
+		iter.Release()
+		db.ldb.Close()
+	}
+}
+
+func TestStorerImpls(t *testing.T) {
+	mapSuite := storerSuite{impl: maps}
+	suite.Run(t, &mapSuite)
+
+	syncMapSuite := storerSuite{impl: smaps}
+	suite.Run(t, &syncMapSuite)
+
+	levelDBSuite := storerSuite{impl: levelDB}
+	suite.Run(t, &levelDBSuite)
+}
+
 func (s *storerSuite) TestMapStoreReadPuppySuccessful() {
 	// given
 	assert := tassert.New(s.T())
+	pup1 := puppy1()
+	err := s.store.CreatePuppy(&pup1)
+	if err != nil {
+		panic("Could not initialise test data")
+	}
 
 	// when
 	actual, err := s.store.ReadPuppy(0x1234)
@@ -170,11 +200,10 @@ func (s *storerSuite) TestMapStoreDeletePuppySuccessful() {
 	assert := tassert.New(s.T())
 
 	// when
-	deleted, err := s.store.DeletePuppy(0x1234)
+	err := s.store.DeletePuppy(0x1234)
 
 	// then
 	assert.NoError(err, "Delete should successfully delete a puppy")
-	assert.True(deleted, "Delete should return true indicating a puppy was deleted")
 
 	_, err = s.store.ReadPuppy(0x1234)
 	assert.Error(err, "Should not be able to read a deleted puppy")
@@ -185,32 +214,8 @@ func (s *storerSuite) TestMapStoreDeletePuppyIDDoesNotExist() {
 	assert := tassert.New(s.T())
 
 	// when
-	_, err := s.store.DeletePuppy(0x123234)
+	err := s.store.DeletePuppy(0x123234)
 
 	// then
 	assert.Error(err, "Should get an error deleting a non existant ID")
-}
-
-func TestStorerImpls(t *testing.T) {
-	mapSuite := storerSuite{impl: maps}
-	suite.Run(t, &mapSuite)
-
-	syncMapSuite := storerSuite{impl: smaps}
-	suite.Run(t, &syncMapSuite)
-}
-
-func TestLettersMainOutput(t *testing.T) {
-	// Given
-	r := require.New(t)
-	var buf bytes.Buffer
-	out = &buf
-
-	// When
-	main()
-
-	// Then
-	expected := "{11 Sheep herder Brown 1000}\nNo puppy exists with id 11\n" +
-		"{11 Sheep herder Brown 1000}\nNo puppy exists with id 11\n"
-	actual := buf.String()
-	r.Equalf(expected, actual, "Unexpected output in main()")
 }
