@@ -17,7 +17,7 @@ func TestGetAll(t *testing.T) {
 		Colour: "Brown",
 		Value:  1000,
 	}
-	levelDBStore := NewLevelDBStore()
+	levelDBStore := NewLevelDBStore(os.TempDir() + "/level_store")
 	defer cleanUp(levelDBStore)
 	err := levelDBStore.CreatePuppy(&pup)
 
@@ -28,14 +28,9 @@ func TestGetAll(t *testing.T) {
 	if assert.NoError(err, "Should be able to read all the data") {
 		assert.EqualValuesf(actual, expected, "Read data should be identical to the one passed to Create")
 	}
+	levelDBStore.CloseDB()
 }
 
 func cleanUp(levelDBStore *LevelDBStore) {
-	iter := levelDBStore.ldb.NewIterator(nil, nil)
-	for iter.Next() {
-		_ = levelDBStore.ldb.Delete(iter.Key(), nil)
-	}
-	iter.Release()
-	levelDBStore.CloseDB()
-	os.RemoveAll("./storage/")
+	os.RemoveAll(os.TempDir() + "/level_store")
 }

@@ -12,8 +12,8 @@ type LevelDBStore struct {
 	ldb *leveldb.DB
 }
 
-func NewLevelDBStore() *LevelDBStore {
-	db, _ := leveldb.OpenFile("storage", nil)
+func NewLevelDBStore(dbPath string) *LevelDBStore {
+	db, _ := leveldb.OpenFile(dbPath, nil)
 	return &LevelDBStore{db}
 }
 

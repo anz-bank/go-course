@@ -3,47 +3,53 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"os"
 
 	"github.com/alecthomas/kingpin"
 	types "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
 	store "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy/store"
 )
 
-var (
-	dataFile     *string = kingpin.Flag("data", "path to json data file").Short('d').String()
-	levelDBStore *store.LevelDBStore
-)
+var out io.Writer = os.Stdout
 
-func main() {
-	kingpin.Parse()
-	b, err := ioutil.ReadFile(*dataFile)
+func parseArgs(args []string) {
+	filePath := kingpin.Flag("data", "path to json data file").Short('d').String()
+	_, err := kingpin.CommandLine.Parse(args)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprint(out, err)
+		return
+	}
+	b, err := ioutil.ReadFile(*filePath)
+	if err != nil {
+		fmt.Fprint(out, err)
 		return
 	}
 	var puppies []types.Puppy
 	err = json.Unmarshal(b, &puppies)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprint(out, err)
 		return
 	}
-	levelDBStore = store.NewLevelDBStore()
+	levelDBStore := store.NewLevelDBStore("level_store")
 	for pos := range puppies {
 		err = levelDBStore.CreatePuppy(&puppies[pos])
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprint(out, err)
 			return
 		}
 	}
 	pups, err := levelDBStore.GetAll()
 	if err == nil {
 		for _, pup := range pups {
-			fmt.Println(*pup)
+			fmt.Fprint(out, *pup)
 		}
-	} else {
-		fmt.Println(err)
-		return
 	}
 	levelDBStore.CloseDB()
+}
+
+func main() {
+	fmt.Println(os.Args[1:])
+	parseArgs(os.Args[1:])
 }

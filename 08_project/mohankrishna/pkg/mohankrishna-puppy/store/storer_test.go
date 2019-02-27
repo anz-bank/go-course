@@ -52,7 +52,7 @@ func (s *storerSuite) SetupSuite() {
 		s.store = NewSyncStore()
 	case levelDB:
 		// create a level db store
-		s.store = NewLevelDBStore()
+		s.store = NewLevelDBStore(os.TempDir() + "/level_store")
 	default:
 		panic("Unrecognised storer implementation")
 	}
@@ -64,16 +64,7 @@ func (s *storerSuite) SetupSuite() {
 }
 
 func (s *storerSuite) TearDownSuite() {
-	db, ok := s.store.(*LevelDBStore)
-	if ok {
-		iter := db.ldb.NewIterator(nil, nil)
-		for iter.Next() {
-			_ = db.ldb.Delete(iter.Key(), nil)
-		}
-		iter.Release()
-		db.CloseDB()
-	}
-	os.RemoveAll("./storage")
+	os.RemoveAll(os.TempDir() + "/level_store")
 }
 
 func TestStorerImpls(t *testing.T) {
