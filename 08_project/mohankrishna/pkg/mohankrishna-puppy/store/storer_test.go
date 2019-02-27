@@ -1,9 +1,10 @@
 package store
 
 import (
+	"os"
 	"testing"
 
-	pup "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
+	types "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
 	tassert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -17,16 +18,16 @@ const (
 )
 
 var (
-	puppy1 = func() pup.Puppy {
-		return pup.Puppy{
+	puppy1 = func() types.Puppy {
+		return types.Puppy{
 			ID:     0x1234,
 			Breed:  "Sheep herder",
 			Colour: "Brown",
 			Value:  1000,
 		}
 	}
-	puppy2 = func() pup.Puppy {
-		return pup.Puppy{
+	puppy2 = func() types.Puppy {
+		return types.Puppy{
 			ID:     0x1236,
 			Breed:  "Sheep herder",
 			Colour: "Brown",
@@ -70,8 +71,9 @@ func (s *storerSuite) TearDownSuite() {
 			_ = db.ldb.Delete(iter.Key(), nil)
 		}
 		iter.Release()
-		db.ldb.Close()
+		db.CloseDB()
 	}
+	os.RemoveAll("./storage")
 }
 
 func TestStorerImpls(t *testing.T) {

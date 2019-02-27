@@ -1,57 +1,49 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"os"
+	"io/ioutil"
 
+	"github.com/alecthomas/kingpin"
 	types "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
-	"github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy/store"
+	store "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy/store"
 )
 
-var out io.Writer = os.Stdout
+var (
+	dataFile     *string = kingpin.Flag("data", "path to json data file").Short('d').String()
+	levelDBStore *store.LevelDBStore
+)
 
 func main() {
-	mapStorage := store.NewMapStore()
-	syncStorage := store.NewSyncStore()
-
-	puppy := func() types.Puppy {
-		return types.Puppy{
-			ID:     11,
-			Breed:  "Sheep herder",
-			Colour: "Brown",
-			Value:  1000,
+	kingpin.Parse()
+	b, err := ioutil.ReadFile(*dataFile)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	var puppies []types.Puppy
+	err = json.Unmarshal(b, &puppies)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	levelDBStore = store.NewLevelDBStore()
+	for pos := range puppies {
+		err = levelDBStore.CreatePuppy(&puppies[pos])
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
 	}
-
-	//Map store
-	newPup := puppy()
-	err := mapStorage.CreatePuppy(&newPup)
-
+	pups, err := levelDBStore.GetAll()
 	if err == nil {
-		pup, err := mapStorage.ReadPuppy(newPup.ID)
-		if err == nil {
-			fmt.Fprintln(out, *pup)
+		for _, pup := range pups {
+			fmt.Println(*pup)
 		}
-		err = mapStorage.DeletePuppy(pup.ID)
-		if err == nil {
-			err = mapStorage.DeletePuppy(11)
-			fmt.Fprintln(out, err)
-		}
+	} else {
+		fmt.Println(err)
+		return
 	}
-
-	//Sync.map store
-	newPup = puppy()
-	err = syncStorage.CreatePuppy(&newPup)
-	if err == nil {
-		pup, err := syncStorage.ReadPuppy(11)
-		if err == nil {
-			fmt.Fprintln(out, *pup)
-		}
-		err = syncStorage.DeletePuppy(pup.ID)
-		if err == nil {
-			err = mapStorage.DeletePuppy(11)
-			fmt.Fprintln(out, err)
-		}
-	}
+	levelDBStore.CloseDB()
 }

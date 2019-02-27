@@ -17,6 +17,10 @@ func NewLevelDBStore() *LevelDBStore {
 	return &LevelDBStore{db}
 }
 
+func (ls *LevelDBStore) CloseDB() {
+	ls.ldb.Close()
+}
+
 func (ls *LevelDBStore) CreatePuppy(puppy *types.Puppy) error {
 	b, _ := json.Marshal(puppy.ID)
 	ok, _ := ls.ldb.Has(b, nil)
@@ -58,4 +62,18 @@ func (ls *LevelDBStore) DeletePuppy(id uint32) error {
 		return &types.Error{Code: types.ErrNotFound, Message: fmt.Sprintf("No puppy exists with id %d", id)}
 	}
 	return ls.ldb.Delete(b, nil)
+}
+
+func (ls *LevelDBStore) GetAll() ([]*types.Puppy, error) {
+	var puppies []*types.Puppy
+	iter := ls.ldb.NewIterator(nil, nil)
+	for iter.Next() {
+		var pup types.Puppy
+		err := json.Unmarshal(iter.Value(), &pup)
+		if err == nil {
+			puppies = append(puppies, &pup)
+		}
+	}
+	iter.Release()
+	return puppies, iter.Error()
 }
