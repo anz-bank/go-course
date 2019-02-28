@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Puppy struct {
 	ID    uint64
@@ -9,6 +12,16 @@ type Puppy struct {
 	Value float32
 }
 
-func (puppy Puppy) String() string {
-	return fmt.Sprintf("Puppy[ID: %d, Breed: %s, Color: %s, Value: %.2f]", puppy.ID, puppy.Breed, puppy.Color, puppy.Value)
+func (p Puppy) String() string {
+	return fmt.Sprintf("Puppy[ID: %d, Breed: %s, Color: %s, Value: %.2f]", p.ID, p.Breed, p.Color, p.Value)
+}
+
+func (p Puppy) ToJSON() []byte {
+	b, _ := json.Marshal(p)
+	return b
+}
+
+func (p *Puppy) ParseJSON(b []byte) error {
+	err := json.Unmarshal(b, p)
+	return err
 }
