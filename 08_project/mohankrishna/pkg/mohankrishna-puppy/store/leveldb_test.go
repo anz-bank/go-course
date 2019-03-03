@@ -18,7 +18,6 @@ func TestGetAll(t *testing.T) {
 		Value:  1000,
 	}
 	levelDBStore := NewLevelDBStore(os.TempDir() + "/level_store")
-	defer cleanUp(levelDBStore)
 	err := levelDBStore.CreatePuppy(&pup)
 
 	assert.NoError(err, "Should be able to create puppy")
@@ -29,8 +28,5 @@ func TestGetAll(t *testing.T) {
 		assert.EqualValuesf(actual, expected, "Read data should be identical to the one passed to Create")
 	}
 	levelDBStore.CloseDB()
-}
-
-func cleanUp(levelDBStore *LevelDBStore) {
 	os.RemoveAll(os.TempDir() + "/level_store")
 }
