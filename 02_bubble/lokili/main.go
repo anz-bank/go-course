@@ -13,9 +13,9 @@ func bubble(arr []int) []int {
 	sorted := make([]int, arrLen)
 	copy(sorted, arr)
 
-	for i := 0; i < arrLen-1; i++ {
+	for i := arrLen - 1; i > 0; i-- {
 		swapped := false
-		for j := 0; j < arrLen-i-1; j++ {
+		for j := 0; j < i; j++ {
 			if sorted[j] > sorted[j+1] {
 				sorted[j], sorted[j+1] = sorted[j+1], sorted[j]
 				swapped = true
@@ -45,7 +45,7 @@ func insertion(arr []int) []int {
 	return sorted
 }
 
-func mergeSort(arr []int, start int, mid int, end int, tmp []int) {
+func mergeSort(arr []int, start, mid, end int, tmp []int) {
 	i := start
 	j := mid + 1
 	k := 0
@@ -81,7 +81,7 @@ func mergeSort(arr []int, start int, mid int, end int, tmp []int) {
 	}
 }
 
-func mergeSortUp2Down(arr []int, start int, end int, tmp []int) {
+func mergeSortUp2Down(arr []int, start, end int, tmp []int) {
 	if arr == nil || start >= end {
 		return
 	}
