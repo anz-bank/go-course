@@ -7,9 +7,9 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/alecthomas/kingpin"
 	types "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
 	store "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy/store"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
 var out io.Writer = os.Stdout
@@ -50,6 +50,5 @@ func parseArgs(args []string) {
 }
 
 func main() {
-	fmt.Println(os.Args[1:])
 	parseArgs(os.Args[1:])
 }

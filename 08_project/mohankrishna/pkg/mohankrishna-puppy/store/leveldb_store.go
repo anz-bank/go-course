@@ -3,18 +3,20 @@ package store
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	types "github.com/anz-bank/go-training/08_project/mohankrishna/pkg/mohankrishna-puppy"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
 type LevelDBStore struct {
-	ldb *leveldb.DB
+	ldb   *leveldb.DB
+	mutex sync.Mutex
 }
 
 func NewLevelDBStore(dbPath string) *LevelDBStore {
 	db, _ := leveldb.OpenFile(dbPath, nil)
-	return &LevelDBStore{db}
+	return &LevelDBStore{ldb: db}
 }
 
 func (ls *LevelDBStore) CloseDB() {
@@ -23,6 +25,8 @@ func (ls *LevelDBStore) CloseDB() {
 
 func (ls *LevelDBStore) CreatePuppy(puppy *types.Puppy) error {
 	b, _ := json.Marshal(puppy.ID)
+	ls.mutex.Lock()
+	defer ls.mutex.Unlock()
 	ok, _ := ls.ldb.Has(b, nil)
 	if ok {
 		return &types.Error{Code: types.ErrDuplicate,
@@ -57,6 +61,8 @@ func (ls *LevelDBStore) UpdatePuppy(id uint32, puppy *types.Puppy) error {
 
 func (ls *LevelDBStore) DeletePuppy(id uint32) error {
 	b, _ := json.Marshal(id)
+	ls.mutex.Lock()
+	defer ls.mutex.Unlock()
 	ok, _ := ls.ldb.Has(b, nil)
 	if !ok {
 		return &types.Error{Code: types.ErrNotFound, Message: fmt.Sprintf("No puppy exists with id %d", id)}

@@ -78,7 +78,7 @@ func TestStorerImpls(t *testing.T) {
 	suite.Run(t, &levelDBSuite)
 }
 
-func (s *storerSuite) TestMapStoreReadPuppySuccessful() {
+func (s *storerSuite) TestStorerReadPuppySuccessful() {
 	// given
 	assert := tassert.New(s.T())
 	pup1 := puppy1()
@@ -97,7 +97,7 @@ func (s *storerSuite) TestMapStoreReadPuppySuccessful() {
 	}
 }
 
-func (s *storerSuite) TestMapStoreReadPuppyIDDoesNotExist() {
+func (s *storerSuite) TestStorerReadPuppyIDDoesNotExist() {
 	// given
 	assert := tassert.New(s.T())
 
@@ -108,7 +108,7 @@ func (s *storerSuite) TestMapStoreReadPuppyIDDoesNotExist() {
 	assert.Error(err, "Should get an error when attempting to read an non-existing puppy")
 }
 
-func (s *storerSuite) TestMapStoreCreatePuppySuccessful() {
+func (s *storerSuite) TestStorerCreatePuppySuccessful() {
 	// given
 	assert := tassert.New(s.T())
 	newPup := puppy2()
@@ -124,7 +124,7 @@ func (s *storerSuite) TestMapStoreCreatePuppySuccessful() {
 	}
 }
 
-func (s *storerSuite) TestMapStoreCreatePuppyIdAlreadyExists() {
+func (s *storerSuite) TestStorerCreatePuppyIdAlreadyExists() {
 	// given
 	assert := tassert.New(s.T())
 	oldPup := puppy1()
@@ -142,7 +142,7 @@ func (s *storerSuite) TestMapStoreCreatePuppyIdAlreadyExists() {
 	}
 }
 
-func (s *storerSuite) TestMapStoreUpdatePuppySuccessful() {
+func (s *storerSuite) TestStorerUpdatePuppySuccessful() {
 	// given
 	assert := tassert.New(s.T())
 	oldPup := puppy1()
@@ -159,7 +159,7 @@ func (s *storerSuite) TestMapStoreUpdatePuppySuccessful() {
 	}
 }
 
-func (s *storerSuite) TestMapStoreUpdatePuppyIDDoesnotExist() {
+func (s *storerSuite) TestStorerUpdatePuppyIDDoesnotExist() {
 	// given
 	assert := tassert.New(s.T())
 	updatedPup := puppy2()
@@ -176,7 +176,7 @@ func (s *storerSuite) TestMapStoreUpdatePuppyIDDoesnotExist() {
 	}
 }
 
-func (s *storerSuite) TestMapStoreUpdatePuppyInvalidIDs() {
+func (s *storerSuite) TestStorerUpdatePuppyInvalidIDs() {
 	// given
 	assert := tassert.New(s.T())
 	updatedPup := puppy1()
@@ -188,7 +188,7 @@ func (s *storerSuite) TestMapStoreUpdatePuppyInvalidIDs() {
 	assert.Error(err, "Updating with un matching id and pet.ID is an error")
 }
 
-func (s *storerSuite) TestMapStoreDeletePuppySuccessful() {
+func (s *storerSuite) TestStorerDeletePuppySuccessful() {
 	//given
 	assert := tassert.New(s.T())
 
@@ -202,7 +202,7 @@ func (s *storerSuite) TestMapStoreDeletePuppySuccessful() {
 	assert.Error(err, "Should not be able to read a deleted puppy")
 }
 
-func (s *storerSuite) TestMapStoreDeletePuppyIDDoesNotExist() {
+func (s *storerSuite) TestStorerDeletePuppyIDDoesNotExist() {
 	//given
 	assert := tassert.New(s.T())
 

@@ -8,7 +8,8 @@ import (
 )
 
 type SyncStore struct {
-	sm sync.Map
+	sm    sync.Map
+	mutex sync.Mutex
 }
 
 func NewSyncStore() *SyncStore {
@@ -16,6 +17,8 @@ func NewSyncStore() *SyncStore {
 }
 
 func (ss *SyncStore) CreatePuppy(puppy *types.Puppy) error {
+	ss.mutex.Lock()
+	defer ss.mutex.Unlock()
 	if _, ok := ss.sm.Load(puppy.ID); ok {
 		return &types.Error{Code: types.ErrDuplicate,
 			Message: fmt.Sprintf("A puppy with ID: %d already exists", puppy.ID)}
@@ -46,6 +49,8 @@ func (ss *SyncStore) UpdatePuppy(id uint32, puppy *types.Puppy) error {
 }
 
 func (ss *SyncStore) DeletePuppy(id uint32) error {
+	ss.mutex.Lock()
+	defer ss.mutex.Unlock()
 	_, ok := ss.sm.Load(id)
 	if ok {
 		ss.sm.Delete(id)
