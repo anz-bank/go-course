@@ -14,13 +14,14 @@ This project is a playground for hands-on golang training.
 
 ## Build, execute, test, lint
 
-Build and install this project with
+Run the hello-world sample with
 
-    go install ./...
+    go run 00_hello_world/juliaogris/main.go
 
-Execute its binary with
+Alternative build and execute a binary with
 
-    0_hello_world
+    go build -o hello_world ./00_hello_world/juliaogris
+    ./hello_world
 
 Test it with
 
