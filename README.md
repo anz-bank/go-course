@@ -8,7 +8,7 @@ This project is a playground for hands-on golang training.
 
 ## Prerequisites
 
--   Install `go 1.11` according to [official installation instruction](https://golang.org/doc/install)
+-   Install `go 1.12` according to [official installation instruction](https://golang.org/doc/install)
 -   Clone this project outside your `$GOPATH` to enable [Go Modules](https://github.com/golang/go/wiki/Modules)
 -   Install `golangci-lint` according to [instructions](https://github.com/golangci/golangci-lint#local-installation)
 
@@ -53,5 +53,5 @@ Review coverage with
 -   Fill in PR description and reference an Issue for instance with `#6`
 -   Review the "Files changed" section of your PR
 -   "Think of the reviewer: your code needs to be reviewable and that should be a prime concern when writing your code, commits and PRs." (@camh-anz)
--   Only once you have ensured all previous points add reviewers to your PR
+-   Review a colleague's PR and add a link to the review in your own PR description
 
