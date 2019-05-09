@@ -1,6 +1,6 @@
 # Lab 1 - Fibonacci
 
-Create an executable go program in directory 01_fib/USERNAME
+Create an executable go program in directory `01_fib/USERNAME`
 Write a function that prints the first n Fibonacci numbers
 
 ```
