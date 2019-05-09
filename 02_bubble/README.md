@@ -7,7 +7,7 @@ Write a function that returns a sorted copy of `int` slice `s` using [bubble sor
 func bubble(s []int) []int
 ```
 
-Call `fmt.Println(bubble([]int{3,` `2,` `1,` `5}))` in `main` to print:
+Call `fmt.Println(bubble([]int{3, 2, 1, 5}))` in `main` to print:
 
 ```
 [1 2 3 5]

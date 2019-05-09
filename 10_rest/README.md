@@ -11,8 +11,8 @@ DELETE /api/puppy/{id}
 ```
 
 Use [net/http/httptest](https://golang.org/pkg/net/http/httptest/) for testing
-Add flag `-p` `PORT` with long flag `--port` `PORT` to command line flags
-Add flag `-s` `STORE` with long flag `--store` `STORE` with accepted values:
+Add flag `-p PORT` with long flag `--port PORT` to command line flags
+Add flag `-s STORE` with long flag `--store STORE` with accepted values:
 
 ```
 map, sync, db
