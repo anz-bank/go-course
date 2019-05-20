@@ -17,17 +17,16 @@ func abs(x int) int {
 
 func fib(n int) {
 	if n == 0 {
-		_, _ = fmt.Fprintln(out, 0)
+		fmt.Fprintln(out, 0)
 		return
 	}
 
 	absVal := abs(n)
 	sign := n / absVal
-	n1 := 1
-	n2 := sign
+	n1, n2 := 1, sign
 
 	for j := 0; j < absVal; j++ {
-		_, _ = fmt.Fprintln(out, n1)
+		fmt.Fprintln(out, n1)
 		n1, n2 = n2, n1+sign*n2
 	}
 }

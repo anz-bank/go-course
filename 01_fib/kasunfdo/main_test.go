@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 	"testing"
 )
@@ -24,7 +23,7 @@ func TestMainOutput(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -38,7 +37,7 @@ func TestFibZero(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -52,7 +51,7 @@ func TestFibPosOne(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -66,7 +65,7 @@ func TestFibNegOne(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -86,10 +85,7 @@ func TestFibNegative(t *testing.T) {
 `)
 	actual := strconv.Quote(buf.String())
 
-	fmt.Println(expected)
-	fmt.Println(actual)
-	fmt.Println(expected != actual)
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
