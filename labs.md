@@ -178,4 +178,8 @@ This stubbed endpoint returns with 2 second delay:
 HTTP status 201 for even IDs
 HTTP status 500 for odd IDs
 ```
+<<<<<<< HEAD
 Update Puppy Delete method to notify lostpuppy-service in a goroutine and log response code asynchronously.
+=======
+Update Puppy Delete method to notify lostpuppy-service in a goroutine and log response code asynchronously.
+>>>>>>> 7d44cfc... Add collated labs markdown
