@@ -26,7 +26,7 @@ func TestFibo(t *testing.T) {
 
 func TestFibo7(t *testing.T) {
 	val := fib(7)
-	if val != 12 {
+	if val != 13 {
 		t.Errorf("Should have returned 13, but returned: (%d) instead", val)
 	}
 }
