@@ -10,7 +10,7 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fib(-7)
+	fib(7)
 }
 
 
