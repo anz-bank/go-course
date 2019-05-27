@@ -20,7 +20,7 @@ func fib(n int){
 	n= int(math.Abs(float64(n)))
 	for count<=n {
 	sum=first+second
-	fmt.Println(sum)
+	fmt.Fprintln(out,sum)
 	first=second
 	second=sum
 	count+=1
