@@ -13,8 +13,8 @@ func fib(n int) {
 		fmt.Fprintln(out, "Fibonacci number has to be positive")
 		return
 	}
-	prev_prev, prev := 1, 1
-	fmt.Fprintln(out, prev_prev)
+	prevPrev, prev := 1, 1
+	fmt.Fprintln(out, prevPrev)
 	if n == 1 {
 		return
 	}
@@ -24,7 +24,7 @@ func fib(n int) {
 	}
 
 	for i := 2; i < n; i++ {
-		prev_prev, prev = prev, prev_prev+prev
+		prevPrev, prev = prev, prevPrev+prev
 		fmt.Fprintln(out, prev)
 	}
 }
