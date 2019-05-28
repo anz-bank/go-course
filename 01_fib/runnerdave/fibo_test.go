@@ -14,6 +14,9 @@ func TestFibo(t *testing.T) {
 		{2, 1},
 		{3, 2},
 		{6, 8},
+		{-6, -8},
+		{-3, 2},
+		{-4, -3},
 	}
 
 	for _, table := range tables {
@@ -28,5 +31,26 @@ func TestFibo7(t *testing.T) {
 	val := fib(7)
 	if val != 13 {
 		t.Errorf("Should have returned 13, but returned: (%d) instead", val)
+	}
+}
+
+func TestFibo3(t *testing.T) {
+	val := fib(3)
+	if val != 2 {
+		t.Errorf("Should have returned 2, but returned: (%d) instead", val)
+	}
+}
+
+func TestFiboNega3(t *testing.T) {
+	val := fib(-3)
+	if val != 2 {
+		t.Errorf("Should have returned 2, but returned: (%d) instead", val)
+	}
+}
+
+func TestFiboNega4(t *testing.T) {
+	val := fib(-4)
+	if val != -3 {
+		t.Errorf("Should have returned -3, but returned: (%d) instead", val)
 	}
 }
