@@ -1,22 +1,34 @@
 package main
 
-import "errors"
+import (
+	"fmt"
+	"io"
+	"os"
+)
 
-func fib(n int) (int, error) {
-	if n < 0 {
-		return 0, errors.New("Fibonacci number is negative")
+var out io.Writer = os.Stdout
+
+func fib(n int) {
+	if n <= 0 {
+		fmt.Fprintln(out, "Fibonacci number has to be positive")
+		return
 	}
-	switch n {
-	case 1:
-		return 1, nil
-	case 0:
-		return 0, nil
-	default:
-		fib1, _ := fib(n - 1)
-		fib2, _ := fib(n - 2)
-		return fib1 + fib2, nil
+	prev_prev, prev := 1, 1
+	fmt.Fprintln(out, prev_prev)
+	if n == 1 {
+		return
+	}
+	fmt.Fprintln(out, prev)
+	if n == 2 {
+		return
+	}
+
+	for i := 2; i < n; i++ {
+		prev_prev, prev = prev, prev_prev+prev
+		fmt.Fprintln(out, prev)
 	}
 }
 
 func main() {
+	// fib(7)
 }
