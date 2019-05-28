@@ -11,7 +11,13 @@ var out io.Writer = os.Stdout
 
 //base fibonacci function
 func fib(n int){
-	sequence := calculateNegaFib(7)
+	var sequence []int
+
+	if(n >= 0){
+		sequence = calculateNormalFib(n)		//normal fib sequence.
+	}else if(n < 0){
+		sequence = calculateNegaFib(int(math.Abs(float64(n))))		//nega fib sequence
+	}
 	printFibSequence(sequence)
 }
 
