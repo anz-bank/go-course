@@ -3,68 +3,70 @@ package main
 import (
 	"fmt"
 	"io"
-	"os"
 	"math"
+	"os"
 )
 
 var out io.Writer = os.Stdout
 
 //base fibonacci function
-func fib(n int){
+func fib(n int) {
 	var sequence []int
 
-	if(n >= 0){
-		sequence = calculateNormalFib(n)		//normal fib sequence.
-	}else if(n < 0){
-		sequence = calculateNegaFib(int(math.Abs(float64(n))))		//nega fib sequence
+	if n >= 0 {
+		sequence = calculateNormalFib(n) //normal fib sequence.
+	} else if n < 0 {
+		sequence = calculateNegaFib(int(math.Abs(float64(n)))) //nega fib sequence
 	}
 	printFibSequence(sequence)
 }
 
-//calculates the normal fibonacci sequence 
+//calculates the normal fibonacci sequence
 //returns the sequence as an integer array.
-func calculateNormalFib(x int) []int{
-	var calcd_sequence []int
+func calculateNormalFib(x int) []int {
+	var calcdSequence []int
 	//starting values.
 	n1 := 0
 	n2 := 1
-	
+
 	//loop until end of sequence.
-	for count := 0; count < x; count++{
-		calcd_sequence = append(calcd_sequence, n2)	//store n2 into array
-		n1,n2 = n2, calcNextInSequence(n1,n2)	//calc next value in the sequence + assign n1 to the old value of n2
+	for count := 0; count < x; count++ {
+		calcdSequence = append(calcdSequence, n2) //store n2 into array
+		//calc next value in the sequence + assign n1 to the old value of n2
+		n1, n2 = n2, calcNextInSequence(n1, n2)
 	}
 
-	return calcd_sequence
+	return calcdSequence
 }
 
-func calculateNegaFib(x int) []int{
-	var calcd_sequence []int
+func calculateNegaFib(x int) []int {
+	var calcdSequence []int
 	//starting values.
 	n1 := 0
 	n2 := 1
 	//the next negative num in the negafib sequence
-	var next_num int
+	var nextNum int
 	//loop until end of sequence.
-	for count := 0; count < x; count++{
-		n1,n2 = n2, calcNextInSequence(n1,n2)	//calc next value in the sequence + assign n1 to the old value of n2
-		next_num = int(float64(n1) * math.Pow(-1,float64(count)))	//calc the next negafib number
-		calcd_sequence = append(calcd_sequence, next_num)	//store n2 into array
+	for count := 0; count < x; count++ {
+		//calc next value in the sequence + assign n1 to the old value of n2
+		n1, n2 = n2, calcNextInSequence(n1, n2)
+		nextNum = int(float64(n1) * math.Pow(-1, float64(count))) //calc the next negafib number
+		calcdSequence = append(calcdSequence, nextNum)            //store n2 into array
 	}
 
-	return calcd_sequence
+	return calcdSequence
 }
 
 //function calculates the next number in the fibonacci sequence.
-func calcNextInSequence(n1 int, n2 int) int{
+func calcNextInSequence(n1 int, n2 int) int {
 	nextInSequence := n1 + n2
 	return nextInSequence
 }
 
 //loop through and print the sequence.
-func printFibSequence(sequence []int){
+func printFibSequence(sequence []int) {
 	for _, num := range sequence {
-        fmt.Fprintln(out, num)
+		fmt.Fprintln(out, num)
 	}
 }
 
