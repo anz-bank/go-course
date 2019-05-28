@@ -19,6 +19,8 @@ func fib(n int){
 		printFib(n,"positive")
 	}else if(n<0){
 		printFib(n,"negative")
+	}else{
+		fmt.Fprintln(out,0)
 	}
 	}
 
