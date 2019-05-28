@@ -39,9 +39,6 @@ func TestFibOutput(t *testing.T) {
 
 //NormalFibOutput test
 func TestNormalFibOutput(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
 	expected := []int{1, 1, 3, 5, 8, 13}
 	actual := calculateNormalFib(7)
 
@@ -52,9 +49,6 @@ func TestNormalFibOutput(t *testing.T) {
 
 //NegaFibOutput test
 func TestNegaFibOutput(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
 	calculateNegaFib(7)
 
 	expected := []int{1, -1, 3, -5, 8, -13}
@@ -65,14 +59,27 @@ func TestNegaFibOutput(t *testing.T) {
 	}
 }
 
+//CalcNextInSequence test
 func TestCalcNextInSequence(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
 	expected := 5
 	actual := calcNextInSequence(1, 4)
 
 	if actual != expected {
 		t.Errorf("Unexpected output in calcNextInSequence(1,4)")
+	}
+}
+
+//PrintSequence test
+func TestPrintSequence(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	printFibSequence([]int{1, 2, 3, 6, 23})
+
+	expected := strconv.Quote("1\n2\n3\n6\n23\n")
+	actual := strconv.Quote(buf.String())
+
+	if actual != expected {
+		t.Errorf("Unexpected output in printFibSequence([]int{1,2,3,6,23})")
 	}
 }
