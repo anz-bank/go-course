@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"testing"
 )
+
 func TestMain(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
