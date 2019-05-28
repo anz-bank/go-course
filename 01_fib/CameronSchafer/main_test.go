@@ -64,3 +64,15 @@ func TestNegaFibOutput(t *testing.T) {
 		t.Errorf("Unexpected output in calculateNegaFib(7)")
 	}
 }
+
+func TestCalcNextInSequence(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	expected := 5
+	actual := calcNextInSequence(1, 4)
+
+	if actual != expected {
+		t.Errorf("Unexpected output in calcNextInSequence(1,4)")
+	}
+}
