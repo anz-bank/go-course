@@ -10,13 +10,16 @@ var out io.Writer = os.Stdout
 
 //base fibonacci function
 func fib(n int){
-	//testing the sequence printer
-	sequence := []int{2, 3, 4}
+	//testing the normal fib sequence function.
+	sequence := calculateNormalFib(7)
 	printFibSequence(sequence)
 }
 
-func calculateNormalFib(x int){
-	
+//calculates the normal fibonacci sequence 
+//returns the sequence as an integer array.
+func calculateNormalFib(x int) []int{
+	calcd_sequence := []int{2, 3, 4}
+	return calcd_sequence
 }
 
 func calculateNegaFib(x int){
