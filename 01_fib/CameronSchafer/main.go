@@ -25,11 +25,11 @@ func fib(n int) {
 //returns the sequence as an integer array.
 func calculateNormalFib(x int) []int {
 	var calcdSequence []int
-	//starting values.
+	//starting values
 	n1 := 0
 	n2 := 1
 
-	//loop until end of sequence.
+	//loop until end of sequence
 	for count := 0; count < x; count++ {
 		calcdSequence = append(calcdSequence, n2) //store n2 into array
 		//calc next value in the sequence + assign n1 to the old value of n2
@@ -57,7 +57,7 @@ func calculateNegaFib(x int) []int {
 	return calcdSequence
 }
 
-//function calculates the next number in the fibonacci sequence.
+//function calculates the next number in the fibonacci sequence
 func calcNextInSequence(n1 int, n2 int) int {
 	nextInSequence := n1 + n2
 	return nextInSequence
@@ -72,5 +72,5 @@ func printFibSequence(sequence []int) {
 
 func main() {
 	fib(7)
-	//fib(-7)		//uncomment this line to show the negafib sequence.
+	//fib(-7)		//uncomment this line to show the negafib sequence
 }
