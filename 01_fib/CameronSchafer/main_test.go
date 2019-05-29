@@ -18,7 +18,7 @@ func TestMainOutput(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -33,7 +33,7 @@ func TestFibOutput1(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-		t.Errorf("Unexpected output in fib(7)")
+		t.Errorf("Unexpected output in fib(int)\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -48,7 +48,7 @@ func TestFibOutput2(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-		t.Errorf("Unexpected output in fib(7)")
+		t.Errorf("Unexpected output in fib(int)\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -58,7 +58,7 @@ func TestNormalFibOutput(t *testing.T) {
 	actual := calculateNormalFib(7)
 
 	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("Unexpected output in calculateNormalFib(7)")
+		t.Errorf("Unexpected output in calculateNormalFib(int)\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -70,7 +70,7 @@ func TestNegaFibOutput(t *testing.T) {
 	actual := calculateNegaFib(7)
 
 	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("Unexpected output in calculateNegaFib(7)")
+		t.Errorf("Unexpected output in calculateNegaFib(int)\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -80,7 +80,7 @@ func TestCalcNextInSequence(t *testing.T) {
 	actual := calcNextInSequence(1, 4)
 
 	if actual != expected {
-		t.Errorf("Unexpected output in calcNextInSequence(1,4)")
+		t.Errorf("Unexpected output in calcNextInSequence(int,int)\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
 
@@ -95,6 +95,6 @@ func TestPrintSequence(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if actual != expected {
-		t.Errorf("Unexpected output in printFibSequence([]int{1,2,3,6,23})")
+		t.Errorf("Unexpected output in printFibSequence(int)\nexpected: %q\nactual: %q", expected, actual)
 	}
 }
