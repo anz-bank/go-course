@@ -2,20 +2,47 @@ package main
 
 import (
 	"bytes"
-	"strconv"
+	"strings"
 	"testing"
 )
 
-func TestFib(t *testing.T) {
+func TestFibPositive(t *testing.T) {
+	numbers := []string{
+		"1",
+		"1",
+		"2",
+		"3",
+		"5",
+		"8",
+		"13",
+	}
+	runTest(t, 7, numbers)
+}
+
+func TestFibNegative(t *testing.T) {
+	numbers := []string{
+		"1",
+		"-1",
+		"2",
+		"-3",
+		"5",
+		"-8",
+		"13",
+	}
+	runTest(t, -7, numbers)
+}
+
+func runTest(t *testing.T, n int, expectedNums []string) {
 	var buf bytes.Buffer
 	out = &buf
 
-	fib(7)
+	fib(n)
 
-	expected := strconv.Quote("1\n1\n2\n3\n5\n8\n13\n")
-	actual := strconv.Quote(buf.String())
+	actual := buf.String()
+	expected := strings.Join(expectedNums, "\n") + "\n"
 
 	if expected != actual {
-		t.Errorf("Unexpected output in fib(7)")
+		// %q (raw-string), we don't want to print '\n' as newline.
+		t.Errorf("\nActual: %q\nExpected: %q", actual, expected)
 	}
 }
