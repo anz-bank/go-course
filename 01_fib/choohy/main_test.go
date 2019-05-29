@@ -6,6 +6,36 @@ import (
 	"testing"
 )
 
+func TestFibNeg11(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	fib(-11)
+
+	expected := strconv.Quote(``)
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+		t.Helper()
+		t.Errorf(expected)
+		t.Errorf(actual)
+	}
+}
+func TestFib0(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	fib(0)
+
+	expected := strconv.Quote(``)
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+		t.Helper()
+		t.Errorf(expected)
+		t.Errorf(actual)
+	}
+}
 func TestFib1(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
@@ -18,7 +48,8 @@ func TestFib1(t *testing.T) {
 
 	if expected != actual {
 		t.Helper()
-		t.Errorf("Unexpected output in main()")
+		t.Errorf(expected)
+		t.Errorf(actual)
 	}
 }
 
@@ -41,6 +72,7 @@ func TestFib7(t *testing.T) {
 
 	if expected != actual {
 		t.Helper()
+		t.Errorf(expected)
 		t.Errorf(actual)
 	}
 }
