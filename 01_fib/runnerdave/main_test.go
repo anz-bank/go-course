@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"strconv"
 	"testing"
 )
 
@@ -27,30 +29,24 @@ func TestFibo(t *testing.T) {
 	}
 }
 
-func TestFibo7(t *testing.T) {
-	val := fib(7)
-	if val != 13 {
-		t.Errorf("Should have returned 13, but returned: (%d) instead", val)
-	}
-}
+func TestMainOutput(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
 
-func TestFibo3(t *testing.T) {
-	val := fib(3)
-	if val != 2 {
-		t.Errorf("Should have returned 2, but returned: (%d) instead", val)
-	}
-}
+	main()
 
-func TestFiboNega3(t *testing.T) {
-	val := fib(-3)
-	if val != 2 {
-		t.Errorf("Should have returned 2, but returned: (%d) instead", val)
-	}
-}
+	expected := strconv.Quote(`1
+	1
+	2
+	3
+	5
+	8
+	13`)
+	actual := strconv.Quote(buf.String())
+	t.Logf("expected:%s", expected)
+	t.Logf("actual:%s", actual)
 
-func TestFiboNega4(t *testing.T) {
-	val := fib(-4)
-	if val != -3 {
-		t.Errorf("Should have returned -3, but returned: (%d) instead", val)
+	if expected != actual {
+		t.Errorf("Unexpected output in main()")
 	}
 }
