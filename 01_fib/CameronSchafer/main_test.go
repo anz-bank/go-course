@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-//main test
+//main() test
 func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
@@ -22,10 +22,11 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
+//fib(int) test
 func TestFibOutput(t *testing.T) {
-	var buf bytes.Buffer
+	//tempBuf is used to reset the output buffer for each test
+	var buf, tempBuf bytes.Buffer
 	out = &buf
-	var temp = buf //used to reset the output buffer
 
 	//test cases with descriptions.
 	testCases := []struct {
@@ -53,18 +54,39 @@ func TestFibOutput(t *testing.T) {
 			if result != test.expected {
 				t.Errorf("%v\nexpected %v, got %v", test.description, test.expected, result)
 			}
-			buf = temp //reset the buffer for the next test.
+			buf = tempBuf //reset the buffer for the next test.
 		})
 	}
 }
 
-//NormalFibOutput test
+//calculateNormalFib(int) []int test
 func TestNormalFibOutput(t *testing.T) {
-	expected := []int{1, 1, 2, 3, 5, 8, 13}
-	actual := calculateNormalFib(7)
+	//test cases with descriptions.
+	testCases := []struct {
+		description string
+		input       int
+		expected    []int
+	}{
+		{description: "calculateNormalFib 7", input: 7,
+			expected: []int{1, 1, 2, 3, 5, 8, 13},
+		},
+		{description: "calculateNormalFib 1", input: 1,
+			expected: []int{1},
+		},
+		{description: "calculateNormalFib 1", input: 0,
+			expected: nil,
+		},
+	}
 
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("Unexpected output in calculateNormalFib(int)\nexpected: %q\nactual: %q", expected, actual)
+	for _, test := range testCases {
+		test := test
+		// t.Run creates a sub test and runs it like a normal test
+		t.Run(test.description, func(t *testing.T) {
+			result := calculateNormalFib(test.input)
+			if !reflect.DeepEqual(result, test.expected) {
+				t.Errorf("Unexpected output in %q\nexpected: %q\nactual: %q", test.description, test.expected, result)
+			}
+		})
 	}
 }
 
