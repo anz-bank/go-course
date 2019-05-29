@@ -13,7 +13,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("hello peeps\n")
+	expected := strconv.Quote("[3 2 1 5]\n")
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
