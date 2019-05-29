@@ -50,5 +50,4 @@ func fib(n int) {
 
 func main() {
 	fib(7)
-	fib(-7)
 }
