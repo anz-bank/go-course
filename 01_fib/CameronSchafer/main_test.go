@@ -92,13 +92,29 @@ func TestNormalFibOutput(t *testing.T) {
 
 //NegaFibOutput test
 func TestNegaFibOutput(t *testing.T) {
-	calculateNegaFib(7)
+	//test cases with descriptions.
+	testCases := []struct {
+		description string
+		input       int
+		expected    []int
+	}{
+		{description: "calculateNegaFib 7", input: 7,
+			expected: []int{1, -1, 2, -3, 5, -8, 13},
+		},
+		{description: "calculateNegaFib ", input: 2,
+			expected: []int{1, -1},
+		},
+	}
 
-	expected := []int{1, -1, 2, -3, 5, -8, 13}
-	actual := calculateNegaFib(7)
-
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("Unexpected output in calculateNegaFib(int)\nexpected: %q\nactual: %q", expected, actual)
+	for _, test := range testCases {
+		test := test
+		// t.Run creates a sub test and runs it like a normal test
+		t.Run(test.description, func(t *testing.T) {
+			result := calculateNegaFib(test.input)
+			if !reflect.DeepEqual(result, test.expected) {
+				t.Errorf("Unexpected output in %q\nexpected: %q\nactual: %q", test.description, test.expected, result)
+			}
+		})
 	}
 }
 
