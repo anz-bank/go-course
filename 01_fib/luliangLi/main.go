@@ -17,7 +17,7 @@ func fibTailNega(n int64, first int64, second int64) int64 {
 	case -1:
 		return fibNegaone
 	default:
-		return fibTailNega(n + 1, second, first - second )
+		return fibTailNega(n+1, second, first-second )
 	}
 }
 
@@ -29,7 +29,7 @@ func fibTail(n int64, first int64, second int64) int64 {
 	case 2:
 		return second
 	default:
-		return fibTail(n-1, second, first + second)
+		return fibTail(n-1, second, first+second)
 	}
 }
 
