@@ -11,31 +11,35 @@ var out io.Writer = os.Stdout
 func main() {
 
 	fmt.Fprintln(out, "Call Fibonacci numbers!")
+	// var previous = 0
+	// var current = 1
+	// var next = current + previous
 
-	// fmt.Println(1)
-	// fmt.Println(1)
-	// fmt.Println(2)
-	// fmt.Println(3)
-	// fmt.Println(5)
-	// fmt.Println(8)
-	// fmt.Println(13)
 	fib(7)
 }
 
-var previous = 0
-var current = 1
-var next = current + previous
-
 func fib(n int) {
-
-	if n > 0 {
-		fib(n - 1)
-		//fmt.Println("n: ", n, "previous: ", previous, ", current: ", current,", next", next)
-
-		fmt.Fprintln(out, next)
+	i := 0
+	previous := 0
+	current := 1
+	next := current + previous
+	for i < n {
 		next = current + previous
 		previous = current
 		current = next
+		//fmt.Println("i", i, "n", n, "previous", previous, "current", current, "next", next)
+		fmt.Fprintln(out, previous)
+		i++
 	}
+	//fmt.Println("sum 2:", next)
+
+	// if n > 0 {
+	// 	fib(n - 1)
+
+	// 	fmt.Fprintln(out, next)
+	// 	next = current + previous
+	// 	previous = current
+	// 	current = next
+	// }
 
 }

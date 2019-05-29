@@ -6,17 +6,41 @@ import (
 	"testing"
 )
 
-func TestMainOutput(t *testing.T) {
+func TestFib1(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 
-	main()
+	fib(1)
 
-	expected := strconv.Quote("Call Fibonacci numbers!\n1\n1\n2\n3\n5\n8\n13\n")
+	expected := strconv.Quote(`1
+`)
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
 		t.Helper()
 		t.Errorf("Unexpected output in main()")
+	}
+}
+
+func TestFib7(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	main()
+
+	expected := strconv.Quote(`Call Fibonacci numbers!
+1
+1
+2
+3
+5
+8
+13
+`)
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+		t.Helper()
+		t.Errorf(actual)
 	}
 }
