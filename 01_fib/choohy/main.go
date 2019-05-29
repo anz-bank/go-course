@@ -18,7 +18,7 @@ func fib(n int) {
 	i := 0
 	previous := 0
 	current := 1
-	next := current + previous
+	next := 1
 	for i < n {
 		next = current + previous
 		previous = current
