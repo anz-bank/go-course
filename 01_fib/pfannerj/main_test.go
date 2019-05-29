@@ -12,7 +12,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("Fibonacci series completed...\n")
+	expected := strconv.Quote("Fibonacci series starting...\nFibonacci series completed...\n")
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
