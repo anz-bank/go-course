@@ -14,9 +14,9 @@ func fibTailNega(n int64, first int64, second int64) int64 {
 	switch n {
 	case 0:
 		return fibZero
-	case -1 :
+	case -1:
 		return fibNegaone
-	default :
+	default:
 		return fibTailNega(n + 1, second, first - second )
 	}
 }
@@ -24,11 +24,11 @@ func fibTailNega(n int64, first int64, second int64) int64 {
 func fibTail(n int64, first int64, second int64) int64 {
 	fmt.Println(second)
 	switch n {
-	case 1 :
+	case 1:
 		return first
-	case 2 :
+	case 2:
 		return second
-	default :
+	default:
 		return fibTail(n-1, second, first + second)
 	}
 }
