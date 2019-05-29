@@ -43,4 +43,5 @@ func fib(n int) int64 {
 
 func main()  {
 	fib(7)
+	fib(-7)
 }
