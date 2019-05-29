@@ -54,7 +54,7 @@ Write a function that returns a sorted slice of strings with elements `"{key}:{v
 func sortLetters(m map[rune]int) []string
 ```
 
-Call `fmt.Println(strings.Join(sortLetters(letters("aba"))), "\n")` in `main` to print:
+Call `fmt.Println(strings.Join(sortLetters(letters("aba")), "\n"))` in `main` to print:
 
 ```
 a:2
