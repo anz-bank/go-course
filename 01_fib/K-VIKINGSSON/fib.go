@@ -10,11 +10,12 @@ func negaFib(n int) {
 	n1 := 1
 	nC := n0 - n1
 	for c >= n {
-		if c == 0 {
+		switch c {
+		case 0:
 			fmt.Println(0)
-		} else if c == -1 {
+		case -1:
 			fmt.Println(n1)
-		} else {
+		default:
 			fmt.Println(nC)
 			n0 = n1
 			n1 = nC
@@ -34,11 +35,12 @@ func fib(n int) {
 	nB := 1
 	nC := nA + nB
 	for c <= n {
-		if c == 1 {
+		switch c {
+		case 1:
 			fmt.Println(nA)
-		} else if c == 2 {
+		case 2:
 			fmt.Println(nB)
-		} else {
+		default:
 			fmt.Println(nC)
 			nA = nB
 			nB = nC
