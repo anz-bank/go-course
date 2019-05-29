@@ -23,6 +23,17 @@ func bubble(s []int) []int {
 func bubbleLoop(nextS []int) ([]int, bool) {
 	bubbleCheck := true
 	newS := nextS
+	//loop through the slice
+	for i := 0; i < len(nextS); i++ {
+		//nextElem = i + 1
+		//check if next slice elem exists
+		if i+1 < len(nextS) {
+			//keep looping
+			//check if current or next slice elem is bigger
+		} else {
+			break
+		}
+	}
 
 	//bubbleCheck = true
 
