@@ -22,33 +22,39 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
-//FibOutput1 test
-func TestFibOutput1(t *testing.T) {
+func TestFibOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
+	var temp = buf //used to reset the output buffer
 
-	fib(7)
-
-	expected := strconv.Quote("1\n1\n2\n3\n5\n8\n13\n")
-	actual := strconv.Quote(buf.String())
-
-	if expected != actual {
-		t.Errorf("Unexpected output in fib(int)\nexpected: %q\nactual: %q", expected, actual)
+	//test cases with descriptions.
+	testCases := []struct {
+		description string
+		input       int
+		expected    string
+	}{
+		{description: "fib 7", input: 7,
+			expected: strconv.Quote("1\n1\n2\n3\n5\n8\n13\n"),
+		},
+		{description: "fib 1", input: 1,
+			expected: strconv.Quote("1\n"),
+		},
+		{description: "fib -7", input: -7,
+			expected: strconv.Quote("1\n-1\n2\n-3\n5\n-8\n13\n"),
+		},
 	}
-}
 
-//FibOutput2 test
-func TestFibOutput2(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
-	fib(-7)
-
-	expected := strconv.Quote("1\n-1\n2\n-3\n5\n-8\n13\n")
-	actual := strconv.Quote(buf.String())
-
-	if expected != actual {
-		t.Errorf("Unexpected output in fib(int)\nexpected: %q\nactual: %q", expected, actual)
+	for _, test := range testCases {
+		test := test
+		// t.Run creates a sub test and runs it like a normal test
+		t.Run(test.description, func(t *testing.T) {
+			fib(test.input)
+			result := strconv.Quote(buf.String())
+			if result != test.expected {
+				t.Errorf("%v\nexpected %v, got %v", test.description, test.expected, result)
+			}
+			buf = temp //reset the buffer for the next test.
+		})
 	}
 }
 
