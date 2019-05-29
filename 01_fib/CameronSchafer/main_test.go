@@ -120,25 +120,73 @@ func TestNegaFibOutput(t *testing.T) {
 
 //CalcNextInSequence test
 func TestCalcNextInSequence(t *testing.T) {
-	expected := 5
-	actual := calcNextInSequence(1, 4)
+	//test cases with descriptions.
+	testCases := []struct {
+		description string
+		inputX      int
+		inputY      int
+		expected    int
+	}{
+		{description: "calcNextInSequence 1,1", inputX: 1, inputY: 1,
+			expected: 2,
+		},
+		{description: "calcNextInSequence 50,50", inputX: 50, inputY: 50,
+			expected: 100,
+		},
+		{description: "calcNextInSequence -7,5", inputX: -7, inputY: -5,
+			expected: -12,
+		},
+		{description: "calcNextInSequence -7,5", inputX: -7, inputY: 5,
+			expected: -2,
+		},
+	}
 
-	if actual != expected {
-		t.Errorf("Unexpected output in calcNextInSequence(int,int)\nexpected: %q\nactual: %q", expected, actual)
+	for _, test := range testCases {
+		test := test
+		// t.Run creates a sub test and runs it like a normal test
+		t.Run(test.description, func(t *testing.T) {
+			result := calcNextInSequence(test.inputX, test.inputY)
+			if result != test.expected {
+				t.Errorf("Unexpected output in %q\nexpected: %q\nactual: %q", test.description, test.expected, result)
+			}
+		})
 	}
 }
 
 //PrintSequence test
 func TestPrintSequence(t *testing.T) {
-	var buf bytes.Buffer
+	//tempBuf is used to reset the output buffer for each test
+	var buf, tempBuf bytes.Buffer
 	out = &buf
 
-	printFibSequence([]int{1, 2, 3, 6, 23})
-
-	expected := strconv.Quote("1\n2\n3\n6\n23\n")
-	actual := strconv.Quote(buf.String())
-
-	if actual != expected {
-		t.Errorf("Unexpected output in printFibSequence(int)\nexpected: %q\nactual: %q", expected, actual)
+	//test cases with descriptions.
+	testCases := []struct {
+		description string
+		input       []int
+		expected    string
+	}{
+		{description: "printFibSequence []int{1, 2, 3, 6, 23}", input: []int{1, 2, 3, 6, 23},
+			expected: strconv.Quote("1\n2\n3\n6\n23\n"),
+		},
+		{description: "printFibSequence []int{1, 1, 1, 1, 1}", input: []int{1, 1, 1, 1, 1},
+			expected: strconv.Quote("1\n1\n1\n1\n1\n"),
+		},
+		{description: "printFibSequence []int{-1, 2, -23, -63, 23}", input: []int{-1, 2, -23, -63, 23},
+			expected: strconv.Quote("-1\n2\n-23\n-63\n23\n"),
+		},
 	}
+
+	for _, test := range testCases {
+		test := test
+		// t.Run creates a sub test and runs it like a normal test
+		t.Run(test.description, func(t *testing.T) {
+			printFibSequence(test.input)
+			result := strconv.Quote(buf.String())
+			if result != test.expected {
+				t.Errorf("%v\nexpected %v, got %v", test.description, test.expected, result)
+			}
+			buf = tempBuf //reset the buffer for the next test.
+		})
+	}
+
 }
