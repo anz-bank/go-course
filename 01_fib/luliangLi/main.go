@@ -17,7 +17,7 @@ func fibTailNega(n int64, first int64, second int64) int64 {
 	case -1:
 		return fibNegaone
 	default:
-		return fibTailNega(n+1, second, first-second )
+		return fibTailNega(n+1, second, first-second)
 	}
 }
 
@@ -39,7 +39,7 @@ func fib(n int) int64 {
 		return fibTailNega(int64(n), fibZero, fibNegaone)
 	}
 
-	if n > 0{
+	if n > 0 {
 		fmt.Println(fibOne)
 		return fibTail(int64(n), fibOne, fibTwo)
 	}
@@ -48,7 +48,7 @@ func fib(n int) int64 {
 	return 0
 }
 
-func main()  {
+func main() {
 	fib(7)
 	fmt.Println("********************")
 	fib(-7)
