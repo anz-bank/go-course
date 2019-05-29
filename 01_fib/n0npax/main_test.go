@@ -81,5 +81,8 @@ func TestFibOutputWithOne(t *testing.T) {
 	out = &buf
 
 	fib(1)
-	r.Equalf("1\n", buf.String(), "Unexpected output in fib()")
+	expected := strconv.Quote(`1
+`)
+	actual := strconv.Quote(buf.String())
+	r.Equalf(expected, actual, "Unexpected output in fib()")
 }

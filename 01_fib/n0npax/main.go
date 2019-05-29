@@ -3,11 +3,10 @@ package main
 import (
 	"fmt"
 	"io"
-	"math"
 	"os"
 )
 
-// Allow to overwtite stream by tests
+// Allow to overwrite stream by tests
 var out io.Writer = os.Stdout
 
 // This function is useless and it's provided just due to requirements
@@ -20,6 +19,7 @@ func fib(num int) {
 	for _, v := range dispatchFib(num) {
 		fmt.Fprintln(out, v)
 	}
+
 }
 
 // Dispatch and return proper numbers
@@ -50,7 +50,7 @@ func computeFibonacci(num int) []int {
 func computeNegafibonacci(num int) []int {
 	fibNumbers := computeFibonacci(num * -1)
 	for i, v := range fibNumbers {
-		fibNumbers[i] = v * int(math.Pow(-1, float64(i%2)))
+		fibNumbers[i] = v * [2]int{1, -1}[i%2]
 	}
 	return fibNumbers
 }
