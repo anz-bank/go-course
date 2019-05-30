@@ -6,28 +6,29 @@ import (
 	"os"
 )
 
-var out_fib io.Writer = os.Stdout
+var outfib io.Writer = os.Stdout
 
 // Function to calculate nth Fibonacci or Negafibonacci number
 func nfib(n int) int64 {
+
 	if n >= 0 {
-		if n == 0 {
+
+		switch n {
+		case 0, 1:
 			return 1
-		} else if n == 1 {
-			return 1
-		} else {
+		default:
 			return nfib(n-1) + nfib(n-2)
 		}
 	} else {
 
-		if n == -1 {
+		switch n {
+		case -1:
 			return 1
-		} else if n == -2 {
+		case -2:
 			return -1
-		} else {
+		default:
 			return nfib(n+2) - nfib(n+1)
 		}
-
 	}
 }
 
@@ -35,11 +36,11 @@ func nfib(n int) int64 {
 func fib(n int) {
 	if n >= 0 {
 		for i := 0; i < n; i++ {
-			fmt.Fprintln(out_fib, nfib(i))
+			fmt.Fprintln(outfib, nfib(i))
 		}
 	} else {
 		for i := -1; i >= n; i-- {
-			fmt.Fprintln(out_fib, nfib(i))
+			fmt.Fprintln(outfib, nfib(i))
 		}
 	}
 }

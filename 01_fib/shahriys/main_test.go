@@ -7,7 +7,7 @@ import (
 
 func TestFibPos(t *testing.T) {
 	var buf_fib bytes.Buffer
-	out_fib = &buf_fib
+	outfib = &buf_fib
 
 	fib(7)
 
@@ -20,7 +20,7 @@ func TestFibPos(t *testing.T) {
 }
 func TestFibNeg(t *testing.T) {
 	var buf_fib bytes.Buffer
-	out_fib = &buf_fib
+	outfib = &buf_fib
 
 	fib(-7)
 
