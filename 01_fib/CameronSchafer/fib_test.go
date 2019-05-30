@@ -13,7 +13,14 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("7\n")
+	expected := strconv.Quote(`1
+1
+2
+3
+5
+8
+13
+`)
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
@@ -33,13 +40,27 @@ func TestFibOutput(t *testing.T) {
 		expected    string
 	}{
 		{description: "fib 7", input: 7,
-			expected: strconv.Quote("7\n"),
+			expected: strconv.Quote(`1
+1
+2
+3
+5
+8
+13
+`),
 		},
 		{description: "fib 1", input: 1,
 			expected: strconv.Quote("1\n"),
 		},
 		{description: "fib -7", input: -7,
-			expected: strconv.Quote("-7\n"),
+			expected: strconv.Quote(`1
+-1
+2
+-3
+5
+-8
+13
+`),
 		},
 	}
 
