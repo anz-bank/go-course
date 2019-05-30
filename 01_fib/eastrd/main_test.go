@@ -51,22 +51,6 @@ func TestFibOutput3(t *testing.T) {
 	}
 }
 
-func TestMainOutput(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
-	fib(0)
-
-	expected := strconv.Quote("Fibonacci number has to be positive\n")
-	actual := strconv.Quote(buf.String())
-
-	fmt.Println(actual)
-
-	if expected != actual {
-		t.Errorf("Unexpected output in main()")
-	}
-}
-
 func TestFibOutput4(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
@@ -90,6 +74,38 @@ func TestFibOutput5(t *testing.T) {
 	fib(2)
 
 	expected := strconv.Quote("1\n1\n")
+	actual := strconv.Quote(buf.String())
+
+	fmt.Println(actual)
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main()")
+	}
+}
+
+func TestFibOutput6(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	fib(0)
+
+	expected := strconv.Quote("Fibonacci number has to be positive\n")
+	actual := strconv.Quote(buf.String())
+
+	fmt.Println(actual)
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main()")
+	}
+}
+
+func TestMainOutput(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	main()
+
+	expected := strconv.Quote("1\n1\n2\n")
 	actual := strconv.Quote(buf.String())
 
 	fmt.Println(actual)
