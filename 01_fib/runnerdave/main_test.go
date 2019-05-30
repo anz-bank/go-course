@@ -35,13 +35,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote(`1
-	1
-	2
-	3
-	5
-	8
-	13`)
+	expected := strconv.Quote("1\n1\n2\n3\n5\n8\n13\n")
 	actual := strconv.Quote(buf.String())
 	t.Logf("expected:%s", expected)
 	t.Logf("actual:%s", actual)
