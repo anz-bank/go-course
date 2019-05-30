@@ -27,65 +27,61 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
-func TestFibZero(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
+func TestAbs(t *testing.T) {
+	type test struct {
+		input    int
+		expected int
+	}
 
-	fib(0)
+	tests := []test{
+		{input: 1, expected: 1},
+		{input: 0, expected: 0},
+		{input: -1, expected: 1},
+	}
 
-	expected := strconv.Quote("0\n")
-	actual := strconv.Quote(buf.String())
-
-	if expected != actual {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
+	for _, test := range tests {
+		actual := abs(test.input)
+		if test.expected != actual {
+			t.Errorf("Unexpected output in main()\ninput: %d\nexpected: %q\nactual: %q", test.input, test.expected, actual)
+		}
 	}
 }
 
-func TestFibPosOne(t *testing.T) {
+func TestFib(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 
-	fib(1)
-
-	expected := strconv.Quote("1\n")
-	actual := strconv.Quote(buf.String())
-
-	if expected != actual {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
+	type test struct {
+		input    int
+		expected string
 	}
-}
 
-func TestFibNegOne(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
-	fib(-1)
-
-	expected := strconv.Quote("1\n")
-	actual := strconv.Quote(buf.String())
-
-	if expected != actual {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
-	}
-}
-
-func TestFibNegative(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
-	fib(-7)
-
-	expected := strconv.Quote(`1
+	tests := []test{
+		{input: -7,
+			expected: strconv.Quote(`1
 -1
 2
 -3
 5
 -8
 13
-`)
-	actual := strconv.Quote(buf.String())
+`)},
+		{input: -1,
+			expected: strconv.Quote("1\n")},
+		{input: 1,
+			expected: strconv.Quote("1\n")},
+		{input: 0,
+			expected: strconv.Quote("0\n")},
+	}
 
-	if expected != actual {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
+	for _, test := range tests {
+		fib(test.input)
+		actual := strconv.Quote(buf.String())
+
+		if test.expected != actual {
+			t.Errorf("Unexpected output in main()\ninput: %d\nexpected: %q\nactual: %q", test.input, test.expected, actual)
+		}
+
+		buf.Reset()
 	}
 }
