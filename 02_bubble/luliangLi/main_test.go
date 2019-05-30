@@ -13,10 +13,10 @@ func TestBubbleOutput(t *testing.T) {
 		input []int
 		want  []int
 	}{
-		"normal": {input: []int{3, 2, 1, 5}, want: []int{1, 2, 3, 5}},
-		"blank":  {input: []int{}, want: []int{}},
-		"nil":    {input: nil, want: nil},
-		"duplicated":    {input: []int{1, 0, 0, 1}, want: []int{0, 0, 1, 1}},
+		"normal":     {input: []int{3, 2, 1, 5}, want: []int{1, 2, 3, 5}},
+		"blank":      {input: []int{}, want: []int{}},
+		"nil":        {input: nil, want: nil},
+		"duplicated": {input: []int{1, 0, 0, 1}, want: []int{0, 0, 1, 1}},
 	}
 
 	for name, test := range testCases {
@@ -39,10 +39,10 @@ func TestInsertSortOutput(t *testing.T) {
 		input []int
 		want  []int
 	}{
-		"normal": {input: []int{3, 2, 1, 5}, want: []int{1, 2, 3, 5}},
-		"blank":  {input: []int{}, want: []int{}},
-		"nil":    {input: nil, want: nil},
-		"duplicated":    {input: []int{1, 0, 0, 1}, want: []int{0, 0, 1, 1}},
+		"normal":     {input: []int{3, 2, 1, 5}, want: []int{1, 2, 3, 5}},
+		"blank":      {input: []int{}, want: []int{}},
+		"nil":        {input: nil, want: nil},
+		"duplicated": {input: []int{1, 0, 0, 1}, want: []int{0, 0, 1, 1}},
 	}
 
 	for name, test := range testCases {
