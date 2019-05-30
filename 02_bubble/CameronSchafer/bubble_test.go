@@ -14,7 +14,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("[3 2 1 5]\n")
+	expected := strconv.Quote("[1 2 3 5]\n")
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
@@ -22,7 +22,7 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
-//main() test
+//bubbleLoop() test
 func TestBubbleLoopOutput(t *testing.T) {
 	//test cases with descriptions.
 	testCases := []struct {
@@ -32,10 +32,10 @@ func TestBubbleLoopOutput(t *testing.T) {
 		expectedBool bool
 	}{
 		{description: "bubbleLoop []int{3, 2, 1, 5}", input: []int{3, 2, 1, 5},
-			expectedArr: []int{3, 2, 1, 5}, expectedBool: true,
+			expectedArr: []int{2, 1, 3, 5}, expectedBool: false,
 		},
 		{description: "bubbleLoop []int{6,3,19}", input: []int{6, 3, 19},
-			expectedArr: []int{6, 3, 19}, expectedBool: true,
+			expectedArr: []int{3, 6, 19}, expectedBool: false,
 		},
 		{description: "bubbleLoop []int{0,1,2}", input: []int{0, 1, 2},
 			expectedArr: []int{0, 1, 2}, expectedBool: true,
