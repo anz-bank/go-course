@@ -15,8 +15,10 @@ func fib(n int) {
 	if n < 0 {
 		sign = -1
 	}
+
+	n *= sign
 	//loop until all numbers have been printed
-	for i := 0; i < n*sign; i++ {
+	for i := 0; i < n; i++ {
 		if i%2 == 0 || sign > 0 {
 			//will get the negafib number if the sign is -1
 			n1, n2 = n2, n1+n2*sign
