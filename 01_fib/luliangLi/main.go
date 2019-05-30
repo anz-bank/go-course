@@ -18,8 +18,6 @@ const (
 func fibTailNega(n int64, first int64, second int64) int64 {
 	fmt.Fprintln(out, second)
 	switch n {
-	case 0:
-		return fibZero
 	case -1:
 		return fibNegaone
 	default:
@@ -40,22 +38,22 @@ func fibTail(n int64, first int64, second int64) int64 {
 }
 
 func fib(n int) int64 {
-	if n <= 0 {
-		fmt.Fprintln(out, fibZero)
+	if n < 0 {
 		return fibTailNega(int64(n), fibZero, fibNegaone)
 	}
 
 	if n > 0 {
-		fmt.Fprintln(out, fibOne)
+		if n > 1 {
+			fmt.Fprintln(out, fibOne)
+		}
+
 		return fibTail(int64(n), fibOne, fibTwo)
 	}
 
 	// add this to pass golint check...
+	fmt.Fprintln(out, fibZero)
 	return 0
 }
 
 func main() {
-	fib(7)
-	fmt.Println("********************")
-	fib(-7)
 }

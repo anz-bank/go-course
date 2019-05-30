@@ -14,8 +14,13 @@ func TestMainOutput(t *testing.T) {
 		input int
 		want  string
 	}{
-		"fib":     {input: 7, want: "1\n1\n2\n3\n5\n8\n13\n"},
-		"negafib": {input: -7, want: "0\n1\n-1\n2\n-3\n5\n-8\n13\n"},
+		"7":  {input: 7, want: "1\n1\n2\n3\n5\n8\n13\n"},
+		"-7": {input: -7, want: "1\n-1\n2\n-3\n5\n-8\n13\n"},
+		"0":  {input: 0, want: "0\n"},
+		"1":  {input: 1, want: "1\n"},
+		"-1": {input: -1, want: "1\n"},
+		"2":  {input: 2, want: "1\n1\n"},
+		"-2": {input: -2, want: "1\n-1\n"},
 	}
 
 	for name, test := range testCases {
