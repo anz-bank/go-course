@@ -13,7 +13,7 @@ func letters(s string) map[rune]int {
 	/*
 		Returns a mapping of each letter to its frequency
 	*/
-	dict := make(map[rune]int, 0)
+	dict := make(map[rune]int)
 	for _, c := range s {
 		_, has := dict[c]
 		if has {
