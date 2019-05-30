@@ -14,33 +14,25 @@ func main() {
 }
 
 func fib(n int) {
-
+	isPositive := true
 	switch {
-	case n > 0:
-		printFib(n, "positive")
-	case n < 0:
-		printFib(n, "negative")
-	default:
+	case n == 0:
 		fmt.Fprintln(out, 0)
+	case n < 0:
+		isPositive = false
 	}
-}
 
-func printFib(n int, valtype string) {
-
-	first := 1
-	second := 0
-	count := 1
-	sum := 0
+	first, count := 1, 1
+	second, sum := 0, 0
 	n = int(math.Abs(float64(n)))
 	for count <= n {
 		sum = first + second
-		if valtype == "negative" && count%2 == 0 {
+		if !isPositive && count%2 == 0 {
 			fmt.Fprintln(out, sum*-1)
 		} else {
 			fmt.Fprintln(out, sum)
 		}
-		first = second
-		second = sum
+		first, second = second, sum
 		count++
 	}
 }
