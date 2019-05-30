@@ -30,7 +30,7 @@ func sortLetters(m map[rune]int) []string {
 		Returns a sorted slice of strings with elements "key:val"
 	*/
 	// Flatten map into a string
-	s := make([]string, len(m))
+	s := make([]string, 0)
 	for k, v := range m {
 		s = append(s, string(k)+":"+strconv.Itoa(v))
 	}
