@@ -1,33 +1,27 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"os"
+)
 
-var cache = make(map[int]int)
+var out io.Writer = os.Stdout
 
-func fib(n int) int {
-	if n == 1 || n == 0 {
-		//print 1 once
-		if _, ok := cache[1]; !ok {
-			fmt.Println(1)
-		}
-		cache[n] = n
-		return n
-	} else if cacheVal, ok := cache[n]; ok {
-		return cacheVal
-	} else if n < 0 {
-		sign := 1
-		if n%2 == 0 {
-			sign = -1
-		}
-		nval := sign * fib(-n)
-		cache[n] = nval
-		fmt.Println(nval)
-		return nval
-	} else {
-		val := fib(n-1) + fib(n-2)
-		cache[n] = val
-		fmt.Println(val)
-		return val
+func fib(n int) {
+	if n == 0 {
+		fmt.Fprintln(out, 0)
+		return
+	}
+	// 1 for positive n ; -1 for negative n
+	sign := 1
+	if n < 0 {
+		sign = 1
+	}
+	n1, n2 := 1, sign
+	for j := 0; j < n*sign; j++ {
+		fmt.Fprintln(out, n1)
+		n1, n2 = n2, n1+sign*n2
 	}
 }
 
