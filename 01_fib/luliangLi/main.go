@@ -54,6 +54,3 @@ func fib(n int) int64 {
 	fmt.Fprintln(out, fibZero)
 	return 0
 }
-
-func main() {
-}
