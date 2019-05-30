@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"os"
+)
+
+var out io.Writer = os.Stdout
 
 const (
 	fibNegaone = 1
@@ -10,7 +16,7 @@ const (
 )
 
 func fibTailNega(n int64, first int64, second int64) int64 {
-	fmt.Println(second)
+	fmt.Fprintln(out, second)
 	switch n {
 	case 0:
 		return fibZero
@@ -22,7 +28,7 @@ func fibTailNega(n int64, first int64, second int64) int64 {
 }
 
 func fibTail(n int64, first int64, second int64) int64 {
-	fmt.Println(second)
+	fmt.Fprintln(out, second)
 	switch n {
 	case 1:
 		return first
@@ -35,12 +41,12 @@ func fibTail(n int64, first int64, second int64) int64 {
 
 func fib(n int) int64 {
 	if n <= 0 {
-		fmt.Println(fibZero)
+		fmt.Fprintln(out, fibZero)
 		return fibTailNega(int64(n), fibZero, fibNegaone)
 	}
 
 	if n > 0 {
-		fmt.Println(fibOne)
+		fmt.Fprintln(out, fibOne)
 		return fibTail(int64(n), fibOne, fibTwo)
 	}
 
