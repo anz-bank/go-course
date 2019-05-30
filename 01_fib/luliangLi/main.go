@@ -8,18 +8,11 @@ import (
 
 var out io.Writer = os.Stdout
 
-const (
-	fibNegaone = 1
-	fibZero    = 0
-	fibOne     = 1
-	fibTwo     = 1
-)
-
 func fibTailNega(n int64, first int64, second int64) int64 {
 	fmt.Fprintln(out, second)
 	switch n {
 	case -1:
-		return fibNegaone
+		return 1
 	default:
 		return fibTailNega(n+1, second, first-second)
 	}
@@ -39,19 +32,19 @@ func fibTail(n int64, first int64, second int64) int64 {
 
 func fib(n int) int64 {
 	if n < 0 {
-		return fibTailNega(int64(n), fibZero, fibNegaone)
+		return fibTailNega(int64(n), 0, 1)
 	}
 
 	if n > 0 {
 		if n > 1 {
-			fmt.Fprintln(out, fibOne)
+			fmt.Fprintln(out, 1)
 		}
 
-		return fibTail(int64(n), fibOne, fibTwo)
+		return fibTail(int64(n), 1, 1)
 	}
 
 	// add this to pass golint check...
-	fmt.Fprintln(out, fibZero)
+	fmt.Fprintln(out, 0)
 	return 0
 }
 
