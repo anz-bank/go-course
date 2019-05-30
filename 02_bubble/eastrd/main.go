@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"io"
+	"os"
 )
 
 func bubble(s []int) []int {
@@ -33,5 +33,5 @@ func bubble(s []int) []int {
 var out io.Writer = os.Stdout
 
 func main() {
-	fmt.Fprintln(out, bubble([]int{3,2,1,5}))
+	fmt.Fprintln(out, bubble([]int{3, 2, 1, 5}))
 }
