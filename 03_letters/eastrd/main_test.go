@@ -29,7 +29,7 @@ func TestLetters(t *testing.T) {
 		t.Errorf("Unexpected output in main()")
 	}
 	for k, v := range actual {
-		v2, _ := expected[k]
+		v2 := expected[k]
 		if v2 != v {
 			t.Errorf("Unexpected output in main()")
 		}
@@ -44,7 +44,7 @@ func TestLetters2(t *testing.T) {
 		t.Errorf("Unexpected output in main()")
 	}
 	for k, v := range actual {
-		v2, _ := expected[k]
+		v2 := expected[k]
 		if v2 != v {
 			t.Errorf("Unexpected output in main()")
 		}
@@ -67,7 +67,7 @@ func TestSortLetters2(t *testing.T) {
 	if len(expected) != len(actual) {
 		t.Errorf("Unexpected output in main()")
 	}
-	for idx, _ := range expected {
+	for idx := range expected {
 		if expected[idx] != actual[idx] {
 			t.Errorf("Unexpected output in main()")
 		}
@@ -81,7 +81,7 @@ func TestSortLetters3(t *testing.T) {
 	if len(expected) != len(actual) {
 		t.Errorf("Unexpected output in main()")
 	}
-	for idx, _ := range expected {
+	for idx := range expected {
 		if expected[idx] != actual[idx] {
 			t.Errorf("Unexpected output in main()")
 		}
