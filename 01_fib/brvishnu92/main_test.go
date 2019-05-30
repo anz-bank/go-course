@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 	"testing"
 )
@@ -13,60 +12,57 @@ func TestMain(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("1\n1\n2\n3\n5\n8\n13\n")
+	expected := strconv.Quote(`1
+1
+2
+3
+5
+8
+13
+`)
 	actual := strconv.Quote(buf.String())
-
 	if expected != actual {
-		fmt.Println(actual)
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Expected %v, got %v ", actual, expected)
 	}
-
 }
 
-func TestMainOutputPositive(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
+func TestMainFib(t *testing.T) {
 
-	fib(7)
-
-	expected := strconv.Quote("1\n1\n2\n3\n5\n8\n13\n")
-	actual := strconv.Quote(buf.String())
-
-	if expected != actual {
-		fmt.Println(actual)
-		t.Errorf("Unexpected output in main()")
+	testCases := map[string]struct {
+		input    int
+		expected string
+	}{
+		"positive": {input: 7, expected: strconv.Quote(`1
+1
+2
+3
+5
+8
+13
+`)},
+		"negative": {input: -7, expected: strconv.Quote(`1
+-1
+2
+-3
+5
+-8
+13
+`)},
+		"0": {input: 0, expected: strconv.Quote(`0
+`)},
 	}
 
-}
-
-func TestMainOutputNegative(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
-	fib(-7)
-
-	expectedNeg := strconv.Quote("1\n-1\n2\n-3\n5\n-8\n13\n")
-	actualNeg := strconv.Quote(buf.String())
-
-	if expectedNeg != actualNeg {
-		fmt.Println(actualNeg)
-		t.Errorf("Unexpected output in main()")
+	for name, test := range testCases {
+		test := test
+		// t.Run creates a sub test and runs it like a normal test
+		var buf bytes.Buffer
+		out = &buf
+		t.Run(name, func(t *testing.T) {
+			fib(test.input)
+			result := strconv.Quote(buf.String())
+			if result != test.expected {
+				t.Errorf("Expected %v, got %v ", test.expected, result)
+			}
+		})
 	}
-
-}
-
-func TestMainOutputZero(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
-	fib(0)
-
-	expectedNeg := strconv.Quote("0\n")
-	actualNeg := strconv.Quote(buf.String())
-
-	if expectedNeg != actualNeg {
-		fmt.Println(actualNeg)
-		t.Errorf("Unexpected output in main()")
-	}
-
 }
