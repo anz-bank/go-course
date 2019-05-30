@@ -9,38 +9,24 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(s []int) []int {
-	newS, check := s, false
+	check := false
 
-	//loop until check becomes true
 	for !check {
-		//sort once
-		newS, check = bubbleLoop(newS)
-	}
-
-	return s
-}
-
-//this function loops through the slice and bubble sorts it
-func bubbleLoop(nextS []int) ([]int, bool) {
-	bubbleCheck := true
-
-	//loop through the slice
-	for i := 0; i < len(nextS); i++ {
-		//check if next slice elem exists
-		if i+1 < len(nextS) {
-			//check if current elem is bigger than the next elem
-			if nextS[i] > nextS[i+1] {
-				//swap them around
-				nextS[i], nextS[i+1] = nextS[i+1], nextS[i]
-				bubbleCheck = false
+		tempCheck := true
+		//sort once and then check
+		for i := 0; i < len(s); i++ {
+			//check if in last slice
+			if i+1 < len(s) {
+				if s[i] > s[i+1] {
+					//swap the elems around
+					s[i], s[i+1] = s[i+1], s[i]
+					tempCheck = false
+				}
 			}
-		} else {
-			//break at last slice elem
-			break
 		}
+		check = tempCheck
 	}
-
-	return nextS, bubbleCheck
+	return s
 }
 
 func main() {
