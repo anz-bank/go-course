@@ -16,7 +16,7 @@ func fib(n int) {
 	// 1 for positive n ; -1 for negative n
 	sign := 1
 	if n < 0 {
-		sign = 1
+		sign = -1
 	}
 	n1, n2 := 1, sign
 	for j := 0; j < n*sign; j++ {
