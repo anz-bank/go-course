@@ -3,87 +3,36 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
-func testEq(a []int, b []int) bool {
+func TestSort(t *testing.T) {
 
-	// If one is nil, the other must also be nil.
-	if (a == nil) != (b == nil) {
-		return false
+	type test struct {
+		input    []int
+		expected []int
+		actual   []int
 	}
 
-	if len(a) != len(b) {
-		return false
+	tests := []test{
+		{input: []int{3, 2, 1, 5}, expected: []int{1, 2, 3, 5}, actual: bubble([]int{3, 2, 1, 5})},
+		{input: []int{}, expected: []int{}, actual: bubble([]int{})},
+		{input: []int{3, 2, 1, 5}, expected: []int{1, 2, 3, 5}, actual: insertion([]int{3, 2, 1, 5})},
+		{input: []int{}, expected: []int{}, actual: insertion([]int{})},
 	}
 
-	for i := range a {
-		if a[i] != b[i] {
-			return false
+	for _, tc := range tests {
+
+		if !reflect.DeepEqual(tc.expected, tc.actual) {
+			fmt.Printf("%v  %T", tc.expected, tc.expected)
+			fmt.Printf("%v  %T", tc.actual, tc.actual)
+			t.Fatalf("expected: %v, got: %v", tc.expected, tc.actual)
 		}
 	}
 
-	return true
-}
-func TestBubbleSort(t *testing.T) {
-
-	expected := []int{1, 2, 3, 5}
-	actual := bubble([]int{3, 2, 1, 5})
-
-	if !testEq(expected, actual) {
-		fmt.Print("Expected:")
-		fmt.Println(expected)
-		fmt.Print("Actual:")
-		fmt.Println(actual)
-		t.Errorf("Unexpected output in main()")
-
-	}
-
 }
 
-func TestInsertionSort(t *testing.T) {
-
-	expected := []int{1, 2, 3, 5}
-	actual := insertion([]int{3, 2, 1, 5})
-
-	if !testEq(expected, actual) {
-		fmt.Print("Expected:")
-		fmt.Println(expected)
-		fmt.Print("Actual:")
-		fmt.Println(actual)
-		t.Errorf("Unexpected output in main()")
-
-	}
-
-}
-func TestBubbleSortEmptyList(t *testing.T) {
-
-	expected := []int{}
-	actual := bubble([]int{})
-
-	if !testEq(expected, actual) {
-		fmt.Print("Expected:")
-		fmt.Println(expected)
-		fmt.Print("Actual:")
-		fmt.Println(actual)
-		t.Errorf("Unexpected output in main()")
-	}
-
-}
-func TestInsertionSortEmptyList(t *testing.T) {
-
-	expected := []int{}
-	actual := insertion([]int{})
-
-	if !testEq(expected, actual) {
-		fmt.Print("Expected:")
-		fmt.Println(expected)
-		fmt.Print("Actual:")
-		fmt.Println(actual)
-		t.Errorf("Unexpected output in main()")
-	}
-
-}
 func TestBubbleSortMain(t *testing.T) {
 	var bufbub bytes.Buffer
 	outbub = &bufbub
