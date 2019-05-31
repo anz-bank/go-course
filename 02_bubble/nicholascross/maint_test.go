@@ -2,9 +2,10 @@ package main
 
 import (
 	"bytes"
-	"reflect"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMainOutput(t *testing.T) {
@@ -23,7 +24,7 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
-var testCases = map[string]struct{
+var testCases = map[string]struct {
 	input []int
 	want  []int
 }{
@@ -37,22 +38,20 @@ var testCases = map[string]struct{
 
 func TestBubbleSort(t *testing.T) {
 	for name, test := range testCases {
+		input := test.input
+		want := test.want
 		t.Run(name, func(t *testing.T) {
-			result := bubble(test.input)
-			if !reflect.DeepEqual(result, test.want) {
-				t.Errorf("expected %v, got %v", test.want, result)
-			}
+			assert.Equalf(t, bubble(input), want, "%v was not sorted", input)
 		})
 	}
 }
 
 func TestInsertionSort(t *testing.T) {
 	for name, test := range testCases {
+		input := test.input
+		want := test.want
 		t.Run(name, func(t *testing.T) {
-			result := insertion(test.input)
-			if !reflect.DeepEqual(result, test.want) {
-				t.Errorf("expected %v, got %v", test.want, result)
-			}
+			assert.Equalf(t, insertion(input), want, "%v was not sorted", input)
 		})
 	}
 }
