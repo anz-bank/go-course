@@ -1,4 +1,4 @@
-package bubble
+package main
 
 import (
 	"bytes"

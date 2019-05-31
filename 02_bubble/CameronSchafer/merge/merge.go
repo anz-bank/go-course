@@ -1,4 +1,4 @@
-package merge
+package main
 
 import (
 	"fmt"
