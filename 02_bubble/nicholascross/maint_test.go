@@ -23,28 +23,36 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
+var testCases = map[string]struct{
+	input []int
+	want  []int
+}{
+	"sample1": {input: []int{1, 2, 3, 4, 5}, want: []int{1, 2, 3, 4, 5}},
+	"sample2": {input: []int{5, 4, 3, 2, 1}, want: []int{1, 2, 3, 4, 5}},
+	"sample3": {input: []int{1, 2, 4, 3, 5}, want: []int{1, 2, 3, 4, 5}},
+	"sample4": {input: []int{4, 3, 1, 5, 2}, want: []int{1, 2, 3, 4, 5}},
+	"sample5": {input: []int{5, 1, 2, 4, 3}, want: []int{1, 2, 3, 4, 5}},
+	"sample6": {input: []int{-10, 2, -5, 1, 2, 44, 3}, want: []int{-10, -5, 1, 2, 2, 3, 44}},
+}
+
 func TestBubbleSort(t *testing.T) {
-	expectSorted([]int{1, 2, 3, 4, 5}, []int{1, 2, 3, 4, 5}, bubble, t)
-	expectSorted([]int{5, 4, 3, 2, 1}, []int{1, 2, 3, 4, 5}, bubble, t)
-	expectSorted([]int{1, 2, 4, 3, 5}, []int{1, 2, 3, 4, 5}, bubble, t)
-	expectSorted([]int{4, 3, 1, 5, 2}, []int{1, 2, 3, 4, 5}, bubble, t)
-	expectSorted([]int{5, 1, 2, 4, 3}, []int{1, 2, 3, 4, 5}, bubble, t)
+	for name, test := range testCases {
+		t.Run(name, func(t *testing.T) {
+			result := bubble(test.input)
+			if !reflect.DeepEqual(result, test.want) {
+				t.Errorf("expected %v, got %v", test.want, result)
+			}
+		})
+	}
 }
 
 func TestInsertionSort(t *testing.T) {
-	expectSorted([]int{1, 2, 3, 4, 5}, []int{1, 2, 3, 4, 5}, insertion, t)
-	expectSorted([]int{5, 4, 3, 2, 1}, []int{1, 2, 3, 4, 5}, insertion, t)
-	expectSorted([]int{1, 2, 4, 3, 5}, []int{1, 2, 3, 4, 5}, insertion, t)
-	expectSorted([]int{4, 3, 1, 5, 2}, []int{1, 2, 3, 4, 5}, insertion, t)
-	expectSorted([]int{5, 1, 2, 4, 3}, []int{1, 2, 3, 4, 5}, insertion, t)
-}
-
-func expectSorted(original []int, expected []int, sort func(s []int) []int, t *testing.T) {
-	actual := sort(original)
-
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("Sort slice %v does not match expected slice %v", actual, expected)
-	} else {
-		t.Logf("Sorted %v -> %v", original, actual)
+	for name, test := range testCases {
+		t.Run(name, func(t *testing.T) {
+			result := insertion(test.input)
+			if !reflect.DeepEqual(result, test.want) {
+				t.Errorf("expected %v, got %v", test.want, result)
+			}
+		})
 	}
 }
