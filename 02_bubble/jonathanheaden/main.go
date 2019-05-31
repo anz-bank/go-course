@@ -9,16 +9,18 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(s []int) []int {
-	l := len(s) - 1
-	fin := false
-	for !fin {
+	done := false
+	if len(s) == 0 {
+		return s
+	}
+	for !done {
 		sw := false
-		for i := 0; i < l; i++ {
+		for i := 0; i < len(s)-1; i++ {
 			if s[i] > s[i+1] {
 				sw = true
 				s[i], s[i+1] = s[i+1], s[i]
 			}
-			fin = !sw
+			done = !sw
 		}
 	}
 	return s
