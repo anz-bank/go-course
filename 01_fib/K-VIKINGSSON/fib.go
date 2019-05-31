@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt";
+	"fmt"
 )
 
 func negaFib(n int) {
