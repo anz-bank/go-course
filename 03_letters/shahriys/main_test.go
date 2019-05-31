@@ -34,7 +34,8 @@ func TestSortLetters(t *testing.T) {
 	tests := []test{
 		{input: "abac", expected: []string{"a:2", "b:1", "c:1"}, actual: sortLetters(letters("abac"))},
 		{input: "aAdbbDA", expected: []string{"A:2", "D:1", "a:1", "b:2", "d:1"}, actual: sortLetters(letters("aAdbbDA"))},
-		{input: "aAAADDDbacZZZ", expected: []string{"A:3", "D:3", "Z:3", "a:2", "b:1", "c:1"}, actual: sortLetters(letters("aAAADDDbacZZZ"))},
+		{input: "aAAADDDbac", expected: []string{"A:3", "D:3", "a:2", "b:1", "c:1"},
+			actual: sortLetters(letters("aAAADDDbac"))},
 		{input: "", expected: []string{}, actual: sortLetters(letters(""))},
 	}
 
