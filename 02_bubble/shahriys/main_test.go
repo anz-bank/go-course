@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -25,9 +24,7 @@ func TestSort(t *testing.T) {
 	for _, tc := range tests {
 
 		if !reflect.DeepEqual(tc.expected, tc.actual) {
-			fmt.Printf("%v  %T", tc.expected, tc.expected)
-			fmt.Printf("%v  %T", tc.actual, tc.actual)
-			t.Fatalf("expected: %v, got: %v", tc.expected, tc.actual)
+			t.Fatalf(" input:%v, expected: %v, got: %v", tc.input, tc.expected, tc.actual)
 		}
 	}
 
