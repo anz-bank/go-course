@@ -29,8 +29,7 @@ func bubble(s []int) []int {
 		}
 
 		if !swapped {
-			//When nothing is swapped it means the order of all subsequent
-			//elements is ascending and we can start bubbling up the next value
+			//when nothing swapped: sort is complete. break out of outer loop.
 			break
 		}
 	}
