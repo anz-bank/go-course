@@ -11,7 +11,7 @@ var mainout io.Writer = os.Stdout
 
 func main() {
 	fmt.Fprintf(mainout, "Fibonacci series starting...\n")
-	fib(100)
+	fib(7)
 	fmt.Fprintf(mainout, "Fibonacci series completed...\n")
 }
 
