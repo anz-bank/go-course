@@ -13,29 +13,34 @@ func main() {
 }
 
 func fib(n int) {
-	store := map[int]int{
-		0: 0,
+	// Our intial map, with the default starting values needed to begin the sequence.
+	fibonacciMap := map[int]int{
+		-1: 1,
+		0:  0,
+	}
+	negative := false
+
+	// Check if we are performaing negafibonacci or not, and if so remove the sign from n
+	if n < 0 {
+		n *= -1
+		negative = true
 	}
 
-	i := 0
-	for i != n {
-		current := 0
+	// Form our map of fibonacci numbers, ensuring i matches Fn
+	for i := 1; i < n+1; i++ {
+		// Store the next positive fibonacci iteration
+		current := fibonacciMap[i-1] + fibonacciMap[i-2]
+		fibonacciMap[i] = current
 
-		if n < 0 {
-			current = store[i] - store[i-1]
-			if current == 0 {
-				current = 1
+		// If negafibonacci, store the next negative iteration
+		if negative {
+			if i%2 == 0 {
+				current = -current
 			}
-			store[i-2] = current
-			i--
-		} else {
-			current = store[i] + store[i-1]
-			if current == 0 {
-				current = 1
-			}
-			store[i+1] = current
-			i++
+			fibonacciMap[-i] = current
 		}
+
+		// Print out the current iteration value
 		fmt.Fprintln(out, current)
 	}
 }
