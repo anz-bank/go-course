@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,4 +26,10 @@ func TestFib(t *testing.T) {
 	a.Contains(getArray, 0, "Array should contain 0")
 	a.Contains(getArray, 1, "Array should contain 1")
 	a.Contains(getArray, 2, "Array should contain 2")
+}
+
+func TestMain(m *testing.M) {
+	main()
+	fmt.Printf("test!")
+	os.Exit(m.Run())
 }
