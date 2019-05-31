@@ -8,30 +8,32 @@ import (
 
 var out io.Writer = os.Stdout
 
-func fib(n int) string {
-	f := [3]int{0, 1, 1}
-	var prefix, res string
-	var j int
+func main() {
+	fib(7)
+}
+
+func fib(n int) {
+	a, b := 0, 1
+	var prefix string
 	var neg = false
 	if n < 0 {
 		n *= -1
 		neg = true
 	}
-	for i := 0; i < n; i++ {
-		if j = i + 1; i > 1 {
-			f = [3]int{f[1], f[2], (f[1] + f[2])}
-			j = 2
-		}
-		if prefix = ""; (i%2 == 1) && neg {
+	for i := 0; i <= n; i++ {
+		if prefix = ""; neg && (i%2 == 0) {
 			prefix = "-"
 		}
-		res = fmt.Sprintf("%s\n%s%d", res, prefix, f[j])
+		switch i {
+		case 0:
+			if n == 0 {
+				fmt.Fprintln(out, "0")
+			}
+		case 1:
+			fmt.Fprintf(out, "%s%d\n", prefix, 1)
+		default:
+			a, b = b, a+b
+			fmt.Fprintf(out, "%s%d\n", prefix, b)
+		}
 	}
-	return res
-}
-
-func main() {
-
-	fmt.Fprintln(out, fib(7))
-
 }
