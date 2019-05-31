@@ -14,7 +14,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("[3 2 1 5]\n")
+	expected := strconv.Quote("[1 2 3 5]\n")
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
@@ -31,13 +31,19 @@ func TestMergeOutput(t *testing.T) {
 		expectedArr []int
 	}{
 		{description: "merge []int{3, 2, 1, 5}", input: []int{3, 2, 1, 5},
-			expectedArr: []int{3, 2, 1, 5},
+			expectedArr: []int{1, 2, 3, 5},
 		},
 		{description: "merge []int{6,3,19}", input: []int{6, 3, 19},
-			expectedArr: []int{6, 3, 19},
+			expectedArr: []int{3, 6, 19},
 		},
 		{description: "merge []int{0,1,2}", input: []int{0, 1, 2},
 			expectedArr: []int{0, 1, 2},
+		},
+		{description: "merge []int{0,1,2}", input: []int{-10, 1, -12, 2, 90, 0, -100},
+			expectedArr: []int{-100, -12, -10, 0, 1, 2, 90},
+		},
+		{description: "merge []int{0,1,2}", input: []int{0},
+			expectedArr: []int{0},
 		},
 	}
 
