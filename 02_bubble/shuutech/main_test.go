@@ -1,10 +1,10 @@
 package main
+
 import (
-	"strconv"
-	"testing"
 	"fmt"
 	"os"
-	
+	"strconv"
+	"testing"
 )
 
 func TestBubble(t *testing.T) {
@@ -12,14 +12,14 @@ func TestBubble(t *testing.T) {
 	var sorted = bubble(unsorted)
 	var s = ""
 
-for i := range sorted {
-	s =  s + "," + strconv.Itoa(sorted[i])
-}
+	for i := range sorted {
+		s = s + "," + strconv.Itoa(sorted[i])
+	}
 	var expected = ",1,2,3,5"
 	if expected != s {
 		t.Errorf("expected %v, got %v", expected, s)
 		t.Fail()
-}
+	}
 }
 
 func TestMain(m *testing.M) {
