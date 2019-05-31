@@ -1,9 +1,27 @@
 package main
 
 import (
+	"bytes"
 	"reflect"
+	"strconv"
 	"testing"
 )
+
+func TestMainOutput(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	main()
+
+	expected := strconv.Quote(`[1 2 3 5]
+[1 2 3 5]
+`)
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main() %v", actual)
+	}
+}
 
 func TestBubbleSort(t *testing.T) {
 	expectSorted([]int{1, 2, 3, 4, 5}, []int{1, 2, 3, 4, 5}, bubble, t)

@@ -1,10 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"os"
+)
+
+var out io.Writer = os.Stdout
 
 func main() {
-	fmt.Println(bubble([]int{3, 2, 1, 5}))
-	fmt.Println(insertion([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, bubble([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, insertion([]int{3, 2, 1, 5}))
 }
 
 func bubble(s []int) []int {
