@@ -13,7 +13,7 @@ func main() {
 }
 
 func fib(n int) {
-	// Our intial map, with the default starting values needed to begin the sequence.
+	// Our initial map, with the default starting values needed to begin the sequence.
 	fibonacciMap := map[int]int{
 		-1: 1,
 		0:  0,
