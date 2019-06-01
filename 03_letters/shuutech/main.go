@@ -9,10 +9,10 @@ import (
 
 func letters(s string) map[rune]int {
 	var lettersMap = make(map[rune]int)
-	for i, r := range s {
-		i = 0
-		i = strings.Count(s, string(r))
-		lettersMap[r] = i
+	var j int
+	for i := range s {
+		j = strings.Count(s, string(rune(s[i])))
+		lettersMap[rune(s[i])] = j
 	}
 	return lettersMap
 }
