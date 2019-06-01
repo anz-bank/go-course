@@ -10,20 +10,19 @@ var out io.Writer = os.Stdout
 
 func fib(n int) {
 
-	lines := 1
-	currentNumber := 1
-	previousNumber := 0
-	scratchNumber := 0
+	if n > 0 {
 
-	for lines <= n {
+		currentNumber, previousNumber, scratchNumber := 1, 0, 0
 
-		fmt.Fprintln(out, currentNumber)
+		for lines := 1; lines <= n; lines++ {
+			fmt.Fprintln(out, currentNumber)
 
-		scratchNumber = previousNumber
-		previousNumber = currentNumber
-		currentNumber += scratchNumber
+			scratchNumber, previousNumber = previousNumber, currentNumber
+			currentNumber += scratchNumber
+		}
 
-		lines++
+	} else {
+		fmt.Fprintln(out, "Invalid Input: Must be a positive integer")
 	}
 
 }
