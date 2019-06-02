@@ -4,7 +4,6 @@ import (
 	"fmt"
 )
 
-//var out io.Writer = os.Stdout
 var arrayList = []int{0, 1}
 
 func nextVal(a int, b int, n int, c int) []int {
@@ -23,13 +22,12 @@ func nextVal(a int, b int, n int, c int) []int {
 }
 
 func fib(n int) []int {
+	nextVal(0, 1, n, 0)
 	var slice2 = arrayList[:n]
-
+	fmt.Println(slice2)
 	return slice2
 }
 
 func main() {
-	var n = 7
-	nextVal(0, 1, n, 0)
-	fmt.Println(fib(n))
+	fib(7)
 }
