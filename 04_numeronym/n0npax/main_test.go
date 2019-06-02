@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMainOutput(t *testing.T) {
@@ -40,15 +42,10 @@ func TestShorten(t *testing.T) {
 		"internationalization": {input: "internationalization", expected: "i18n"},
 	}
 	for name, test := range testCases {
-		t.Run(name, helperTestShorten(test.input, test.expected))
-	}
-}
-
-func helperTestShorten(input string, expected string) func(*testing.T) {
-	return func(t *testing.T) {
-		actual := shorten(input)
-		if actual != expected {
-			t.Errorf("Expected: %q - Actual: %q", expected, actual)
-		}
+		input, want := test.input, test.expected
+		t.Run(name, func(t *testing.T) {
+			actual := shorten(input)
+			assert.Equalf(t, want, actual, "For input: %v expected: %v got %v", input, want, actual)
+		})
 	}
 }

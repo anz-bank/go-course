@@ -9,11 +9,12 @@ import (
 var out io.Writer = os.Stdout
 
 func shorten(word string) string {
-	if len(word) < 4 {
+	wordLen := len(word)
+	if wordLen < 4 {
 		return word
 	}
-	num := len(word) - 2
-	return fmt.Sprintf("%c%d%c", word[0], num, word[len(word)-1])
+	num := wordLen - 2
+	return fmt.Sprintf("%c%d%c", word[0], num, word[wordLen-1])
 }
 
 func numeronyms(vals ...string) (shortened []string) {
