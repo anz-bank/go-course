@@ -17,6 +17,7 @@ func TestBubbleOutput(t *testing.T) {
 		"blank":      {input: []int{}, want: []int{}},
 		"nil":        {input: nil, want: nil},
 		"duplicated": {input: []int{1, 0, 0, 1}, want: []int{0, 0, 1, 1}},
+		"single":     {input: []int{1}, want: []int{1}},
 	}
 
 	for name, test := range testCases {
