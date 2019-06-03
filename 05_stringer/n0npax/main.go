@@ -4,19 +4,12 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 )
 
-// IPAddr is a type to encapsulate IPv4 (4 bytes)
 type IPAddr [4]byte
 
-// Stringer for IPAddr
 func (addr IPAddr) String() string {
-	values := make([]string, len(addr))
-	for i, v := range addr {
-		values[i] = fmt.Sprint(v)
-	}
-	return strings.Join(values, ".")
+	return fmt.Sprintf("%d.%d.%d.%d", addr[0], addr[1], addr[2], addr[3])
 }
 
 var out io.Writer = os.Stdout

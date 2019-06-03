@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strconv"
 	"testing"
+
+	assertion "github.com/stretchr/testify/assert"
 )
 
 func TestMainOutput(t *testing.T) {
@@ -33,17 +35,15 @@ func TestStringify(t *testing.T) {
 		"mask 32":              {input: IPAddr{255, 255, 255, 255}, expected: "255.255.255.255"},
 		"mask 0":               {input: IPAddr{0, 0, 0, 0}, expected: "0.0.0.0"},
 		"anz":                  {input: IPAddr{202, 2, 59, 40}, expected: "202.2.59.40"},
+		"empty":                {input: IPAddr{}, expected: "0.0.0.0"},
+		"half-empty":           {input: IPAddr{10, 10}, expected: "10.10.0.0"},
 	}
 	for name, test := range testCases {
-		t.Run(name, helperTestStringify(test.input, test.expected))
-	}
-}
-
-func helperTestStringify(input IPAddr, expected string) func(*testing.T) {
-	return func(t *testing.T) {
-		actual := input.String()
-		if actual != expected {
-			t.Errorf("Expected: %q - Actual: %q", expected, actual)
-		}
+		input, expected := test.input, test.expected
+		t.Run(name, func(t *testing.T) {
+			assert := assertion.New(t)
+			actual := input.String()
+			assert.Equalf(expected, actual, "Testcase %s failed")
+		})
 	}
 }
