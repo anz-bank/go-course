@@ -28,7 +28,7 @@ func TestMainOutput(t *testing.T) {
 	actual := buffib.String()
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()" + expected + " " + actual)
 	}
 }
 func TestFibPos(t *testing.T) {
@@ -48,7 +48,7 @@ func TestFibPos(t *testing.T) {
 	actual := buffib.String()
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()" + expected + " " + actual)
 	}
 }
 func TestFibNeg(t *testing.T) {
@@ -68,6 +68,19 @@ func TestFibNeg(t *testing.T) {
 	actual := buffib.String()
 
 	if expected != actual {
-		t.Errorf("Unexpected output in main()")
+		t.Errorf("Unexpected output in main()" + expected + " " + actual)
+	}
+}
+
+func TestFibZero(t *testing.T) {
+	var buffib bytes.Buffer
+	outfib = &buffib
+	fib(0)
+	expected := `1
+`
+	actual := buffib.String()
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main()" + expected + " " + actual)
 	}
 }
