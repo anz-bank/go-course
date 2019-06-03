@@ -4,16 +4,13 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"unicode/utf8"
 	"strconv"
 )
 
 func letters(s string) map[rune]int {
 	m := make(map[rune]int)
-	for i, w := 0, 0; i < len(s); i += w {
-		runeValue, width := utf8.DecodeRuneInString(s[i:])
-		m[runeValue]++
-		w = width
+	for _, char := range(s) {
+		m[rune(char)]++
 	}
 	return m
 }
