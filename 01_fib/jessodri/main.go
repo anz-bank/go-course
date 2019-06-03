@@ -8,7 +8,7 @@ import (
 )
 
 var out io.Writer = os.Stdout
- 
+
 func fib(n int) {
 
 	a, b, c := big.NewInt(0), big.NewInt(1), 1
