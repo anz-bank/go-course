@@ -15,15 +15,10 @@ func main() {
 }
 
 func fib(n int) {
-	i := 0
-	previous := 0
-	current := 1
-	next := 1
-	for i < n {
-		next = current + previous
-		previous = current
-		current = next
-		fmt.Fprintln(out, previous)
-		i++
+
+	current, next := 1, 1
+	for i := 0; i < n; i++ {
+		fmt.Fprintln(out, current)
+		current, next = next, current+next
 	}
 }
