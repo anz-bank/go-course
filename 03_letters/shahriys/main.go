@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -16,12 +15,7 @@ func letters(s string) map[rune]int {
 	alphamap := make(map[rune]int)
 
 	for i := 0; i < len(s); i++ {
-		if val, ok := alphamap[rune(s[i])]; ok {
-			alphamap[rune(s[i])] = val + 1
-		} else {
-			alphamap[rune(s[i])] = 1
-		}
-
+		alphamap[rune(s[i])]++
 	}
 	//fmt.Println(alphamap)
 	return alphamap
@@ -36,19 +30,18 @@ func (p RuneSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 func sortLetters(m map[rune]int) []string {
 
-	var keys = make([]rune, 0, 256)
+	var keys = make([]rune, 0, len(m))
 	for key := range m {
 		keys = append(keys, key)
 	}
 	var runes RuneSlice = keys
 	sort.Sort(runes)
-	var returnval = make([]string, 0, 256)
+	var returnval = make([]string, 0, len(m))
 
 	for _, k := range runes {
-		s := string(k) + ":" + strconv.FormatInt(int64(m[k]), 10)
+		s := fmt.Sprintf("%c:%d", k, m[k])
 		returnval = append(returnval, s)
 	}
-	//fmt.Printf("%v  %T", returnval, returnval)
 	return returnval
 }
 func main() {
