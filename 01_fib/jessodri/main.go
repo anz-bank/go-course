@@ -8,7 +8,7 @@ import (
 )
 
 var out io.Writer = os.Stdout
- 
+
 func fib(n int) {
 
 	a, b, c := big.NewInt(0), big.NewInt(1), 1
@@ -21,7 +21,6 @@ func fib(n int) {
 		if i%2 == 0 && n < 0 {
 			isNeg = big.NewInt(-1)
 		}
-
 		a, b = b, a.Add(a, b)
 		fibResult.Mul(a, isNeg)
 
