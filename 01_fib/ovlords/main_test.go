@@ -57,3 +57,19 @@ func TestNegativeInput(t *testing.T) {
 		t.Errorf("Unexpected output: error message expected")
 	}
 }
+
+func TestOneInput(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	fib(1)
+
+	expected := strconv.Quote(`1
+`)
+
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main()")
+	}
+}

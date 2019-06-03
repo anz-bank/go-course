@@ -9,22 +9,16 @@ import (
 var out io.Writer = os.Stdout
 
 func fib(n int) {
-
-	if n > 0 {
-
-		currentNumber, previousNumber, scratchNumber := 1, 0, 0
-
-		for lines := 1; lines <= n; lines++ {
-			fmt.Fprintln(out, currentNumber)
-
-			scratchNumber, previousNumber = previousNumber, currentNumber
-			currentNumber += scratchNumber
-		}
-
-	} else {
+	if n <= 0 {
 		fmt.Fprintln(out, "Invalid Input: Must be a positive integer")
+		return
 	}
 
+	current, previous := 1, 0
+	for i := 1; i <= n; i++ {
+		fmt.Fprintln(out, current)
+		previous, current = current, current+previous
+	}
 }
 
 func main() {
