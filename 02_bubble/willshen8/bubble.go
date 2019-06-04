@@ -9,14 +9,15 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(s []int) []int {
+	sliceCopy := append(s[:0:0], s...)
 	sliceLength := len(s)
 	sorted := false
 
 	for !sorted {
 		swapOccurred := false
 		for i := 0; i < sliceLength-1; i++ {
-			if s[i+1] < s[i] {
-				swap(s, i, i+1)
+			if sliceCopy[i+1] < sliceCopy[i] {
+				sliceCopy[i], sliceCopy[i+1] = sliceCopy[i+1], sliceCopy[i]
 				swapOccurred = true
 			}
 		}
@@ -24,29 +25,21 @@ func bubble(s []int) []int {
 			sorted = true
 		}
 	}
-	return s
+	return sliceCopy
 }
 
 func insertionSort(s []int) []int {
-	for i := 1; i < len(s); i++ {
-		currValue := s[i]
-		emptySlot := i
+	sliceCopy := append(s[:0:0], s...)
+	for key, value := range s {
 
-		for emptySlot > 0 && s[emptySlot-1] > currValue {
-			s[emptySlot] = s[emptySlot-1]
-			emptySlot--
+		for key > 0 && sliceCopy[key-1] > value {
+			sliceCopy[key] = sliceCopy[key-1]
+			key--
 		}
-		s[emptySlot] = currValue
+		sliceCopy[key] = value
 
 	}
-	return s
-}
-
-func swap(slice []int, pos1 int, pos2 int) []int {
-	temp := slice[pos2]
-	slice[pos2] = slice[pos1]
-	slice[pos1] = temp
-	return slice
+	return sliceCopy
 }
 
 func equal(a, b []int) bool {

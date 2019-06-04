@@ -19,7 +19,7 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
-func TestBubbleSort(t *testing.T) {
+func TestBubbleAndInsertionSort(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    []int
@@ -30,6 +30,8 @@ func TestBubbleSort(t *testing.T) {
 			expected: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
 		{name: "Already sorted slice", input: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			expected: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
+		{name: "Slice with one number different to rest", input: []int{1, 1, 1, 2, 1},
+			expected: []int{1, 1, 1, 1, 2}},
 		{name: "Slice with negative number", input: []int{1, -1}, expected: []int{-1, 1}},
 	}
 
@@ -37,9 +39,19 @@ func TestBubbleSort(t *testing.T) {
 		actual := bubble(test.input)
 		testResult := equal(actual, test.expected)
 		if testResult == false {
-			t.Fatalf("Test Failed! Expected: %v, Got: %v", test.expected, actual)
+			t.Fatalf("Bubble Sort Test Failed! Expected: %v, Got: %v", test.expected, actual)
 		} else {
-			t.Logf("Test Passed: %v", test.name)
+			t.Logf("Bubble Sort Test Passed: %v", test.name)
+		}
+	}
+
+	for _, test := range tests {
+		actual := insertionSort(test.input)
+		testResult := equal(actual, test.expected)
+		if testResult == false {
+			t.Fatalf("Insertion Sort Test Failed! Expected: %v, Got: %v", test.expected, actual)
+		} else {
+			t.Logf("Insertion Sort Test Passed: %v", test.name)
 		}
 	}
 }
@@ -61,33 +73,6 @@ func TestIntSliceEqual(t *testing.T) {
 		actual := equal(test.sliceA, test.sliceB)
 		if actual != test.expected {
 			t.Fatalf("Test failed! Expected: %t, Got: %t", test.expected, actual)
-		}
-	}
-}
-
-func TestInsertionSort(t *testing.T) {
-	tests := []struct {
-		name     string
-		input    []int
-		expected []int
-	}{
-		{name: "Empty slice", input: []int{}, expected: []int{}},
-		{name: "Reverse sorted slice", input: []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1},
-			expected: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
-		{name: "Already sorted slice", input: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-			expected: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
-		{name: "Slice with one number different to rest", input: []int{1, 1, 1, 2, 1},
-			expected: []int{1, 1, 1, 1, 2}},
-		{name: "Slice with negative number", input: []int{1, -1}, expected: []int{-1, 1}},
-	}
-
-	for _, test := range tests {
-		actual := insertionSort(test.input)
-		testResult := equal(actual, test.expected)
-		if testResult == false {
-			t.Fatalf("Test Failed! Expected: %v, Got: %v", test.expected, actual)
-		} else {
-			t.Logf("Test Passed: %v", test.name)
 		}
 	}
 }
