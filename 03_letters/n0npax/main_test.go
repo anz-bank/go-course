@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLetters(t *testing.T) {
@@ -22,52 +24,62 @@ func TestLetters(t *testing.T) {
 	}
 
 	for name, test := range testCases {
-		t.Run(name, helperTestLetter(name, test.input, test.expected))
+		t.Run(name, helperTestLetter(test.input, test.expected))
 	}
 }
 
-func helperTestLetter(name string, input string, expected map[rune]int) func(*testing.T) {
+func helperTestLetter(input string, expected map[rune]int) func(*testing.T) {
 	return func(t *testing.T) {
 		result := letters(input)
-		for k, v := range result {
-			if v != expected[k] {
-				for k := range result {
-					if expected[k] != result[k] {
-						t.Errorf("Test: %s - Expect: key: %c expect: %d got: %d", name, k, expected[k], result[k])
-					}
-				}
+		for k, count := range result {
+			if _, ok := expected[k]; !ok {
+				t.Errorf("Found unexpected key: %c", k)
 			}
+			assert.Equalf(t, expected[k], count, "Incorrect key")
 		}
+		assert.Equalf(t, len(expected), len(result), "Length mismatch")
+
 	}
 }
 
-func TestLetterFreqString(t *testing.T) {
+func TestLetterFreqStringNegative(t *testing.T) {
+	testCases := map[string]struct {
+		input       letterFreq
+		notExpected string
+	}{
+		// cyrillic 'а' is different char than latin 'a'
+		"mixed": {input: letterFreq{letter: 'а', count: 2}, notExpected: "a:2"},
+		"count": {input: letterFreq{letter: 'a', count: 2}, notExpected: "a:3"},
+		"key":   {input: letterFreq{letter: 'b', count: 2}, notExpected: "a:2"},
+	}
+	for name, test := range testCases {
+		input := test.input
+		notExpected := test.notExpected
+		t.Run(name, func(t *testing.T) {
+			result := input.String()
+			assert.NotEqualf(t, notExpected, result, "Unexpected result")
+		})
+	}
+
+}
+
+func TestLetterFreqStringPositive(t *testing.T) {
 	testCases := map[string]struct {
 		input    letterFreq
 		expected string
-		positive bool
 	}{
-		"latinum":  {input: letterFreq{letter: 'a', occurency: 2}, expected: "a:2", positive: true},
-		"cyrillic": {input: letterFreq{letter: 'а', occurency: 2}, expected: "а:2", positive: true},
-		// cyrillic 'а' is different char than latin 'a'
-		"mixed": {input: letterFreq{letter: 'а', occurency: 2}, expected: "a:2", positive: false},
+		"latinum":  {input: letterFreq{letter: 'a', count: 2}, expected: "a:2"},
+		"cyrillic": {input: letterFreq{letter: 'а', count: 2}, expected: "а:2"},
 	}
 	for name, test := range testCases {
-		t.Run(name, helperTestLetterFreqString(name, test.input, test.expected, test.positive))
+		input := test.input
+		expected := test.expected
+		t.Run(name, func(t *testing.T) {
+			result := input.String()
+			assert.Equalf(t, expected, result, "Unexpected result")
+		})
 	}
 
-}
-
-func helperTestLetterFreqString(name string, input letterFreq, expected string, positive bool) func(*testing.T) {
-	return func(t *testing.T) {
-		result := input.String()
-		if positive && result != expected {
-			t.Errorf("Test: %s - Expect: %s got: %s", name, expected, result)
-		}
-		if !positive && result == expected {
-			t.Errorf("Test: %s - Expect: not equal: %s got: %s", name, expected, result)
-		}
-	}
 }
 
 func TestSortLetters(t *testing.T) {
@@ -91,6 +103,7 @@ func helperTestSortLetters(name string, input map[rune]int, expected []string) f
 				t.Errorf("Test: %s - Expect: %s got: %s", name, expected[i], v)
 			}
 		}
+		assert.Equalf(t, len(expected), len(result), "Lenght missmatch")
 	}
 }
 
