@@ -46,3 +46,27 @@ func runTest(t *testing.T, n int, expectedNums []string) {
 		t.Errorf("\nActual: %q\nExpected: %q", actual, expected)
 	}
 }
+
+func TestMain(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+	expectedNums := []string{
+		"1",
+		"1",
+		"2",
+		"3",
+		"5",
+		"8",
+		"13",
+	}
+
+	main()
+
+	actual := buf.String()
+	expected := strings.Join(expectedNums, "\n") + "\n"
+
+	if expected != actual {
+		// %q (raw-string), we don't want to print '\n' as newline.
+		t.Errorf("\nActual: %q\nExpected: %q", actual, expected)
+	}
+}
