@@ -19,17 +19,19 @@ func letters(s string) map[rune]int {
 }
 
 func sortLetters(m map[rune]int) []string {
-	var keys []rune
+	keys := make([]rune, len(m))
+	i := 0
 	for k := range m {
-		keys = append(keys, k)
+		keys[i] = k
+		i++
 	}
 	// sort keys
 	sort.Slice(keys, func(i, j int) bool {
 		return keys[i] < keys[j]
 	})
-	var sorted []string
-	for _, k := range keys {
-		sorted = append(sorted, fmt.Sprintf("%s:%d", string(k), m[k]))
+	sorted := make([]string, len(m))
+	for i, k := range keys {
+		sorted[i] = fmt.Sprintf("%s:%d", string(k), m[k])
 	}
 	return sorted
 }
