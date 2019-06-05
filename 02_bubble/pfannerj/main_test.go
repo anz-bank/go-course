@@ -37,6 +37,7 @@ var testCases = map[string]struct {
 
 func TestBubbleSort(t *testing.T) {
 	for name, tc := range testCases {
+		tc := tc
 		t.Run(name, func(t *testing.T) {
 			actual := bubble(tc.input)
 			if !reflect.DeepEqual(tc.expected, actual) {
@@ -48,6 +49,7 @@ func TestBubbleSort(t *testing.T) {
 
 func TestInsertionSort(t *testing.T) {
 	for name, tc := range testCases {
+		tc := tc
 		t.Run(name, func(t *testing.T) {
 			actual := insertion(tc.input)
 			if !reflect.DeepEqual(tc.expected, actual) {
