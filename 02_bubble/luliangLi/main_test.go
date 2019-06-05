@@ -25,7 +25,12 @@ func TestBubbleOutput(t *testing.T) {
 		test := test
 
 		t.Run(name, func(t *testing.T) {
+			inputCopy := append(test.input[:0:0], test.input...)
 			actual := bubble(test.input)
+
+			if !reflect.DeepEqual(test.input, inputCopy) {
+				t.Errorf("Input slice : %v, was changed to: %v", test.input, inputCopy)
+			}
 
 			if !reflect.DeepEqual(test.want, actual) {
 				t.Errorf("running : %v, expected %v, got %v", test.input, test.want, actual)

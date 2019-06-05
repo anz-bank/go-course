@@ -13,15 +13,16 @@ func bubble(s []int) []int {
 		return s
 	}
 
-	for i := 0; i < len(s)-1; i++ {
-		for j := 0; j < len(s)-1-i; j++ {
-			if s[j] > s[j+1] {
-				s[j], s[j+1] = s[j+1], s[j]
+	sCopy := append(s[:0:0], s...)
+	for i := 0; i < len(sCopy)-1; i++ {
+		for j := 0; j < len(sCopy)-1-i; j++ {
+			if sCopy[j] > sCopy[j+1] {
+				sCopy[j], sCopy[j+1] = sCopy[j+1], sCopy[j]
 			}
 		}
 	}
 
-	return s
+	return sCopy
 }
 
 func insertSort(s []int) []int {
@@ -29,17 +30,18 @@ func insertSort(s []int) []int {
 		return s
 	}
 
-	for i := 1; i < len(s); i++ {
+	sCopy := append(s[:0:0], s...)
+	for i := 1; i < len(sCopy); i++ {
 		for j := i - 1; j >= 0; j-- {
-			if s[j] > s[j+1] {
-				s[j], s[j+1] = s[j+1], s[j]
+			if sCopy[j] > sCopy[j+1] {
+				sCopy[j], sCopy[j+1] = sCopy[j+1], sCopy[j]
 			} else {
 				break
 			}
 		}
 	}
 
-	return s
+	return sCopy
 }
 
 func main() {
