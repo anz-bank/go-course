@@ -27,3 +27,15 @@ func TestBubble(t *testing.T) {
 		t.Errorf("got %v want %v given %v", got, want, input)
 	}
 }
+
+func TestInsertion(t *testing.T) {
+
+	input := []int{3, 2, 1, 5}
+
+	got := insertionSort(input)
+	want := []int{1, 2, 3, 5}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v given %v", got, want, input)
+	}
+}
