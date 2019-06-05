@@ -33,15 +33,23 @@ func TestSort(t *testing.T) {
 		{[]int{-1, -3, -2, -5}, []int{-5, -3, -2, -1}},
 		{[]int{0, 0, 0, 0}, []int{0, 0, 0, 0}},
 		{[]int{-1, 1, 0}, []int{-1, 0, 1}},
+		{[]int{1}, []int{1}},
+		{[]int{}, []int{}},
 	}
 
 	for _, table := range tables {
-		var unsorted [4]int
-		copy(unsorted[:], table.x)
 		sorted := bubble(table.x)
 		if !equal(sorted, table.n) {
-			t.Errorf("Sorting of (%v) was incorrect, got: %v, want: %v.", unsorted, sorted, table.n)
+			t.Errorf("Sorting of (%v) was incorrect, got: %v, want: %v.", table.x, sorted, table.n)
 		}
+	}
+}
+
+func TestFunctionDoesNotMutateOriginal(t *testing.T) {
+	original := []int{1, 3, 2, 5}
+	bubble(original)
+	if !equal(original, []int{1, 3, 2, 5}) {
+		t.Errorf("Sorting function modified the original array")
 	}
 }
 
