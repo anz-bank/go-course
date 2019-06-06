@@ -18,13 +18,14 @@ func TestMainOut(t *testing.T) {
 }
 
 var tests = []struct {
+	name  string
 	input []int
 	want  []int
 }{
-	{[]int{3, 2, 1, 5}, []int{1, 2, 3, 5}},
-	{[]int{5, 5, 5, 5}, []int{5, 5, 5, 5}},
-	{[]int{}, []int{}},
-	{[]int{1, 2, 3, 4}, []int{1, 2, 3, 4}},
+	{"valid", []int{3, 2, 1, 5}, []int{1, 2, 3, 5}},
+	{"same number", []int{5, 5, 5, 5}, []int{5, 5, 5, 5}},
+	{"blank", []int{}, []int{}},
+	{"sorted", []int{1, 2, 3, 4}, []int{1, 2, 3, 4}},
 }
 
 func TestBubble(t *testing.T) {
