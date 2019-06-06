@@ -22,7 +22,7 @@ func absolute(n int) (int, bool) {
 }
 
 func fib(n int) {
-	// Cator for fib(0)
+	// Cater for fib(0).
 	if n == 0 {
 		fmt.Fprintln(out, 0)
 		return
@@ -43,7 +43,7 @@ func fib(n int) {
 
 		prev2, prev1 = prev1, current
 
-		// print based on whether we negafibonacci was requested or not
+		// print based on whether negafibonacci was requested or not.
 		if nega && i%2 == 1 {
 			fmt.Fprintln(out, -current)
 		} else {
