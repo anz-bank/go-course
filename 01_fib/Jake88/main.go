@@ -15,7 +15,7 @@ func main() {
 func absolute(n int) (int, bool) {
 	var negative bool
 	if n < 0 {
-		n = n * -1
+		n *= -1
 		negative = true
 	}
 	return n, negative
