@@ -35,11 +35,15 @@ func fib(n int) {
 	for i := 0; i < n; i++ {
 		current := prev1 + prev2
 
+		// Protect against integer overflow / out of bounds error.
+		if current < prev1 {
+			fmt.Fprintln(out, "Error: Number overflow")
+			return
 		}
 
 		prev2, prev1 = prev1, current
 
-		// print based on whether we are in negafibonacci or not
+		// print based on whether we negafibonacci was requested or not
 		if nega && i%2 == 1 {
 			fmt.Fprintln(out, -current)
 		} else {
