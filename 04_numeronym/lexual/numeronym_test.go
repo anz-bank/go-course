@@ -20,41 +20,47 @@ func TestNumeronym(t *testing.T) {
 		{"", ""},
 	}
 	for _, test := range tests {
-		actual := numeronym(test.input)
-		if actual != test.expected {
-			t.Errorf("input: %s, expected: %s, actual: %s",
-				test.input, test.expected, actual)
-		}
+		test := test
+		t.Run(test.input, func(t *testing.T) {
+			actual := numeronym(test.input)
+			if actual != test.expected {
+				t.Errorf("input: %s, expected: %s, actual: %s",
+					test.input, test.expected, actual)
+			}
+		})
 	}
 }
 
 func TestNumeronyms(t *testing.T) {
-	tests := []struct {
+	tests := map[string]struct {
 		input    []string
 		expected []string
 	}{
-		{
+		"3 examples": {
 			[]string{"accessibility", "Kubernetes", "abc"},
 			[]string{"a11y", "K8s", "abc"},
 		},
-		{
+		"0 examples": {
 			[]string{},
 			[]string{},
 		},
 	}
-	for _, test := range tests {
-		actual := numeronyms(test.input...)
-		if len(actual) != len(test.expected) {
-			t.Errorf("len(expected): %d, len(actual): %d",
-				len(test.expected), len(actual))
-		}
-		for i := range test.expected {
-			if actual[i] != test.expected[i] {
-				t.Errorf("input: %s, expected: %s, actual: %s",
-					test.input, test.expected, actual)
-				break
+	for name, test := range tests {
+		test := test
+		t.Run(name, func(t *testing.T) {
+			actual := numeronyms(test.input...)
+			if len(actual) != len(test.expected) {
+				t.Errorf("len(expected): %d, len(actual): %d",
+					len(test.expected), len(actual))
 			}
-		}
+			for i := range test.expected {
+				if actual[i] != test.expected[i] {
+					t.Errorf("input: %s, expected: %#v, actual: %#v",
+						test.input, test.expected, actual)
+					break
+				}
+			}
+		})
 	}
 }
 
