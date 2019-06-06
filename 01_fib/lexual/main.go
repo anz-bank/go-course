@@ -9,7 +9,7 @@ import (
 
 var out io.Writer = os.Stdout
 
-// print out n fibonacci numbers, use negafibonacci if n < 0
+// fib prints out n fibonacci numbers, use negafibonacci if n < 0
 func fib(n int) {
 	isPos := n > 0
 	if !isPos {
