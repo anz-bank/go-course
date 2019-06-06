@@ -22,6 +22,11 @@ func absolute(n int) (int, bool) {
 }
 
 func fib(n int) {
+	// Cator for fib(0)
+	if n == 0 {
+		fmt.Fprintln(out, 0)
+		return
+	}
 
 	prev2, prev1 := 1, 0
 
