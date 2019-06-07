@@ -47,7 +47,6 @@ func TestFibVal(t *testing.T) {
 	for _, tc := range tests {
 
 		got := (fib(tc.input))
-		//strconv.Quote(buf.String())
 		if !reflect.DeepEqual(tc.want, got) {
 			t.Errorf("want: %v, got: %v", tc.want, got)
 		}
