@@ -20,9 +20,7 @@ func numeronyms(vals ...string) []string {
 			s := string(val[0]) + strconv.FormatInt(int64(l), 10) + string(val[l+1])
 			returnval = append(returnval, s)
 		}
-
 	}
-
 	return returnval
 }
 

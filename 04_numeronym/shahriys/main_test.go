@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -20,27 +19,37 @@ func TestMain(t *testing.T) {
 	}
 
 }
-func TestNumeronym(t *testing.T) {
-
-	type test struct {
+func TestLettersSingle(t *testing.T) {
+	cases := map[string]struct {
+		input    string
 		expected []string
-		actual   []string
+	}{"Test1": {"abac", []string{"a2c"}},
+		"Test2": {"", []string{""}},
+		"Test3": {"a", []string{"a"}},
 	}
 
-	tests := []test{
-		{expected: []string{"a2c"}, actual: numeronyms("abac")},
-		{expected: []string{}, actual: numeronyms("")},
-		{expected: []string{"a"}, actual: numeronyms("a")},
-		{expected: []string{"aa", "s3s", "s10g", ""}, actual: numeronyms("aa", "sssss", "sdhjhjhjhjfg", "")},
+	for name, test := range cases {
+		actual := numeronyms(test.input)
+		if !reflect.DeepEqual(actual, test.expected) {
+			t.Errorf(" test:%v input:%v, expected: %v, got: %v", name, test.input, test.expected, actual)
+		}
 	}
 
-	for _, tc := range tests {
-		if len(tc.expected) > 0 && len(tc.actual) > 0 {
-			if !reflect.DeepEqual(tc.expected, tc.actual) {
-				fmt.Printf("%v  %T", tc.expected, tc.expected)
-				fmt.Printf("%v  %T", tc.actual, tc.actual)
-				t.Fatalf(" expected: %v, got: %v", tc.expected, tc.actual)
-			}
+}
+func TestLettersMulti(t *testing.T) {
+	cases := map[string]struct {
+		input    []string
+		expected []string
+	}{
+		"Test4": {nil, []string{}},
+		"Test5": {[]string{"aa", "sssss", "sdhjhjhjhjfg", ""}, []string{"aa", "s3s", "s10g", ""}},
+		"Test6": {[]string{}, []string{}},
+	}
+
+	for name, test := range cases {
+		actual := numeronyms(test.input...)
+		if !reflect.DeepEqual(actual, test.expected) {
+			t.Errorf(" test:%v input:%v, expected: %v, got: %v", name, test.input, test.expected, actual)
 		}
 	}
 
