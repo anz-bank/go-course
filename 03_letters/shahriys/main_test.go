@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -21,31 +20,37 @@ b:1`
 	}
 }
 
-func TestSortLetters(t *testing.T) {
-	var bufletter bytes.Buffer
-	outletter = &bufletter
+func TestLetters(t *testing.T) {
+	cases := map[string]struct {
+		input    string
+		expected map[rune]int
+	}{"Test1": {"abac", map[rune]int{'a': 2, 'b': 1, 'c': 1}},
+		"Test2": {"aAdbbDA", map[rune]int{'A': 2, 'D': 1, 'a': 1, 'b': 2, 'd': 1}},
+		"Test3": {"aAAADDDbac", map[rune]int{'A': 3, 'D': 3, 'a': 2, 'b': 1, 'c': 1}},
+		"Test4": {"", map[rune]int{}},
+	}
+	for name, test := range cases {
+		actual := letters(test.input)
+		if !reflect.DeepEqual(actual, test.expected) {
+			t.Errorf(" test:%v input:%v, expected: %v, got: %v", name, test.input, test.expected, actual)
+		}
+	}
 
-	type test struct {
+}
+
+func TestSortLetters(t *testing.T) {
+	cases := map[string]struct {
 		input    string
 		expected []string
-		actual   []string
+	}{"Test1": {"abac", []string{"a:2", "b:1", "c:1"}},
+		"Test2": {"aAdbbDA", []string{"A:2", "D:1", "a:1", "b:2", "d:1"}},
+		"Test3": {"aAAADDDbac", []string{"A:3", "D:3", "a:2", "b:1", "c:1"}},
+		"Test4": {"", []string{}},
 	}
-
-	tests := []test{
-		{input: "abac", expected: []string{"a:2", "b:1", "c:1"}, actual: sortLetters(letters("abac"))},
-		{input: "aAdbbDA", expected: []string{"A:2", "D:1", "a:1", "b:2", "d:1"}, actual: sortLetters(letters("aAdbbDA"))},
-		{input: "aAAADDDbac", expected: []string{"A:3", "D:3", "a:2", "b:1", "c:1"},
-			actual: sortLetters(letters("aAAADDDbac"))},
-		{input: "", expected: []string{}, actual: sortLetters(letters(""))},
-	}
-
-	for _, tc := range tests {
-		if len(tc.expected) > 0 && len(tc.actual) > 0 {
-			if !reflect.DeepEqual(tc.expected, tc.actual) {
-				fmt.Printf("%v  %T", tc.expected, tc.expected)
-				fmt.Printf("%v  %T", tc.actual, tc.actual)
-				t.Errorf(" input:%v, expected: %v, got: %v", tc.input, tc.expected, tc.actual)
-			}
+	for name, test := range cases {
+		actual := sortLetters(letters(test.input))
+		if !reflect.DeepEqual(actual, test.expected) {
+			t.Errorf(" test:%v input:%v, expected: %v, got: %v", name, test.input, test.expected, actual)
 		}
 	}
 
