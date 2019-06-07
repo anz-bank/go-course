@@ -19,8 +19,8 @@ b:1`
 	if expected != actual {
 		t.Errorf("Unexpected output in main()" + expected + " " + actual)
 	}
-
 }
+
 func TestSortLetters(t *testing.T) {
 	var bufletter bytes.Buffer
 	outletter = &bufletter

@@ -17,7 +17,6 @@ func letters(s string) map[rune]int {
 	for i := 0; i < len(s); i++ {
 		alphamap[rune(s[i])]++
 	}
-	//fmt.Println(alphamap)
 	return alphamap
 }
 
@@ -44,6 +43,7 @@ func sortLetters(m map[rune]int) []string {
 	}
 	return returnval
 }
+
 func main() {
 	fmt.Fprint(outletter, strings.Join(sortLetters(letters("aba")), "\n"))
 }
