@@ -23,12 +23,12 @@ func fib(n int) []int64 {
 		x := fib(n + 1)
 		nextVal := x[len(x)-2] - x[len(x)-1]
 		return append(x, nextVal)
-	case n > 1:
+	default:
 		x := fib(n - 1)
 		nextVal := x[len(x)-2] + x[len(x)-1]
 		return append(x, nextVal)
 	}
-	return nil
+
 }
 
 //printEachindex iterates over the slice and prints each index
