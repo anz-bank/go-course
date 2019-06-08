@@ -33,7 +33,7 @@ func insertSort(s []int) []int {
 			if s[j-1] > s[j] {
 				s[j-1], s[j] = s[j], s[j-1]
 			}
-			j -= 1
+			j--
 
 		}
 	}
