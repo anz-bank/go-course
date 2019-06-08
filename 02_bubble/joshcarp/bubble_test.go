@@ -9,6 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var stdout = os.Stdout
+
 var tests = []struct {
 	input    []int
 	expected []int
@@ -42,7 +44,7 @@ func TestMain(t *testing.T) {
 }
 
 // captureStart diverts stdio to another file object
-func captureStart() (*os.File, *os.File) {
+func captureStart() (io.Reader, io.Closer) {
 	r, w, _ := os.Pipe()
 	os.Stdout = w
 	return r, w
@@ -52,6 +54,7 @@ func captureStart() (*os.File, *os.File) {
 func captureStop(r io.Reader, w io.Closer) string {
 	var buf bytes.Buffer
 	w.Close()
+	os.Stdout = stdout
 	_, err := io.Copy(&buf, r)
 	if err != nil {
 		panic("file not opened")
