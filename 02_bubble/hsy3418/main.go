@@ -16,9 +16,7 @@ func bubbleSort(s []int) []int {
 		for j := 1; j < len(s); j++ {
 			if s[j] < s[j-1] {
 				//swap
-				temp := s[j]
-				s[j] = s[j-1]
-				s[j-1] = temp
+				s[j], s[j-1] = s[j-1], s[j]
 			}
 		}
 	}
@@ -26,5 +24,5 @@ func bubbleSort(s []int) []int {
 }
 
 func main() {
-	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5, -1, 3, 2, 3, 241}))
 }
