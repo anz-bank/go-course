@@ -24,7 +24,7 @@ func bubbleSort(s []int) []int {
 }
 
 /**
-Basic insert function
+A Basic insert function
 **/
 func insertSort(s []int) []int {
 	for i := 1; i < len(s); i++ {
