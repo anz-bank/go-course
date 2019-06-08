@@ -41,6 +41,6 @@ func insertSort(s []int) []int {
 }
 
 func main() {
-	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5, -1, 3, 2, 3, 241}))
-	fmt.Fprintln(out, insertSort([]int{3, 2, 1, 5, -1, 3, 2, 3, 241}))
+	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, insertSort([]int{3, 2, 1, 5}))
 }
