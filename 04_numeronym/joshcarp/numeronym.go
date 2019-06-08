@@ -7,13 +7,12 @@ func main() {
 }
 
 func numeronyms(vals ...string) []string {
-	result := []string{}
+	result := make([]string, 0, len(vals))
 	for _, word := range vals {
-		newWord := word
 		if length := len(word); length > 3 {
-			newWord = fmt.Sprintf("%s%d%s", string(word[0]), length-2, string(word[length-1]))
+			word = fmt.Sprintf("%s%d%s", string(word[0]), length-2, string(word[length-1]))
 		}
-		result = append(result, newWord)
+		result = append(result, word)
 	}
 	return result
 }
