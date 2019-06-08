@@ -17,6 +17,7 @@ var flagTests = []struct {
 }
 
 func TestMainOutput(t *testing.T) {
+	main()
 	for _, test := range flagTests {
 		actualBubbleSortResult := bubbleSort(test.input)
 		actualInsertSortResult := insertSort(test.input)

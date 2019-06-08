@@ -28,14 +28,14 @@ A Basic insert function
 **/
 func insertSort(s []int) []int {
 	for i := 1; i < len(s); i++ {
-		key := s[i]
-		j := i - 1
-
-		for j >= 0 && key < s[j] {
-			s[j+1] = s[j]
+		j := i
+		for j > 0 {
+			if s[j-1] > s[j] {
+				s[j-1], s[j] = s[j], s[j-1]
+			}
 			j = j - 1
+
 		}
-		s[j+1] = key
 	}
 	return s
 }
