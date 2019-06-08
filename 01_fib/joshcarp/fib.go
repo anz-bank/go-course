@@ -5,12 +5,11 @@ import (
 )
 
 func main() {
-	fib(-7)
-
+	fib(7)
 }
 
 func fib(n int) {
-	current := 1
+	current := 0
 	next := 1
 	sign := 1
 	if n < 0 {
@@ -20,7 +19,7 @@ func fib(n int) {
 	nextSign := sign
 	for i := 0; i < n; i++ {
 		sign *= nextSign
-		fmt.Println(current * sign)
 		current, next = next, current+next
+		fmt.Println(current * sign)
 	}
 }
