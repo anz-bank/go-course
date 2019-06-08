@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var bubbleSorttests = []struct {
+var flagTests = []struct {
 	input []int
 	want  []int
 }{
@@ -17,10 +17,15 @@ var bubbleSorttests = []struct {
 }
 
 func TestMainOutput(t *testing.T) {
-	for _, test := range bubbleSorttests {
-		actual := bubbleSort(test.input)
-		if !reflect.DeepEqual(test.want, actual) {
-			t.Errorf("running : %v, expected %v, got %v", test.input, test.want, actual)
+	for _, test := range flagTests {
+		actualBubbleSortResult := bubbleSort(test.input)
+		actualInsertSortResult := insertSort(test.input)
+		if !reflect.DeepEqual(test.want, actualBubbleSortResult) {
+			t.Errorf("[BubbleSort test] running : %v, expected %v, got %v", test.input, test.want, actualBubbleSortResult)
 		}
+		if !reflect.DeepEqual(test.want, actualInsertSortResult) {
+			t.Errorf("[InsertSort test] running : %v, expected %v, got %v", test.input, test.want, actualInsertSortResult)
+		}
+
 	}
 }
