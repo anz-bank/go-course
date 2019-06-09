@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"regexp"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
@@ -18,15 +18,18 @@ func numeronyms(s ...string) []string {
 }
 
 func getNumeronym(str string) string {
-	reg := regexp.MustCompile("[^a-zA-Z0-9]+")
-	processedString := reg.ReplaceAllString(str, "")
-	length := len(processedString)
+	trimmedString := strings.TrimSpace(str)
+
+	//  Unicode string could not be accessed using index
+	//  Therefore, string is converted into an array of runes
+	runeArr := []rune(trimmedString)
+	length := len(runeArr)
 
 	if length <= 3 {
-		return processedString
+		return trimmedString
 	}
 
-	return fmt.Sprintf("%c%d%c", processedString[0], length-2, processedString[length-1])
+	return fmt.Sprintf("%c%d%c", runeArr[0], length-2, runeArr[length-1])
 }
 
 func main() {

@@ -2,9 +2,10 @@ package main
 
 import (
 	"bytes"
-	"reflect"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMainOutput(t *testing.T) {
@@ -22,32 +23,40 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 
-func TestPunctuatedString(t *testing.T) {
-	expected := []string{"P23r", "W6t", "G11s"}
-
-	actual := numeronyms("Prozess-Daten-Beschleuniger", "Web Dev'mt", "Game of Thrones")
-
-	if !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
+func TestNumeronyms(t *testing.T) {
+	actual := numeronyms("testString", "www", "W3school")
+	expected := []string{"t8g", "www", "W6l"}
+	for i, v := range actual {
+		if expected[i] != v {
+			t.Errorf("Unexpected output. Expected: %q - Actual: %q", expected[i], v)
+		}
 	}
 }
 
-func TestAlphaNumericStr(t *testing.T) {
-	expected := []string{"W6l"}
-
-	actual := numeronyms("W3school")
-
-	if !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
+func TestGetNumeronyms(t *testing.T) {
+	tests := map[string]struct {
+		input    string
+		expected string
+	}{
+		"Empty string": {
+			input:    "",
+			expected: "",
+		},
+		"ASCII string": {
+			input:    " Multilingualization",
+			expected: "M17n",
+		},
+		"Rune string": {
+			input:    " ➳↪▲✓₷$€₡😀⤆ ",
+			expected: "➳8⤆",
+		},
 	}
-}
 
-func TestPunctuatedAlphaNumericStr(t *testing.T) {
-	expected := []string{"G6s"}
-
-	actual := numeronyms("Game f' T5s")
-
-	if !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
+	for name, test := range tests {
+		input, expected := test.input, test.expected
+		t.Run(name, func(t *testing.T) {
+			actual := getNumeronym(input)
+			assert.Equalf(t, expected, actual, "Unexpected output")
+		})
 	}
 }
