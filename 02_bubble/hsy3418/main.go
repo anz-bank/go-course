@@ -8,14 +8,12 @@ import (
 
 var out io.Writer = os.Stdout
 
-/*
- Basic bubble sort for an array of int
-*/
+//BubbleSort is a sort function for sorting an array of int
 func bubbleSort(s []int) []int {
-	for i := 1; i < len(s); i++ {
-		for j := 1; j < len(s); j++ {
+	numOfElements := len(s)
+	for i := 1; i < numOfElements; i++ {
+		for j := 1; j < numOfElements-i; j++ {
 			if s[j] < s[j-1] {
-				//swap
 				s[j], s[j-1] = s[j-1], s[j]
 			}
 		}
@@ -23,11 +21,10 @@ func bubbleSort(s []int) []int {
 	return s
 }
 
-/**
-A Basic insert function
-**/
-func insertSort(s []int) []int {
-	for i := 1; i < len(s); i++ {
+//insertionSort is a sort function for sorting an array of int
+func insertionSort(s []int) []int {
+	numOfElements := len(s)
+	for i := 1; i < numOfElements; i++ {
 		j := i
 		for j > 0 {
 			if s[j-1] > s[j] {
@@ -42,5 +39,5 @@ func insertSort(s []int) []int {
 
 func main() {
 	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5}))
-	fmt.Fprintln(out, insertSort([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, insertionSort([]int{3, 2, 1, 5}))
 }

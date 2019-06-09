@@ -1,11 +1,14 @@
 package main
 
 import (
-	"reflect"
+	"bytes"
+	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
-var flagTests = []struct {
+var sortTestsValue = []struct {
 	input []int
 	want  []int
 }{
@@ -17,16 +20,29 @@ var flagTests = []struct {
 }
 
 func TestMainOutput(t *testing.T) {
-	main()
-	for _, test := range flagTests {
-		actualBubbleSortResult := bubbleSort(test.input)
-		actualInsertSortResult := insertSort(test.input)
-		if !reflect.DeepEqual(test.want, actualBubbleSortResult) {
-			t.Errorf("[BubbleSort test] running : %v, expected %v, got %v", test.input, test.want, actualBubbleSortResult)
-		}
-		if !reflect.DeepEqual(test.want, actualInsertSortResult) {
-			t.Errorf("[InsertSort test] running : %v, expected %v, got %v", test.input, test.want, actualInsertSortResult)
-		}
+	var buf bytes.Buffer
+	out = &buf
 
+	main()
+
+	expected := strconv.Quote("[1 2 3 5]\n[1 2 3 5]\n")
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
+	}
+}
+
+func TestBubbleSort(t *testing.T) {
+	for _, test := range sortTestsValue {
+		actual := bubbleSort(test.input)
+		require.Equal(t, test.want, actual)
+	}
+}
+
+func TestInsertionSort(t *testing.T) {
+	for _, test := range sortTestsValue {
+		actual := insertionSort(test.input)
+		require.Equal(t, test.want, actual)
 	}
 }
