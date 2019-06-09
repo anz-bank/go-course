@@ -10,30 +10,37 @@ import (
 )
 
 var stdout = os.Stdout
-var tests = map[int]string{7: "1\n1\n2\n3\n5\n8\n13\n",
-	-7: "1\n-1\n2\n-3\n5\n-8\n13\n"}
+var tests = map[string]struct {
+	input    int
+	expected string
+}{
+	"positive": {7, "1\n1\n2\n3\n5\n8\n13\n"},
+	"negative": {-7, "1\n-1\n2\n-3\n5\n-8\n13\n"},
+}
 
 func TestPosFib(t *testing.T) {
-	input := 7
+	testType := "positive"
+	input := tests[testType].input
 	r, w := captureStart()
 	fib(input)
 	result := captureStop(r, w)
-	require.Equal(t, result, tests[input])
+	require.Equal(t, result, tests[testType].expected)
 }
 
 func TestNegFib(t *testing.T) {
-	input := -7
+	testType := "negative"
+	input := tests[testType].input
 	r, w := captureStart()
 	fib(input)
 	result := captureStop(r, w)
-	require.Equal(t, result, tests[input])
+	require.Equal(t, result, tests[testType].expected)
 }
 
 func TestMain(t *testing.T) {
 	r, w := captureStart()
 	main()
 	result := captureStop(r, w)
-	require.Equal(t, tests[7], result)
+	require.Equal(t, tests["positive"].expected, result)
 }
 
 // captureStart diverts stdio to another file object
