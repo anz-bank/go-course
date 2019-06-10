@@ -28,9 +28,21 @@ func TestSortLetters(t *testing.T) {
 		letterFreq  map[rune]int
 		expected    []string
 	}{
-		{"happy path", map[rune]int{'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5}, []string{"a:1", "b:2", "c:3", "d:4", "e:5"}},
-		{"characters and empty spaces", map[rune]int{' ': 4, '!': 5, '&': 1, 'b': 2, 'c': 3}, []string{" :4", "!:5", "&:1", "b:2", "c:3"}},
-		{"empty", map[rune]int{}, []string{}},
+		{
+			"happy path",
+			map[rune]int{'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5},
+			[]string{"a:1", "b:2", "c:3", "d:4", "e:5"},
+		},
+		{
+			"characters and empty spaces",
+			map[rune]int{' ': 4, '!': 5, '&': 1, 'b': 2, 'c': 3},
+			[]string{" :4", "!:5", "&:1", "b:2", "c:3"},
+		},
+		{
+			"empty",
+			map[rune]int{},
+			[]string{},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -48,9 +60,21 @@ func TestLetters(t *testing.T) {
 		letters     string
 		expected    map[rune]int
 	}{
-		{"happy path", "accdceee", map[rune]int{'a': 1, 'c': 3, 'd': 1, 'e': 3}},
-		{"characters and empty spaces", "aa ! && cc", map[rune]int{' ': 3, 'a': 2, 'c': 2, '!': 1, '&': 2}},
-		{"empty", "", map[rune]int{}},
+		{
+			"happy path",
+			"accdceee",
+			map[rune]int{'a': 1, 'c': 3, 'd': 1, 'e': 3},
+		},
+		{
+			"characters and empty spaces",
+			"aa ! && cc",
+			map[rune]int{' ': 3, 'a': 2, 'c': 2, '!': 1, '&': 2},
+		},
+		{
+			"empty",
+			"",
+			map[rune]int{},
+		},
 	}
 
 	for _, tc := range testCases {
