@@ -26,6 +26,7 @@ var tests = []struct {
 	{"same number", []int{5, 5, 5, 5}, []int{5, 5, 5, 5}},
 	{"blank", []int{}, []int{}},
 	{"sorted", []int{1, 2, 3, 4}, []int{1, 2, 3, 4}},
+	{"negative number", []int{1, -5, 6, 9}, []int{-5, 1, 6, 9}},
 }
 
 func TestBubble(t *testing.T) {
