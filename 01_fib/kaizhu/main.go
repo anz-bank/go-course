@@ -21,7 +21,7 @@ func fib(n int64) {
 	default:
 		var sign int64 = 1
 		if n < 0 {
-			n = - n
+			n = -n
 			sign = -1
 		}
 		var a, b int64 = 1, sign
