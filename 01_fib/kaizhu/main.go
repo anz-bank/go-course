@@ -13,7 +13,6 @@ func main() {
 }
 
 func fib(n int64) {
-
 	switch {
 	// print 0 if n is 0
 	case n == 0:
