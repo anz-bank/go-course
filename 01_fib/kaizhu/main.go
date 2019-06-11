@@ -25,8 +25,7 @@ func fib(n int64) {
 			sign = -1
 		}
 		var a, b int64 = 1, sign
-		var i int64
-		for i = 0; i < n; i++ {
+		for i := int64(0); i < n; i++ {
 			fmt.Fprintln(out, a)
 			a, b = b, a+b*sign
 		}
