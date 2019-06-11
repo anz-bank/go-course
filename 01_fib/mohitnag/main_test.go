@@ -32,6 +32,7 @@ func TestMain(t *testing.T) {
 	main()
 	expected := "1,1,2,3,5,8,13"
 	actual := buf.String()
-	actual = strings.TrimRight(strings.ReplaceAll(actual, "\n", ","), ",")
+	actual = strings.ReplaceAll(actual, "\n", ",")
+	actual = strings.TrimRight(actual, ",")
 	assert.Equal(expected, actual)
 }
