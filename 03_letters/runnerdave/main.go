@@ -5,41 +5,35 @@ import (
 	"io"
 	"os"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
 
 func letters(s string) map[rune]int {
 	stats := make(map[rune]int)
-	for pos, char := range s {
-		stats[char] = pos
+	for _, char := range s {
+		stats[char]++
 	}
 	return stats
 }
 
 func sortLetters(m map[rune]int) []string {
-	var keys []rune
+	keys := make([]rune, 0)
 	for k := range m {
 		keys = append(keys, k)
 	}
 	sorted(keys)
 	sortedArray := make([]string, len(keys))
-	i := 0
-	for _, k := range keys {
-		sortedArray[i] = string(k)
-		i++
+	for i, k := range keys {
+		sortedArray[i] = fmt.Sprintf("%s:%s", string(k), strconv.Itoa(m[k]))
 	}
 	return sortedArray
 }
 
 func main() {
-	printRuneMap(letters("aba"))
-}
-
-func printRuneMap(m map[rune]int) {
-	for key, value := range m {
-		fmt.Fprintf(out, "%s:%d\n", string(key), value)
-	}
+	fmt.Fprintln(out, strings.Join(sortLetters(letters("aba")), "\n"))
 }
 
 type runeSlice []rune
