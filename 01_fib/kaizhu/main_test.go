@@ -46,16 +46,11 @@ func TestFib(t *testing.T) {
 -8
 13
 `)},
-		{input: -1,
-			expected: strconv.Quote("1\n")},
-		{input: 1,
-			expected: strconv.Quote("1\n")},
-		{input: 0,
-			expected: strconv.Quote("0\n")},
-		{input: 93,
-			expected: strconv.Quote("Please enter a number within the range [-92, 92].\n")},
-		{input: -93,
-			expected: strconv.Quote("Please enter a number within the range [-92, 92].\n")},
+		{input: -1, expected: strconv.Quote("1\n")},
+		{input: 1, expected: strconv.Quote("1\n")},
+		{input: 0, expected: strconv.Quote("0\n")},
+		{input: 93, expected: strconv.Quote("Please enter a number within the range [-92, 92].\n")},
+		{input: -93, expected: strconv.Quote("Please enter a number within the range [-92, 92].\n")},
 	}
 
 	for _, test := range tests {
