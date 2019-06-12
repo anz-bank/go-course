@@ -17,6 +17,8 @@ var tests = []struct {
 }{
 	{[]string{"accessibility", "Kubernetes", "abc"}, []string{"a11y", "K8s", "abc"}},
 	{[]string{"summary", "dive", "vat", "a", "stunning"}, []string{"s5y", "d2e", "vat", "a", "s6g"}},
+	{[]string{"Web Develpment", "123456"}, []string{"W11t", "123456"}},
+	{[]string{"!@#$%^&*", "7qd8t7hubnwj", "someword!"}, []string{"!@#$%^&*", "7qd8t7hubnwj", "someword!"}},
 }
 
 func TestMain(t *testing.T) {
