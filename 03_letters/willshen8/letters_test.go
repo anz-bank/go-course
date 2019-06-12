@@ -2,9 +2,10 @@ package main
 
 import (
 	"bytes"
-	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMainOutput(t *testing.T) {
@@ -38,11 +39,6 @@ func TestLetterFrequency(t *testing.T) {
 		//replace spaces with newline character to match expected output - easier to read expected output
 		test.expected = strings.Replace(test.expected, " ", "\n", -1)
 		actual := strings.Join(sortLetters(letters(test.input)), "\n")
-		testResult := reflect.DeepEqual(actual, test.expected)
-		if testResult == false {
-			t.Fatalf("Test Failed! Expected: %v, Got: %v", test.expected, actual)
-		} else {
-			t.Logf("Test Passed: %v", test.name)
-		}
+		assert.Equal(t, test.expected, actual, "Test Failed!")
 	}
 }
