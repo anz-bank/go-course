@@ -1,19 +1,22 @@
 package main
 
 import (
+	"bytes"
 	"reflect"
+	"strconv"
 	"testing"
 )
 
-func TestMainOut(t *testing.T) {
-
+func TestMainOutput(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
 	main()
 
-	expected := []int{1, 2, 3, 5}
-	actual := []int{1, 2, 3, 5}
+	expected := strconv.Quote("[1 2 3 5]\n[1 2 3 5]\n")
+	actual := strconv.Quote(buf.String())
 
-	if !reflect.DeepEqual(expected, actual) {
-		t.Errorf("Unexpected output in main()")
+	if expected != actual {
+		t.Errorf("Unexpected output in main(), expected = %v, actual = %v", expected, actual)
 	}
 }
 
@@ -30,19 +33,19 @@ var tests = []struct {
 }
 
 func TestBubble(t *testing.T) {
-	for _, tc := range tests {
-		got := (bubbleSort(tc.input))
-		if !reflect.DeepEqual(tc.want, got) {
-			t.Errorf("got %v want %v given %v", got, tc.want, tc.input)
+	for _, test := range tests {
+		got := (bubbleSort(test.input))
+		if !reflect.DeepEqual(test.want, got) {
+			t.Errorf("got %v want %v given %v", got, test.want, test.input)
 		}
 	}
 }
 
 func TestInsertion(t *testing.T) {
-	for _, tc := range tests {
-		got := insertionSort(tc.input)
-		if !reflect.DeepEqual(got, tc.want) {
-			t.Errorf("got %v want %v given %v", got, tc.want, tc.input)
+	for _, test := range tests {
+		got := insertionSort(test.input)
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("got %v want %v given %v", got, test.want, test.input)
 		}
 	}
 }

@@ -2,13 +2,17 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 )
 
+var out io.Writer = os.Stdout
+
 func bubbleSort(s []int) []int {
-	sliceCopy := append(s[:0:0], s...)
+
+	var sliceCopy = append(s[:0:0], s...)
 	n := len(s)
-	swapped := true
-	for swapped {
+	for swapped := true; swapped; {
 		swapped = false
 		for i := 1; i < n; i++ {
 			if sliceCopy[i-1] > sliceCopy[i] {
@@ -20,11 +24,10 @@ func bubbleSort(s []int) []int {
 	return sliceCopy
 }
 func insertionSort(s []int) []int {
-	sliceCopy := append(s[:0:0], s...)
+	var sliceCopy = append(s[:0:0], s...)
 	n := len(s)
 	for i := 1; i < n; i++ {
-		j := i
-		for j > 0 {
+		for j := i; j > 0; {
 			if sliceCopy[j-1] > sliceCopy[j] {
 				sliceCopy[j-1], sliceCopy[j] = sliceCopy[j], sliceCopy[j-1]
 			}
@@ -35,6 +38,6 @@ func insertionSort(s []int) []int {
 }
 
 func main() {
-	fmt.Println(bubbleSort([]int{3, 2, 1, 5}))
-	fmt.Println(insertionSort([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, insertionSort([]int{3, 2, 1, 5}))
 }
