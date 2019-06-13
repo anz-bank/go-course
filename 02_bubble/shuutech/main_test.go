@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"bytes"
 	"strconv"
 	"testing"
 )
@@ -52,8 +51,16 @@ func TestBubbleZeroLength(t *testing.T) {
 	}
 }
 
-func TestMain(m *testing.M) {
+func TestMainOutput(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
 	main()
-	fmt.Printf("test!")
-	os.Exit(m.Run())
+
+	expected := "[1 2 3 5]"
+	actual := buf.String()
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main(), expected: %q, actual: %q", expected, actual)
+	}
 }
