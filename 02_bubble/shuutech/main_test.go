@@ -62,6 +62,5 @@ func TestMainOutput(t *testing.T) {
 
 	if expected != actual {
 		t.Errorf("Unexpected output in main(), expected: %q, actual: %q", expected, actual)
-
 	}
 }

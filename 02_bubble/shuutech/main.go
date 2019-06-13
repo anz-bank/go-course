@@ -27,5 +27,4 @@ var out io.Writer = os.Stdout
 
 func main() {
 	fmt.Fprint(out, bubble([]int{3, 2, 1, 5}))
-
 }
