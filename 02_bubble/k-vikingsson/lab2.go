@@ -1,12 +1,10 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func isSorted(s []int) bool {
-	for index, _ := range s[1:] {
-		if (s[index+1] < s[index]) {
+	for index := range s[1:] {
+		if s[index+1] < s[index] {
 			return false
 		}
 	}
@@ -16,8 +14,8 @@ func isSorted(s []int) bool {
 func findMin(s []int) int {
 	minIndex := 0
 	for index, element := range s[1:] {
-		if (element < s[minIndex]) {
-			minIndex = index+1
+		if element < s[minIndex] {
+			minIndex = index + 1
 		}
 	}
 	return minIndex
@@ -25,20 +23,20 @@ func findMin(s []int) int {
 
 func remove(s []int, i int) []int {
 	s[i] = s[len(s)-1]
-    return s[:len(s)-1]
+	return s[:len(s)-1]
 }
 
 func bubble(s []int) []int {
 	copy := s
 	sorted := false
-	for sorted == false {
+	for !sorted {
 		for index, element := range copy[1:] {
-			if (copy[index] > copy[index+1]) {
+			if copy[index] > copy[index+1] {
 				copy[index+1] = copy[index]
 				copy[index] = element
 			}
 		}
-		if (isSorted(copy)) {
+		if isSorted(copy) {
 			sorted = true
 		}
 	}
@@ -50,7 +48,6 @@ func insertion(s []int) []int {
 	copy := s
 	for len(copy) > 0 {
 		minIndex := findMin(copy)
-		
 		sorted = append(sorted, copy[minIndex])
 		copy = remove(copy, minIndex)
 	}
@@ -58,28 +55,28 @@ func insertion(s []int) []int {
 }
 
 func quick(s []int) []int {
-	if (len(s) <= 1) {
+	if len(s) <= 1 {
 		return s
-	} else {
-		var lt []int
-		var gt []int
-		var eq []int
-		pivot := s[0]
-		for _, element := range s {
-			if (element > pivot) {
-				gt = append(gt, element)
-			} else if (element < pivot) {
-				lt = append(lt, element)
-			} else {
-				eq = append(eq, element)
-			}
-		}
-		gtSorted := quick(gt)
-		ltSorted := quick(lt)
-		res := append(ltSorted, eq...)
-		res = append(res, gtSorted...)
-		return res
 	}
+	var lt []int
+	var gt []int
+	var eq []int
+	pivot := s[0]
+	for _, element := range s {
+		switch {
+		case element > pivot:
+			gt = append(gt, element)
+		case element < pivot:
+			lt = append(lt, element)
+		default:
+			eq = append(eq, element)
+		}
+	}
+	gtSorted := quick(gt)
+	ltSorted := quick(lt)
+	res := append(ltSorted, eq...)
+	res = append(res, gtSorted...)
+	return res
 }
 
 func main() {
