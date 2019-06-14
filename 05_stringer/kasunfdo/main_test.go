@@ -17,9 +17,7 @@ func TestMainOutput(t *testing.T) {
 	expected := strconv.Quote("127.0.0.1\n")
 	actual := strconv.Quote(buf.String())
 
-	if expected != actual {
-		t.Errorf("Unexpected output\nexpected: %v\nactual: %v", expected, actual)
-	}
+	assert.Equalf(t, expected, actual, "Unexpected output")
 }
 
 func TestIPAddrStringer(t *testing.T) {
