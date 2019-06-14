@@ -14,26 +14,21 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote(`[a11y K8s abc]
-`)
+	expected := strconv.Quote("[a11y K8s abc]\n")
 	actual := strconv.Quote(buf.String())
 
-	if expected != actual {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
-	}
+	assert.Equalf(t, expected, actual, "Unexpected output")
 }
 
 func TestNumeronyms(t *testing.T) {
 	actual := numeronyms("testString", "www", "W3school")
 	expected := []string{"t8g", "www", "W6l"}
 	for i, v := range actual {
-		if expected[i] != v {
-			t.Errorf("Unexpected output. Expected: %q - Actual: %q", expected[i], v)
-		}
+		assert.Equalf(t, expected[i], v, "Unexpected output")
 	}
 }
 
-func TestGetNumeronyms(t *testing.T) {
+func TestNumeronym(t *testing.T) {
 	tests := map[string]struct {
 		input    string
 		expected string
@@ -41,6 +36,14 @@ func TestGetNumeronyms(t *testing.T) {
 		"Empty string": {
 			input:    "",
 			expected: "",
+		},
+		"3 letter string": {
+			input:    "abc",
+			expected: "abc",
+		},
+		"4 letter string": {
+			input:    "abcd",
+			expected: "a2d",
 		},
 		"ASCII string": {
 			input:    " Multilingualization",
@@ -55,7 +58,7 @@ func TestGetNumeronyms(t *testing.T) {
 	for name, test := range tests {
 		input, expected := test.input, test.expected
 		t.Run(name, func(t *testing.T) {
-			actual := getNumeronym(input)
+			actual := numeronym(input)
 			assert.Equalf(t, expected, actual, "Unexpected output")
 		})
 	}
