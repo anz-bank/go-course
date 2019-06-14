@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 )
 
 func NewSyncStore() *SyncStore {
@@ -9,33 +9,41 @@ func NewSyncStore() *SyncStore {
 }
 
 func (m *SyncStore) CreatePuppy(puppy *Puppy) int {
-	var newID int
-	m.Range(func(_, _ interface{}) bool {
-		newID++
-		return true
-	})
-	puppy.ID = newID
+	m.Lock()
+	defer m.Unlock()
+	puppy.ID = m.total
+	m.total++
 	m.Store(puppy.ID, *puppy)
 	return puppy.ID
 }
 
 func (m *SyncStore) ReadPuppy(id int) (*Puppy, error) {
-	puppyData, ok := m.Load(id)
-	if !ok {
-		return nil, errors.New("doesn't exists")
+	if puppyData, ok := m.Load(id); ok {
+		puppy := puppyData.(Puppy)
+		return &puppy, nil
 	}
-	puppy := puppyData.(Puppy)
-	return &puppy, nil
+	return nil, fmt.Errorf("puppy with ID: %d does not exist", id)
+
 }
 
 func (m *SyncStore) UpdatePuppy(id int, puppy *Puppy) error {
+	m.Lock()
+	defer m.Unlock()
+	if _, ok := m.Load(id); !ok {
+		return fmt.Errorf("puppy with ID: %d does not exist", id)
+	}
+	if id != puppy.ID {
+		return fmt.Errorf("puppy ID corrupted")
+	}
 	m.Store(id, *puppy)
 	return nil
 }
 
 func (m *SyncStore) DeletePuppy(id int) (bool, error) {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.Load(id); !ok {
-		return false, errors.New("doesn't exist")
+		return false, fmt.Errorf("puppy with ID: %d does not exist", id)
 	}
 	m.Delete(id)
 	return true, nil

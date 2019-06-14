@@ -11,7 +11,7 @@ type storerImpl int
 
 const (
 	syncStorer storerImpl = iota
-	memStorer  storerImpl = iota
+	memStorer
 )
 
 var (
@@ -41,15 +41,13 @@ func (s *storerSuite) SetupTest() {
 	switch s.impl {
 	case syncStorer:
 		s.store = NewSyncStore()
-		puppy := puppy0()
-		s.store.CreatePuppy(&puppy)
 	case memStorer:
 		s.store = NewMemStore()
-		puppy := puppy0()
-		s.store.CreatePuppy(&puppy)
 	default:
 		panic("Unrecognised storer implementation")
 	}
+	puppy := puppy0()
+	s.store.CreatePuppy(&puppy)
 }
 
 func (s *storerSuite) TestCreatePuppySuccessful() {
@@ -87,6 +85,22 @@ func (s *storerSuite) TestUpdatePuppy() {
 	assert.Equal(existingPuppy.Colour, puppy.Colour, "Updated colour missmatch")
 }
 
+func (s *storerSuite) TestUpdatePuppyCorruptedID() {
+	assert := tassert.New(s.T())
+	existingPuppy := puppy0()
+	oldID := existingPuppy.ID
+	existingPuppy.ID = 1000
+	err := s.store.UpdatePuppy(oldID, &existingPuppy)
+	assert.Error(err, "Should get an error when attempting to update with corrupted id")
+}
+
+func (s *storerSuite) TestUpdatePuppyIDDoesNotExist() {
+	assert := tassert.New(s.T())
+	newPuppy := puppy0()
+	err := s.store.UpdatePuppy(1000, &newPuppy)
+	assert.Error(err, "Should get an error when attempting to update an non-existing puppy")
+}
+
 func (s *storerSuite) TestDeletePuppySuccessful() {
 	assert := tassert.New(s.T())
 	existingPuppy := puppy0()
@@ -98,24 +112,13 @@ func (s *storerSuite) TestDeletePuppySuccessful() {
 	assert.Error(err, "Should not be able to read a deleted ID")
 }
 
-func (s *storerSuite) TestDeletePuppy_IDDoesNotExist() {
+func (s *storerSuite) TestDeletePuppyIDDoesNotExist() {
 	assert := tassert.New(s.T())
 	_, err := s.store.DeletePuppy(1000)
 	assert.Error(err, "Should not be able to delete puppy with non existing ID")
 }
 
-func TestStorerSyncMap(t *testing.T) {
-	syncSuite := storerSuite{
-		store: NewSyncStore(),
-		impl:  syncStorer,
-	}
-	suite.Run(t, &syncSuite)
-}
-
-func TestStorerMemoryMap(t *testing.T) {
-	syncSuite := storerSuite{
-		store: NewMemStore(),
-		impl:  memStorer,
-	}
-	suite.Run(t, &syncSuite)
+func TestStorer(t *testing.T) {
+	suite.Run(t, &storerSuite{impl: syncStorer})
+	suite.Run(t, &storerSuite{impl: memStorer})
 }
