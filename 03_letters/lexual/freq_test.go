@@ -57,7 +57,6 @@ func TestSortLetters(t *testing.T) {
 			},
 			[]string{"a:2", "b:1", "c:3"},
 		},
-		// empty map as argument tested
 		{
 			map[rune]int{},
 			[]string{},
@@ -72,8 +71,6 @@ func TestSortLetters(t *testing.T) {
 			if actual[i] != test.expected[i] {
 				t.Errorf("actual and expected don't match")
 				t.Errorf("\nActual: %s\nExpected: %s", actual, test.expected)
-
-				break
 			}
 		}
 	}
