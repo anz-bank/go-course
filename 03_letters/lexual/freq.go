@@ -28,7 +28,7 @@ func sortLetters(m map[rune]int) []string {
 	sort.Strings(keys)
 	sorted := make([]string, len(m))
 	for i, k := range keys {
-		sorted[i] = fmt.Sprintf("%s:%d", string(k), m[rune(k[0])])
+		sorted[i] = fmt.Sprintf("%s:%d", k, m[rune(k[0])])
 	}
 	return sorted
 }
