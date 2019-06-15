@@ -32,12 +32,11 @@ func fib(n int) {
 	for i := 0; i < absn; i++ {
 		if i > 0 {
 			c = a + b*sign
-			fmt.Fprintln(out, c)
 			a = b
 			b = c
 		} else {
 			c = a + b
-			fmt.Fprintln(out, c)
 		}
+		fmt.Fprintln(out, c)
 	}
 }
