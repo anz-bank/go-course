@@ -19,6 +19,7 @@ func TestBubble(t *testing.T) {
 		{"Empty Slice", []int{}, []int{}},
 	}
 	for _, td := range testData {
+		td := td
 		t.Run(td.Scenario, func(t *testing.T) {
 			sorted := bubble(td.unSorted)
 			assert.Equal(t, td.expected, sorted)
