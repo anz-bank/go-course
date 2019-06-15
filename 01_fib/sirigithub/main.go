@@ -3,27 +3,20 @@ package main
 import (
 	"fmt"
 	"io"
+	"math"
 	"os"
 )
 
 var out io.Writer = os.Stdout
 
-//function returns absolute value of an interger
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
-// fibonaci series
+// fib computes the Fibonacci sequence
 func fib(n int) {
 
 	if n == 0 {
 		fmt.Fprintln(out, n)
 		return
 	}
-	absVal := abs(n)
+	absVal := int(math.Abs(float64(n)))
 	current, previous := 1, 0
 
 	for i := 1; i <= absVal; i++ {
