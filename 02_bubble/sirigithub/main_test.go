@@ -1,7 +1,7 @@
 package main
 
 import (
-  "bytes"
+	"bytes"
 	"strconv"
 	"testing"
 )
@@ -13,10 +13,10 @@ var tests = []struct {
 }{
 	{input: []int{}, expected: []int{}},
 	{input: []int{1}, expected: []int{1}},
-	{input: []int{1,2,3,4,5}, expected: []int{1,2,3,4,5}},
-	{input: []int{10,9,8,7,6}, expected: []int{6,7,8,9,10}},
-	{input: []int{-10,9,8,7,6}, expected: []int{-10,6,7,8,9}},
-	{input: []int{3, 2, 1, 5}, expected: []int{1,2,3,5}},
+	{input: []int{1, 2, 3, 4, 5}, expected: []int{1, 2, 3, 4, 5}},
+	{input: []int{10, 9, 8, 7, 6}, expected: []int{6, 7, 8, 9, 10}},
+	{input: []int{-10, 9, 8, 7, 6}, expected: []int{-10, 6, 7, 8, 9}},
+	{input: []int{3, 2, 1, 5}, expected: []int{1, 2, 3, 5}},
 }
 
 func TestMainOutput(t *testing.T) {
@@ -54,13 +54,13 @@ func TestBubbleSort(t *testing.T) {
 }
 
 func Equal(a, b []int) bool {
-    if len(a) != len(b) {
-        return false
-    }
-    for i, v := range a {
-        if v != b[i] {
-            return false
-        }
-    }
-    return true
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
 }
