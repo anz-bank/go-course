@@ -30,6 +30,5 @@ func sortLetters(m map[rune]int) []string {
 		s = append(s, fmt.Sprintf("%c:%d", k, v))
 	}
 	sort.Strings(s)
-	fmt.Println(s)
 	return s
 }
