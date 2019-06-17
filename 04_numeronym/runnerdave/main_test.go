@@ -24,8 +24,8 @@ func TestMainOutput(t *testing.T) {
 
 func TestNumeronyms(t *testing.T) {
 	tables := []struct {
-		x []string
-		n []string
+		input    []string
+		expected []string
 	}{
 		{[]string{"accessibility", "Kubernetes", "abc"}, []string{"a11y", "K8s", "abc"}},
 		{[]string{"tres"}, []string{"t2s"}},
@@ -38,9 +38,9 @@ func TestNumeronyms(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		numys := numeronyms(table.x...)
-		if !equal(numys, table.n) {
-			t.Errorf("Sorting of (%v) was incorrect, got: %v, want: %v.", table.x, numys, table.n)
+		numys := numeronyms(table.input...)
+		if !equal(numys, table.expected) {
+			t.Errorf("Unexpected output, (%v) was incorrect, got: %v, want: %v.", table.input, numys, table.expected)
 		}
 	}
 }
