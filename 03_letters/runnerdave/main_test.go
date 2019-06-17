@@ -51,31 +51,19 @@ func TestSortingLetters(t *testing.T) {
 		x map[rune]int
 		n []string
 	}{
-		{map[rune]int{97: 1, 98: 3}, []string{"a:1", "b:3"}},
-		{map[rune]int{99: 1, 98: 3}, []string{"b:3", "c:1"}},
-		{map[rune]int{109: 1, 98: 3, 100: 5}, []string{"b:3", "d:5", "m:1"}},
-		{map[rune]int{97: 1, 65: 3}, []string{"A:3", "a:1"}},
-		{map[rune]int{110: 1, 78: 3}, []string{"N:3", "n:1"}},
-		{map[rune]int{110: 0, 78: 3}, []string{"N:3", "n:0"}},
+		{map[rune]int{'a': 1, 'b': 3}, []string{"a:1", "b:3"}},
+		{map[rune]int{'c': 1, 'b': 3}, []string{"b:3", "c:1"}},
+		{map[rune]int{'m': 1, 'b': 3, 'd': 5}, []string{"b:3", "d:5", "m:1"}},
+		{map[rune]int{'a': 1, 'A': 3}, []string{"A:3", "a:1"}},
+		{map[rune]int{'n': 1, 'N': 3}, []string{"N:3", "n:1"}},
+		{map[rune]int{'n': 0, 'N': 3}, []string{"N:3", "n:0"}},
 		{map[rune]int{}, []string{}},
 	}
 
 	for _, table := range tables {
 		sorted := sortLetters(table.x)
-		if !equal(sorted, table.n) {
+		if !reflect.DeepEqual(sorted, table.n) {
 			t.Errorf("Sorting of (%v) was incorrect, got: %v, want: %v.", table.x, sorted, table.n)
 		}
 	}
-}
-
-func equal(a, b []string) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
 }
