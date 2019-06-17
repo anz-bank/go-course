@@ -9,6 +9,9 @@ import (
 var out io.Writer = os.Stdout
 
 func fibSeries(n int) []int {
+	if n >= 93 || n <= -93 {
+		panic("Numbers beyond 93 or -93 are not supported!")
+	}
 	var series []int
 	fa, fb := 0, 1
 	p, fn := 0, 0
