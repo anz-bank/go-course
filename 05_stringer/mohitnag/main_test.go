@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,9 +13,11 @@ func TestIpaddr(t *testing.T) {
 		input    IPAddr
 		expected string
 	}{
-		{"Scenario One", [4]byte{127, 0, 0, 1}, "127.0.0.1"},
-		{"Scenario two", [4]byte{}, "0.0.0.0"},
-		{"Scenario three", [4]byte{0, 0, 0, 10}, "0.0.0.10"},
+		{"Happy Day", [4]byte{127, 0, 0, 1}, "127.0.0.1"},
+		{"empty", [4]byte{}, "0.0.0.0"},
+		{"one byte non zero", [4]byte{0, 0, 0, 10}, "0.0.0.10"},
+		{"boundary validation", [4]byte{255, 255, 255, 255}, "255.255.255.255"},
+		{"only one byte", [4]byte{10}, "10.0.0.0"},
 	}
 	for _, td := range testData {
 		td := td
@@ -31,9 +32,7 @@ func TestMain(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 	main()
-	expected := "127.0.0.1"
+	expected := "127.0.0.1\n"
 	actual := buf.String()
-	actual = strings.Replace(actual, "\n", ",", -1)
-	actual = strings.TrimRight(actual, ",")
 	assert.Equal(expected, actual)
 }
