@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"reflect"
 	"strconv"
 	"testing"
 )
@@ -44,13 +45,14 @@ func TestFibFunction(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		t.Run(testCase.description, func(t *testing.T) {
-			result := fib(testCase.input)
+		input := testCase.input
+		expected := testCase.expected
 
-			for i, actual := range result {
-				if testCase.expected[i] != actual {
-					t.Errorf("Unexpected output, expected: %d, actual: %d", testCase.expected[i], actual)
-				}
+		t.Run(testCase.description, func(t *testing.T) {
+			actual := fib(input)
+
+			if !reflect.DeepEqual(actual, expected) {
+				t.Errorf("Unexpected output, expected: %d, actual: %d", expected, actual)
 			}
 		})
 	}

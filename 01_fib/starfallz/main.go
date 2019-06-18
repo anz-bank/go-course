@@ -16,29 +16,29 @@ func main() {
 func fib(n int) []int {
 	if n == 0 {
 		return []int{0}
-	} else {
-		isNegativeFib := false
-
-		if n < 0 {
-			isNegativeFib = true
-			n = n * -1
-		}
-
-		result := []int{1}
-		for i := 1; i < n; i++ {
-			var previousValue int
-			if len(result) == 1 {
-				previousValue = 0
-			} else {
-				previousValue = result[len(result)-2]
-			}
-
-			if isNegativeFib {
-				result = append(result, previousValue-result[i-1])
-			} else {
-				result = append(result, result[i-1]+previousValue)
-			}
-		}
-		return result
 	}
+
+	isNegativeFib := false
+
+	if n < 0 {
+		isNegativeFib = true
+		n *= -1
+	}
+
+	result := []int{1}
+	for i := 1; i < n; i++ {
+		var previousValue int
+		if len(result) == 1 {
+			previousValue = 0
+		} else {
+			previousValue = result[len(result)-2]
+		}
+
+		if isNegativeFib {
+			result = append(result, previousValue-result[i-1])
+		} else {
+			result = append(result, result[i-1]+previousValue)
+		}
+	}
+	return result
 }
