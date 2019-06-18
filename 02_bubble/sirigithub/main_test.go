@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"reflect"
 	"strconv"
 	"testing"
 )
@@ -22,9 +23,7 @@ var tests = []struct {
 func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
-
 	main()
-
 	expected := strconv.Quote("[1 2 3 5]\n")
 	actual := strconv.Quote(buf.String())
 
@@ -34,33 +33,19 @@ func TestMainOutput(t *testing.T) {
 }
 
 func TestInsertionSort(t *testing.T) {
-
 	for _, test := range tests {
 		actual := insertionSort(test.input)
-		if !(Equal(actual, test.expected)) {
+		if !reflect.DeepEqual(actual, test.expected) {
 			t.Errorf("Unexpected output in main()\nexpected: %d\nactual: %d", test.expected, actual)
 		}
 	}
 }
 
 func TestBubbleSort(t *testing.T) {
-
 	for _, test := range tests {
 		actual := bubbleSort(test.input)
-		if !(Equal(actual, test.expected)) {
+		if !reflect.DeepEqual(actual, test.expected) {
 			t.Errorf("Unexpected output in main()\nexpected: %d\nactual: %d", test.expected, actual)
 		}
 	}
-}
-
-func Equal(a, b []int) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if v != b[i] {
-			return false
-		}
-	}
-	return true
 }

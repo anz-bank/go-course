@@ -10,29 +10,38 @@ var out io.Writer = os.Stdout
 
 func bubbleSort(s []int) []int {
 	n := len(s)
-	for i := 0; i < n; i++ {
-		for j := i; j > 0 && s[j-1] > s[j]; j-- {
-			s[j-1], s[j] = s[j], s[j-1]
+	arrayToSort := append(s[:0:0], s...)
+	for {
+		newn := 0
+		for i := 1; i < n; i++ {
+			if arrayToSort[i-1] > arrayToSort[i] {
+				arrayToSort[i-1], arrayToSort[i] = arrayToSort[i], arrayToSort[i-1]
+				newn = i
+			}
+		}
+		n = newn
+		if n <= 1 {
+			break
 		}
 	}
-
-	return s
+	return arrayToSort
 }
 
 func insertionSort(s []int) []int {
-	i := 1
+	arrayToSort := append(s[:0:0], s...)
 
-	for i < len(s) {
-		for j := i; j > 0 && s[j-1] > s[j]; j-- {
-			s[j-1], s[j] = s[j], s[j-1]
+	for i := 1; i < len(arrayToSort); i++ {
+		key := arrayToSort[i]
+		j := i - 1
+
+		for j >= 0 && arrayToSort[j] > key {
+			arrayToSort[j+1] = arrayToSort[j]
+			j--
 		}
-		i++
+		arrayToSort[j+1] = key
 	}
-	return s
-
+	return arrayToSort
 }
-
 func main() {
 	fmt.Fprintln(out, bubbleSort([]int{3, 2, 1, 5}))
-
 }
