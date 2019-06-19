@@ -2,8 +2,9 @@ package main
 
 import (
 	"bytes"
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMainOutput(t *testing.T) {
@@ -13,9 +14,7 @@ func TestMainOutput(t *testing.T) {
 	expected := "[a11y K8s abc]\n"
 	actual := buf.String()
 
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("Unexpected output in main(). Expected = %v Actual = %v", expected, actual)
-	}
+	assert.Equal(t, expected, actual)
 }
 
 func TestConvertStringToNumeronym(t *testing.T) {
@@ -30,16 +29,11 @@ func TestConvertStringToNumeronym(t *testing.T) {
 		{name: "All lower cases", input: "accessibility", expected: "a11y"},
 		{name: "Word begins with capital letter", input: "Kubernetes", expected: "K8s"},
 		{name: "Two words with one space", input: "Web Development", expected: "W12t"},
-		{name: "Word with non alphanumeric", input: "w$$t", expected: "wt"},
+		{name: "Word with non alphanumeric", input: "w$$t", expected: "w$$t"},
 	}
 
 	for _, test := range tests {
 		actual := convertStringToNumeronym(test.input)
-		testResult := reflect.DeepEqual(actual, test.expected)
-		if testResult == false {
-			t.Fatalf("Test Failed! Expected: %v, Got: %v", test.expected, actual)
-		} else {
-			t.Logf("Test Passed: %v", test.name)
-		}
+		assert.Equal(t, test.expected, actual)
 	}
 }
