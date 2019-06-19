@@ -15,40 +15,40 @@ func main() {
 // Print n number of fibonnaci sequence
 // 1, 1, 2, 3, 5, 8, 13
 // Note: we take the absolute value of n to ensure our loop works.
-func fib(n int16) {
-	var i int16
+func fib(n int64) {
+	var i int64
 	if isPositive(n) {
 		for ; i < n; i++ {
-			fmt.Fprintln(out, calcFib(i))
+			fmt.Fprintln(out, calcPositiveFib(i))
 		}
 		return
 	}
+	if n == 0 {
+		fmt.Fprintln(out, calcZeroFib(i))
+	}
 
 	for ; i > n; i-- {
-		fmt.Fprintln(out, calcFib(i))
+		fmt.Fprintln(out, calcNegativeFib(i))
 	}
 
 }
 
-func calcFib(n int16) int16 {
-	if isPositive(n) {
-		return calcPositiveFib(n)
-	}
-	return calcNegativeFib(n)
+func calcZeroFib(n int64) int64 {
+	return 0
 }
 
-func calcPositiveFib(n int16) int16 {
+func calcPositiveFib(n int64) int64 {
 	if n == 0 {
-		return 0
+		return calcZeroFib(0)
 	}
 	if n == 1 {
 		return 1
 	}
 
-	return calcFib(n-2) + calcFib(n-1)
+	return calcPositiveFib(n-2) + calcPositiveFib(n-1)
 }
 
-func calcNegativeFib(n int16) int16 {
+func calcNegativeFib(n int64) int64 {
 	// We convert the negative to positive so it calculates correctly with calcPositiveFib
 	n = (-1 * n)
 	if isEven(n) {
@@ -58,10 +58,10 @@ func calcNegativeFib(n int16) int16 {
 
 }
 
-func isEven(n int16) bool {
-	return ((n % 2) == 0)
+func isEven(n int64) bool {
+	return ((n & 1) == 0)
 }
 
-func isPositive(n int16) bool {
-	return (n >= 0)
+func isPositive(n int64) bool {
+	return (n > 0)
 }

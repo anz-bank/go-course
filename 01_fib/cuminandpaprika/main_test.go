@@ -61,27 +61,46 @@ func TestFibInputNegative(t *testing.T) {
 	}
 }
 
-func TestCalcFibPositive(t *testing.T) {
-	var fibResult = calcFib(4)
-	var expectedResult int16 = 3
+func TestFibInputZero(t *testing.T) {
+	// Arrange
+	var buf bytes.Buffer
+	out = &buf
+
+	// Act
+	fib(0)
+
+	// Assert
+	expected := strconv.Quote("0\n")
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+		t.Errorf("unexpected output in main()")
+		t.Errorf("expected: " + expected + "\nactual: " + actual)
+	}
+}
+
+func TestCalcPositiveFib(t *testing.T) {
+	var fibResult = calcPositiveFib(4)
+	var expectedResult int64 = 3
 	if fibResult != expectedResult {
 		t.Errorf("wrong output from calc fib")
 		t.Errorf("expected: %d\nactual:%d", expectedResult, fibResult)
 	}
 }
 
-func TestCalcFibNegative(t *testing.T) {
-	var fibResult = calcFib(-4)
-	var expectedResult int16 = -3
+func TestCalcNegativeFib(t *testing.T) {
+	var fibResult = calcNegativeFib(-4)
+	var expectedResult int64 = -3
 	if fibResult != expectedResult {
 		t.Errorf("wrong output from calc fib")
 		t.Errorf("expected: %d\nactual:%d", expectedResult, fibResult)
 	}
 }
 
-func TestCalcFibZero(t *testing.T) {
-	var fibResult = calcFib(0)
-	var expectedResult int16
+func TestCalcZeroFib(t *testing.T) {
+	var expectedResult int64
+
+	var fibResult = calcPositiveFib(0)
 	if fibResult != expectedResult {
 		t.Errorf("wrong output from calc fib")
 		t.Errorf("expected: %d\nactual:%d", expectedResult, fibResult)
