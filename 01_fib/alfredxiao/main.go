@@ -12,30 +12,19 @@ func fibSeries(n int) []int {
 	if n >= 93 || n <= -93 {
 		panic("Numbers beyond 93 or -93 are not supported!")
 	}
-	var series []int
-	fa, fb := 0, 1
-	p, fn := 0, 0
-	for {
-		switch {
-		case p == 0:
-			fn = fa
-		case p == 1:
-			fn = fb
-		case p > 1:
-			fa, fb = fb, fa+fb
-			fn = fb
-		case p < 0:
-			fa, fb = fb-fa, fa
-			fn = fa
-		}
-		series = append(series, fn)
-		if p == n {
-			break
-		}
-		if n > 0 {
-			p++
-		} else if n < 0 {
-			p--
+
+	sign := 1
+	if n < 0 {
+		sign = -1
+	}
+
+	series := make([]int, n*sign+1)
+	if n == 0 {
+		series[0] = 0
+	} else {
+		series[0], series[1] = 0, 1
+		for i := 2; i <= n*sign; i++ {
+			series[i] = series[i-2] + series[i-1]*sign
 		}
 	}
 	return series
