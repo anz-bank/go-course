@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -50,9 +52,21 @@ func (s *storerSuite) TestDeletePuppy() {
 }
 
 func TestStorer(t *testing.T) {
-	// ms := make(MapStore)
-	// ms := MapStore{}
 	suite.Run(t, &storerSuite{storer: &MapStore{}})
 	ss := SyncStore{}
 	suite.Run(t, &storerSuite{storer: &ss})
+}
+
+func TestMain(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+
+	main()
+
+	expected := strconv.Quote("{7 bulldog black 100}\n")
+	actual := strconv.Quote(buf.String())
+
+	if expected != actual {
+			t.Errorf("Unexpected output actual: %#v, expected %#v", actual, expected)
+	}
 }

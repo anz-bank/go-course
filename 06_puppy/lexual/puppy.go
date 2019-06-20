@@ -1,8 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"io"
+	"os"
 	"sync"
 )
+
+var out io.Writer = os.Stdout
 
 type Puppy struct {
 	ID     uint32
@@ -23,10 +28,12 @@ type Storer interface {
 
 type MapStore map[uint32]Puppy
 
+// CreatePuppy stores a copy of Puppy p
 func (store *MapStore) CreatePuppy(p *Puppy) {
 	(*store)[p.ID] = Puppy{p.ID, p.Breed, p.Colour, p.Value}
 }
 
+// ReadPuppy retrieves a previously stored Puppy
 func (store *MapStore) ReadPuppy(id uint32) *Puppy {
 	p, ok := (*store)[id]
 	if !ok {
@@ -35,10 +42,12 @@ func (store *MapStore) ReadPuppy(id uint32) *Puppy {
 	return &p
 }
 
+// UpdatePuppy updates details of Puppy in store
 func (store *MapStore) UpdatePuppy(id uint32, puppy *Puppy) {
 	(*store)[id] = Puppy{puppy.ID, puppy.Breed, puppy.Colour, puppy.Value}
 }
 
+// DeletePuppy deletes puppy from store
 func (store *MapStore) DeletePuppy(id uint32) bool {
 	_, exists := (*store)[id]
 	delete(*store, id)
@@ -47,15 +56,16 @@ func (store *MapStore) DeletePuppy(id uint32) bool {
 
 // SyncStore ////
 
-// type SyncStore sync.Map[uint32]Puppy
 type SyncStore struct {
 	sync.Map
 }
 
+// CreatePuppy stores a copy of Puppy p
 func (store *SyncStore) CreatePuppy(p *Puppy) {
 	store.Store(p.ID, Puppy{p.ID, p.Breed, p.Colour, p.Value})
 }
 
+// ReadPuppy retrieves a previously stored Puppy
 func (store *SyncStore) ReadPuppy(id uint32) *Puppy {
 	generic, ok := store.Load(id)
 	if !ok {
@@ -65,10 +75,12 @@ func (store *SyncStore) ReadPuppy(id uint32) *Puppy {
 	return &puppy
 }
 
+// UpdatePuppy updates details of Puppy in store
 func (store *SyncStore) UpdatePuppy(id uint32, p *Puppy) {
 	store.Store(p.ID, Puppy{p.ID, p.Breed, p.Colour, p.Value})
 }
 
+// DeletePuppy deletes puppy from store
 func (store *SyncStore) DeletePuppy(id uint32) bool {
 	_, exists := store.Load(id)
 	store.Delete(id)
@@ -76,4 +88,9 @@ func (store *SyncStore) DeletePuppy(id uint32) bool {
 }
 
 func main() {
+	storer := MapStore{}
+	p1 := Puppy{7, "bulldog", "black", 100}
+	storer.CreatePuppy(&p1)
+	p2 := storer.ReadPuppy(7)
+	fmt.Fprintln(out, *p2)
 }
