@@ -1,9 +1,10 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"io"
-	"math/rand"
+	"math/big"
 	"os"
 )
 
@@ -54,7 +55,7 @@ func insertion(s []int) []int {
 			// sort those greater than key elements one position after current position
 			// same as writing s[i] = s[j]
 			s[j+1] = s[j]
-			j = j - 1
+			j -= 1
 		}
 		// assign the value of key, or s[i] to the right place
 		s[j+1] = key
@@ -73,7 +74,8 @@ func quicksort(s []int) []int {
 	// set the boundries: min and max
 	left, right := 0, len(s)-1
 	// grab a random pivot
-	pivot := rand.Int() % len(s)
+	nBig, _ := rand.Int(rand.Reader, big.NewInt(27))
+	pivot := int(nBig.Uint64()) % n
 	// make the pivot the new max
 	s[pivot], s[right] = s[right], s[pivot]
 	// iterate through the entire int array
@@ -93,5 +95,5 @@ func quicksort(s []int) []int {
 }
 
 func main() {
-	fmt.Fprint(out, quicksort([]int{3, 2, 1, 5, 0, 6, 2, 8}))
+	fmt.Fprint(out, bubble([]int{3, 2, 1, 5, 0, 6, 2, 8}))
 }
