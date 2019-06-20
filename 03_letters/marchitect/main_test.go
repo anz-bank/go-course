@@ -18,7 +18,7 @@ func Test_letters_and_sortLetters(t *testing.T) {
 		{"normal test 2", "$Bfs`BY", []string{"$:1", "B:2", "Y:1", "`:1", "f:1", "s:1"}},
 		{"empty input", "", []string{}},
 		{"Mandarin Characters Hello", "你好", []string{"你:1", "好:1"}},
-		{"Brain drained - I cannot think of anything else test", "Brain drained", []string{" :1", "B:1", "a:2", "d:2", "e:1", "i:2", "n:2", "r:2"}},
+		{"normal test 3", "Brain drained", []string{" :1", "B:1", "a:2", "d:2", "e:1", "i:2", "n:2", "r:2"}},
 	}
 	for _, table := range tables {
 		expected := sortLetters(letters(table.input))
