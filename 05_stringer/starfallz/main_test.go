@@ -29,13 +29,19 @@ func TestIpAddrDefaultToString(t *testing.T) {
 		expected    string
 	}{
 		{"Test IPAddr with all zeros in addresses", IPAddr{0, 0, 0, 0}, "0.0.0.0"},
+		{"Test IPAddr with some values assigned", IPAddr{add1: 5, add4: 4}, "5.0.0.4"},
+		{"Test IPAddr with no value", IPAddr{}, "0.0.0.0"},
+		{"Test IPAddr with max values allowed on uint8", IPAddr{255, 255, 255, 255}, "255.255.255.255"},
 	}
 
 	for _, testCase := range testCases {
+		input := testCase.input
+		expected := testCase.expected
+
 		t.Run(testCase.description, func(t *testing.T) {
-			actual := testCase.input.String()
-			if testCase.expected != actual {
-				t.Errorf("Unexpected output, expected: %s, actual: %s", testCase.expected, actual)
+			actual := input.String()
+			if expected != actual {
+				t.Errorf("Unexpected output, expected: %s, actual: %s", expected, actual)
 			}
 		})
 	}

@@ -15,10 +15,7 @@ func main() {
 }
 
 type IPAddr struct {
-	add1 uint8
-	add2 uint8
-	add3 uint8
-	add4 uint8
+	add1, add2, add3, add4 uint8
 }
 
 func (ipAddr IPAddr) String() string {
