@@ -20,7 +20,8 @@ func TestMainFunction(t *testing.T) {
 3
 5
 8
-13`)
+13
+`)
 		actual := strconv.Quote(buf.String())
 
 		if expected != actual {
@@ -29,13 +30,48 @@ func TestMainFunction(t *testing.T) {
 	})
 }
 
+func TestPrintIntSliceFunction(t *testing.T) {
+	testCases := []struct {
+		description string
+		input       []int
+		expected    string
+	}{
+		{"Test print nil int array", nil, ""},
+		{"Test print one value in an int array", []int{1}, `1
+`},
+		{"Test print multi values in an int array", []int{1, 2, 3, 4, 5}, `1
+2
+3
+4
+5
+`},
+	}
+
+	for _, testCase := range testCases {
+		input := testCase.input
+		expected := strconv.Quote(testCase.expected)
+
+		t.Run(testCase.description, func(t *testing.T) {
+			var buf bytes.Buffer
+			out = &buf
+
+			printIntSlice(input)
+
+			actual := strconv.Quote(buf.String())
+			if !reflect.DeepEqual(actual, expected) {
+				t.Errorf("Unexpected output, expected: %s, actual: %s", expected, actual)
+			}
+		})
+	}
+}
+
 func TestFibFunction(t *testing.T) {
 	testCases := []struct {
 		description string
 		input       int
 		expected    []int
 	}{
-		{"Test zero fib to return zero", 0, []int{0}},
+		{"Test zero fib to return zero", 0, []int{}},
 		{"Test positive fib one to return one", 1, []int{1}},
 		{"Test positive fib two to return the correct values", 2, []int{1, 1}},
 		{"Test positive fib to return the correct values", 7, []int{1, 1, 2, 3, 5, 8, 13}},
