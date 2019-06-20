@@ -67,6 +67,6 @@ func TestMain(t *testing.T) {
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {
-			t.Errorf("Unexpected output actual: %#v, expected %#v", actual, expected)
+		t.Errorf("Unexpected output actual: %#v, expected %#v", actual, expected)
 	}
 }
