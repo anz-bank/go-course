@@ -21,7 +21,6 @@ func fib(n int) {
 
 	for i := 1; i <= absVal; i++ {
 		sign := 1
-
 		if n < 0 && (i%2 == 0) { // for negative fib input, print a negative sign on even index
 			sign = -1
 		}
@@ -29,9 +28,6 @@ func fib(n int) {
 		previous, current = current, (current + previous)
 	}
 }
-
 func main() {
-
 	fib(7)
-
 }
