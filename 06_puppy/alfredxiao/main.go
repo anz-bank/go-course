@@ -8,7 +8,7 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-  store1 := NewMapStore()
+  store1 := NewSyncStore()
   store1.CreatePuppy(Puppy{
     ID: "1",
     Colour: "Red",
