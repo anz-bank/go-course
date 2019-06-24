@@ -14,7 +14,7 @@ func letters(s string) map[rune]int {
 	count := map[rune]int{}
 
 	for _, char := range s {
-		count[char] = count[char] + 1
+		count[char]++
 	}
 
 	return count
@@ -33,7 +33,8 @@ func sortLetters(m map[rune]int) []string {
 
 	// building the result []string
 	for i, key := range keys {
-		result[i] = fmt.Sprintf("%c:%d", key, m[rune(key)]) // note that Sprintf returns u a formatted string it doesn't print anything
+		result[i] = fmt.Sprintf("%c:%d", key, m[rune(key)])
+		// note that Sprintf returns u a formatted string it doesn't print anything
 
 	}
 
