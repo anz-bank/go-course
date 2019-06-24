@@ -9,5 +9,6 @@ script:
   - golangci-lint run
   - go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
   - "{ go tool cover -func=coverage.out | grep '^total:.*100.0%'; } || { echo 'FAIL - Coverage below 100%'; exit 1; }"
+  - "[[ $(git rev-list --count master --first-parent) -ge $(($(git rev-list --count HEAD --first-parent)-2)) ]] || { echo 'FAIL - Max 2 non-merge commits in branch allowed. Please consider rebasing'; exit 1; }"
 after_success:
   - bash <(curl -s https://codecov.io/bash)
