@@ -1,10 +1,10 @@
 package main
 
 import (
-  "bytes"
-  "testing"
+	"bytes"
+	"testing"
 
-  "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMainOutput(t *testing.T) {
@@ -12,5 +12,5 @@ func TestMainOutput(t *testing.T) {
 	out = &buf
 	main()
 
-  assert.Equal(t, "Red", buf.String())
+	assert.Equal(t, "Red", buf.String())
 }
