@@ -5,11 +5,11 @@ import (
 	"sync"
 )
 
-type SyncStore struct {
+type syncStore struct {
 	data sync.Map
 }
 
-func (s *SyncStore) CreatePuppy(p Puppy) error {
+func (s *syncStore) CreatePuppy(p Puppy) error {
 	_, ok := s.data.Load(p.ID)
 	if ok {
 		return fmt.Errorf("puppy with ID[%s] already exists", p.ID)
@@ -19,7 +19,7 @@ func (s *SyncStore) CreatePuppy(p Puppy) error {
 	return nil
 }
 
-func (s *SyncStore) ReadPuppy(id string) (Puppy, error) {
+func (s *syncStore) ReadPuppy(id string) (Puppy, error) {
 	p, ok := s.data.Load(id)
 	if !ok {
 		return Puppy{}, fmt.Errorf("puppy with ID[%s] does not exists", id)
@@ -28,7 +28,7 @@ func (s *SyncStore) ReadPuppy(id string) (Puppy, error) {
 	return p.(Puppy), nil
 }
 
-func (s *SyncStore) UpdatePuppy(p Puppy) error {
+func (s *syncStore) UpdatePuppy(p Puppy) error {
 	_, ok := s.data.Load(p.ID)
 	if !ok {
 		return fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
@@ -37,7 +37,7 @@ func (s *SyncStore) UpdatePuppy(p Puppy) error {
 	return nil
 }
 
-func (s *SyncStore) DeletePuppy(id string) (bool, error) {
+func (s *syncStore) DeletePuppy(id string) (bool, error) {
 	_, ok := s.data.Load(id)
 	if !ok {
 		return false, fmt.Errorf("puppy with ID[%s] does not exists", id)
@@ -46,6 +46,6 @@ func (s *SyncStore) DeletePuppy(id string) (bool, error) {
 	return true, nil
 }
 
-func NewSyncStore() *SyncStore {
-	return &SyncStore{}
+func NewSyncStore() Storer {
+	return &syncStore{}
 }
