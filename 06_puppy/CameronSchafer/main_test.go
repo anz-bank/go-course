@@ -67,7 +67,6 @@ func TestSyncStorer(t *testing.T) {
 	suite.Run(t, &store)
 }
 
-// main() test
 func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
@@ -84,10 +83,8 @@ func TestMainOutput(t *testing.T) {
 	assert.Equalf(t, expected, actual,
 		"Unexpected output in main()\nexpected: %q\nactual: %q",
 		expected, actual)
-
 }
 
-// normalMap()
 func TestNormalMap(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
@@ -109,7 +106,6 @@ func TestNormalMap(t *testing.T) {
 		expected, actual)
 }
 
-// syncMap()
 func TestSyncMap(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
