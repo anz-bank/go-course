@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMain(t *testing.T) {
@@ -13,7 +15,5 @@ func TestMain(t *testing.T) {
 	main()
 	expected := "\"Puppy id: 0\""
 	actual := strconv.Quote(buf.String())
-	if expected != actual {
-		t.Errorf("Unexpected output\nexpected: %v\nactual: %v", expected, actual)
-	}
+	assert.Equal(t, expected, actual)
 }

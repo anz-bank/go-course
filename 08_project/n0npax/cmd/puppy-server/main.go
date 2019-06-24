@@ -13,7 +13,7 @@ var out io.Writer = os.Stdout
 
 func main() {
 	store := store.MemStore{}
-	p := puppy.Puppy{ID: 1, Breed: "Mix", Colour: "White", Value: 100}
+	p := puppy.Puppy{Breed: "Mix", Colour: "White", Value: 100}
 
 	id, _ := store.CreatePuppy(&p)
 	fmt.Fprint(out, "Puppy id: ", id)

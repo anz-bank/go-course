@@ -6,17 +6,9 @@ import (
 
 // Error codes
 const (
-	ErrInvalidInputCode  = 422
+	ErrInvalidInputCode  = 400
 	ErrNotFoundCode      = 404
 	ErrInternalErrorCode = 500
-)
-
-// Error descriptions
-const (
-	PuppyNotFoundMsg   = "Puppy with ID %v not found"
-	InvalidInputMsg    = "Puppy value have to be positive number"
-	DataDecodeErrorMsg = "Internal error. Could not cast stored data to puppy object"
-	CorruptedIDMsg     = "ID is corrupted. Please ensure object ID matched provided ID"
 )
 
 // Error wrapps errors with code, message and error itself
@@ -31,24 +23,9 @@ func (e *Error) Error() string {
 }
 
 // Errorf creates a new Error with formatting
-func Errorf(code int, msg string) *Error {
+func Errorf(code int, format string, args ...interface{}) *Error {
 	return &Error{
-		Message: msg,
+		Message: fmt.Sprintf(format, args...),
 		Code:    code,
 	}
-}
-
-// ErrInvalidInput generates custom error for invalid input
-func ErrInvalidInput(msg string) *Error {
-	return Errorf(ErrInvalidInputCode, msg)
-}
-
-// ErrNotFound generates custom error for not found resource
-func ErrNotFound(msg string) *Error {
-	return Errorf(ErrNotFoundCode, msg)
-}
-
-// ErrInternalError generates custom error for internal error
-func ErrInternalError(msg string) *Error {
-	return Errorf(ErrInternalErrorCode, msg)
 }

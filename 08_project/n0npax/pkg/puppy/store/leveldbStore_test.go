@@ -12,6 +12,6 @@ func TestDbErrorPanic(t *testing.T) {
 			t.Errorf("Panic expected")
 		}
 	}()
-	err := puppy.ErrInvalidInput("test invalid input")
+	err := puppy.Errorf(puppy.ErrInvalidInputCode, "test invalid input")
 	dbErrorPanic(err)
 }
