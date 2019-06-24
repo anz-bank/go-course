@@ -36,7 +36,7 @@ func (s *MapStore) UpdatePuppy(p Puppy) error {
   return nil
 }
 
-func (s *MapStore) DeletePet(ID string) (bool, error) {
+func (s *MapStore) DeletePuppy(ID string) (bool, error) {
   p, ok := s.data[ID]
   if !ok {
     return false, fmt.Errorf("Puppy with ID[%s] does not exists", p.ID)

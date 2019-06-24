@@ -22,7 +22,7 @@ func (s *SyncStore) CreatePuppy(p Puppy) error {
 func (s *SyncStore) ReadPuppy(ID string) (Puppy, error) {
   p, ok := s.data.Load(ID)
   if !ok {
-    return Puppy{}, fmt.Errorf("Puppy with ID[%s] does not exists", p.(Puppy).ID)
+    return Puppy{}, fmt.Errorf("Puppy with ID[%s] does not exists", ID)
   }
 
   return p.(Puppy), nil
@@ -37,10 +37,10 @@ func (s *SyncStore) UpdatePuppy(p Puppy) error {
   return nil
 }
 
-func (s *SyncStore) DeletePet(ID string) (bool, error) {
-  p, ok := s.data.Load(ID)
+func (s *SyncStore) DeletePuppy(ID string) (bool, error) {
+  _, ok := s.data.Load(ID)
   if !ok {
-    return false, fmt.Errorf("Puppy with ID[%s] does not exists", p.(Puppy).ID)
+    return false, fmt.Errorf("Puppy with ID[%s] does not exists", ID)
   }
   s.data.Delete(ID)
   return true, nil

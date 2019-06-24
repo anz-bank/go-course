@@ -15,10 +15,5 @@ func main() {
   })
 
   puppy, _ := store1.ReadPuppy("1")
-  fmt.Fprintln(out, puppy)
-
-  puppy.Colour = "Blue"
-  store1.UpdatePuppy(puppy)
-  puppy, _ = store1.ReadPuppy("1")
-  fmt.Fprintln(out, puppy)
+  fmt.Fprint(out, puppy.Colour)
 }
