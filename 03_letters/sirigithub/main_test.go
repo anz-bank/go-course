@@ -1,50 +1,50 @@
 package main
 
 import (
-	"reflect"
+	"bytes"
+	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-/**
-Tests to write
-**/
 func TestLetters(t *testing.T) {
 	tests := []struct {
-		desc     string
-		input    string
-		expected map[rune]int
+		description string
+		input       string
+		expected    []string
 	}{
-		{
-			"Simple string",
-			"accdceee",
-			map[rune]int{'a': 1, 'c': 3, 'd': 1, 'e': 3},
-		},
-		{
-			"String with spaces",
-			"   223  ",
-			map[rune]int{' ': 5, '2': 2, '3': 1},
-		},
-		{
-			"Empty String",
-			"",
-			map[rune]int{},
-		},
-		{
-			"Empty String",
-			"",
-			map[rune]int{},
-		},
-		{
-			"German Umlauts",
-			"äöß€’üüüöäßß",
-			map[rune]int{'ß': 3, 'ä': 2, 'ö': 2, 'ü': 3, '’': 1, '€': 1},
-		},
+		{description: "Simple string", input: "thisisasimplestring", expected: []string{"a:1", "e:1", "g:1", "h:1", "i:4", "l:1", "m:1", "n:1", "p:1", "r:1", "s:4", "t:2"}},
+
+		{description: "String with spaces", input: "   223  ", expected: []string{" :5", "2:2", "3:1"}},
+
+		{description: "Empty String", input: "", expected: []string{}},
+
+		{description: "German Umlauts", input: "äöß€’üüüöäßß", expected: []string{"ß:3", "ä:2", "ö:2", "ü:3", "’:1", "€:1"}},
+
+		{description: "String with Back slashes", input: "a\\c\\b", expected: []string{"\\:2", "a:1", "b:1", "c:1"}},
+
+		{description: "String with Emojis", input: "😄🐷🙈🐷🏃😄", expected: []string{"🏃:1", "🐷:2", "😄:2", "🙈:1"}},
 	}
 
 	for _, test := range tests {
-		actual := letters(test.input)
-		if !(reflect.DeepEqual(actual, test.expected)) {
-			t.Errorf("Unexpected output in main()\nexpected: %d\nactual: %d", test.expected, actual)
-		}
+		actual := sortLetters(letters(test.input))
+		fmt.Println(actual)
+		expected := test.expected
+		t.Run(test.description, func(t *testing.T) {
+			assert.Equal(t, actual, expected, "actual %v but expected %v", actual, expected)
+		})
+	}
+}
+
+func TestMainOutput(t *testing.T) {
+	var buf bytes.Buffer
+	out = &buf
+	main()
+	expected := "a:2\nb:1\n"
+	actual := buf.String()
+
+	if expected != actual {
+		t.Errorf("Unexpected output in main(). Expected = %v Actual = %v", expected, actual)
 	}
 }
