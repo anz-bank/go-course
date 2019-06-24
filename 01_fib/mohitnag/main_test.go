@@ -30,9 +30,8 @@ func TestMain(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 	main()
-	expected := "1,1,2,3,5,8,13"
+	expected := "1,1,2,3,5,8,13,"
 	actual := buf.String()
 	actual = strings.Replace(actual, "\n", ",", -1)
-	actual = strings.TrimRight(actual, ",")
 	assert.Equal(expected, actual)
 }

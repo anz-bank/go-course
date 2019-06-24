@@ -13,18 +13,15 @@ func main() {
 }
 
 func fibonacci(n int) []int {
-	slice := []int{}
 	if n < 1 {
 		return []int{}
 	}
-	if n == 1 {
-		return []int{1}
-	}
-	slice = append(slice, 1, 1)
+	slice := make([]int, n+1)
+	slice[0], slice[1] = 1, 1
 	for i := 2; i < n; i++ {
-		slice = append(slice, slice[i-1]+slice[i-2])
+		slice[i] = slice[i-1] + slice[i-2]
 	}
-	return slice
+	return slice[:n]
 }
 
 func fib(n int) {
