@@ -5,10 +5,8 @@
 
 ```
 ├── README.md
-├── go.mod
-├── go.sum
 ├── pkg
-│   └── USERNAME-puppy
+│   └── puppy
 │       ├── types.go
 │       ├── types_test.go
 │       ├── errors.go
@@ -16,10 +14,9 @@
 │       └── store
 │           ├── storer.go
 │           └── .... store files and tests, e.g. mapstore.go
-├── cmd
-│   └── USERNAME-puppy-server
-│       └── main.go
-└── vendor
+└── cmd
+    └── puppy-server
+        └── main.go
 ```
 
 Add project introduction and how to build, run & test it to `README.md`
