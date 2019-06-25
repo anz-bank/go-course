@@ -17,9 +17,10 @@ func numeronyms(vals ...string) []string {
 }
 
 func numeronym(val string) string {
-	length := len(val)
+	runes := []rune(val)
+	length := len(runes)
 	if length > 3 {
-		return fmt.Sprintf("%c%d%c", val[0], length-2, val[length-1])
+		return fmt.Sprintf("%c%d%c", runes[0], length-2, runes[length-1])
 	}
 	return val
 }
