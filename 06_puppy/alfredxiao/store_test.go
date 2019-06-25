@@ -9,65 +9,77 @@ import (
 
 type storerSuite struct {
 	suite.Suite
-	store Storer
+	storeFactory func() Storer
 }
 
 func (s *storerSuite) TestCreatePuppyHappyCase() {
-	err := s.store.CreatePuppy(Puppy{ID: "1", Colour: "Black"})
+	store := s.storeFactory()
+	err := store.CreatePuppy(Puppy{ID: "1", Colour: "Black"})
 	s.NoError(err, "Happy case puppy creation")
 
-	p, _ := s.store.ReadPuppy("1")
+	p, _ := store.ReadPuppy("1")
 	s.Equal("Black", p.Colour)
 }
 
 func (s *storerSuite) TestCreatePuppyAlreadyExists() {
-	_ = s.store.CreatePuppy(Puppy{ID: "2"})
-	err := s.store.CreatePuppy(Puppy{ID: "2", Colour: "Red"})
+	store := s.storeFactory()
+	_ = store.CreatePuppy(Puppy{ID: "2"})
+	err := store.CreatePuppy(Puppy{ID: "2", Colour: "Red"})
 	s.Error(err, "Puppy creation fails if ID already exists")
 }
 
 func (s *storerSuite) TestReadPuppyHappyCase() {
-	_ = s.store.CreatePuppy(Puppy{ID: "3", Colour: "Blue"})
-	p, err := s.store.ReadPuppy("3")
+	store := s.storeFactory()
+	_ = store.CreatePuppy(Puppy{ID: "3", Colour: "Blue"})
+	p, err := store.ReadPuppy("3")
 	require.NoError(s.T(), err)
 	s.Equal("Blue", p.Colour)
 }
 
 func (s *storerSuite) TestReadPuppyNonExisting() {
-	_, err := s.store.ReadPuppy("4")
+	store := s.storeFactory()
+	_, err := store.ReadPuppy("4")
 	s.Error(err)
 }
 
 func (s *storerSuite) TestUpdatePuppyHappyCase() {
-	_ = s.store.CreatePuppy(Puppy{ID: "5", Colour: "Brown"})
-	err := s.store.UpdatePuppy(Puppy{ID: "5", Colour: "Green"})
+	store := s.storeFactory()
+	_ = store.CreatePuppy(Puppy{ID: "5", Colour: "Brown"})
+	err := store.UpdatePuppy(Puppy{ID: "5", Colour: "Green"})
 	require.NoError(s.T(), err)
-	p, _ := s.store.ReadPuppy("5")
+	p, _ := store.ReadPuppy("5")
 	s.Equal("Green", p.Colour)
 }
 
 func (s *storerSuite) TestUpdatePuppyNonExisting() {
-	err := s.store.UpdatePuppy(Puppy{ID: "6"})
+	store := s.storeFactory()
+	err := store.UpdatePuppy(Puppy{ID: "6"})
 	s.Error(err)
 }
 
 func (s *storerSuite) TestDeletePuppyHappyCase() {
-	_ = s.store.CreatePuppy(Puppy{ID: "7", Colour: "Brown"})
-	deleted, err := s.store.DeletePuppy("7")
+	store := s.storeFactory()
+	_ = store.CreatePuppy(Puppy{ID: "7", Colour: "Brown"})
+	deleted, err := store.DeletePuppy("7")
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), true, deleted)
 
-	_, err = s.store.ReadPuppy("7")
+	_, err = store.ReadPuppy("7")
 	s.Error(err, "Puppy gone after deletion")
 }
 
 func (s *storerSuite) TestDeletePuppyNonExisting() {
-	deleted, err := s.store.DeletePuppy("8")
+	store := s.storeFactory()
+	deleted, err := store.DeletePuppy("8")
 	require.Error(s.T(), err)
 	s.Equal(false, deleted)
 }
 
 func TestStorers(t *testing.T) {
-	suite.Run(t, &storerSuite{store: NewMapStore()})
-	suite.Run(t, &storerSuite{store: NewSyncStore()})
+	suite.Run(t, &storerSuite{
+		storeFactory: NewMapStore,
+	})
+	suite.Run(t, &storerSuite{
+		storeFactory: NewSyncStore,
+	})
 }
