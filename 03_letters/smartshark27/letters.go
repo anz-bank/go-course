@@ -10,7 +10,7 @@ import (
 func letters(s string) map[rune]int {
 	m := make(map[rune]int)
 	for _, char := range(s) {
-		m[rune(char)]++
+		m[char]++
 	}
 	return m
 }
