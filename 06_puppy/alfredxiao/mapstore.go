@@ -4,11 +4,11 @@ import (
 	"fmt"
 )
 
-type MapStore struct {
+type mapStore struct {
 	data map[string]Puppy
 }
 
-func (s *MapStore) CreatePuppy(p Puppy) error {
+func (s *mapStore) CreatePuppy(p Puppy) error {
 	_, ok := s.data[p.ID]
 	if ok {
 		return fmt.Errorf("puppy with ID[%s] already exists", p.ID)
@@ -18,7 +18,7 @@ func (s *MapStore) CreatePuppy(p Puppy) error {
 	return nil
 }
 
-func (s *MapStore) ReadPuppy(id string) (Puppy, error) {
+func (s *mapStore) ReadPuppy(id string) (Puppy, error) {
 	p, ok := s.data[id]
 	if !ok {
 		return Puppy{}, fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
@@ -27,7 +27,7 @@ func (s *MapStore) ReadPuppy(id string) (Puppy, error) {
 	return p, nil
 }
 
-func (s *MapStore) UpdatePuppy(p Puppy) error {
+func (s *mapStore) UpdatePuppy(p Puppy) error {
 	_, ok := s.data[p.ID]
 	if !ok {
 		return fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
@@ -36,7 +36,7 @@ func (s *MapStore) UpdatePuppy(p Puppy) error {
 	return nil
 }
 
-func (s *MapStore) DeletePuppy(id string) (bool, error) {
+func (s *mapStore) DeletePuppy(id string) (bool, error) {
 	p, ok := s.data[id]
 	if !ok {
 		return false, fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
@@ -45,8 +45,8 @@ func (s *MapStore) DeletePuppy(id string) (bool, error) {
 	return true, nil
 }
 
-func NewMapStore() *MapStore {
-	return &MapStore{
+func NewMapStore() Storer {
+	return &mapStore{
 		data: make(map[string]Puppy),
 	}
 }
