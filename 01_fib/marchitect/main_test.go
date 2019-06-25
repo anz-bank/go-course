@@ -7,21 +7,29 @@ import (
 )
 
 func Test_abs(t *testing.T) {
-	tables := []struct {
-		nameOfTestcase string
-		input          int
-		output         int
+	testCases := map[string]struct {
+		input  int
+		output int
 	}{
-		{"normal test 1", 1, 1},
-		{"normal test 2", 0, 0},
-		{"normal test 3", -1, 1},
+		"normal test 1": {
+			input:  1,
+			output: 1,
+		},
+		"normal test 2": {
+			input:  -1,
+			output: 1,
+		},
+		"normal test 3": {
+			input:  0,
+			output: 0,
+		},
 	}
 
-	for _, table := range tables {
-		actual := abs(table.input)
-		expected := table.output
-		if expected != actual {
-			t.Errorf("Unexpected output from test %s, expected = %v, actual = %v", table.nameOfTestcase, expected, actual)
+	for testCase, test := range testCases {
+		input, expected := test.input, test.output
+		actual := abs(input)
+		if actual != expected {
+			t.Errorf("Unexpected output from test %s, expected = %v, actual = %v", testCase, expected, actual)
 		}
 	}
 }
@@ -30,36 +38,44 @@ func Test_fib(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 
-	tables := []struct {
-		nameOfTestcase string
-		input          int
-		output         string
+	testCases := map[string]struct {
+		input  int
+		output string
 	}{
-		{"normal test 1", 7, strconv.Quote(`1
+		"normal test 1": {
+			input: 7,
+			output: strconv.Quote(`1
 1
 2
 3
 5
 8
 13
-`)},
-		{"normal test 2", 0, strconv.Quote("0\n")},
-		{"normal test 3", -7, strconv.Quote(`1
+`),
+		},
+		"normal test 2": {
+			input: -7,
+			output: strconv.Quote(`1
 -1
 2
 -3
 5
 -8
 13
-`)},
+`),
+		},
+		"normal test 3": {
+			input:  0,
+			output: strconv.Quote("0\n"),
+		},
 	}
 
-	for _, table := range tables {
-		fib(table.input)
+	for testCase, test := range testCases {
+		input, expected := test.input, test.output
+		fib(input)
 		actual := strconv.Quote(buf.String())
-		expected := table.output
 		if expected != actual {
-			t.Errorf("Unexpected output from test %s, expected = %s, actual = %s", table.nameOfTestcase, expected, actual)
+			t.Errorf("Unexpected output from test %s, expected = %s, actual = %s", testCase, expected, actual)
 		}
 
 		buf.Reset()
