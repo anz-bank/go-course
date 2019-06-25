@@ -26,5 +26,5 @@ func TestMain(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 	main()
-	assert.Equal(t, "[a2d]\n", buf.String())
+	assert.Equal(t, "[a2d]", buf.String())
 }

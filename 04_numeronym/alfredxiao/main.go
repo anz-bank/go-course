@@ -25,5 +25,5 @@ func numeronym(val string) string {
 }
 
 func main() {
-	fmt.Fprintln(out, numeronyms("abcd"))
+	fmt.Fprint(out, numeronyms("abcd"))
 }
