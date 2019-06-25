@@ -75,7 +75,7 @@ func (s *storerSuite) TestDeletePuppyNonExisting() {
 	assert.Equal(t, false, deleted)
 }
 
-func TestRest(t *testing.T) {
+func TestStorers(t *testing.T) {
 	suite.Run(t, &storerSuite{store: NewMapStore()})
 	suite.Run(t, &storerSuite{store: NewSyncStore()})
 }
