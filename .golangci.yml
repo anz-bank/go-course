@@ -4,3 +4,4 @@ linters:
   enable-all: true
   disable:
     - gochecknoglobals
+    - dupl
