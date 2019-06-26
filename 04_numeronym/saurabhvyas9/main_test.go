@@ -32,6 +32,7 @@ var testCases = map[string]struct {
 	"Alphanumeric":       {input: []string{"12as34sdf5678asd90", "abcd232ef"}, want: []string{"1160", "a7f"}},
 	"Empty":              {input: []string{"", ""}, want: []string{"", ""}},
 	"Special Characters": {input: []string{"%*(*)ASDjahs(", "absd*?>^&%$asd"}, want: []string{"%11(", "a12d"}},
+	"Unicode":            {input: []string{"aübenäc", "übeäcgä", "üää"}, want: []string{"a5c", "ü5ä", "üää"}},
 }
 
 func TestNumeronym(t *testing.T) {
