@@ -42,7 +42,8 @@ func (s *storerSuite) TestUpdatePuppyHappyCase() {
 	id := s.store.CreatePuppy(Puppy{Colour: "Brown"})
 	err := s.store.UpdatePuppy(Puppy{ID: id, Colour: "Green"})
 	s.Require().NoError(err)
-	p, _ := s.store.ReadPuppy(id)
+	p, err := s.store.ReadPuppy(id)
+	s.Require().NoError(err)
 	s.Equal("Green", p.Colour)
 }
 
