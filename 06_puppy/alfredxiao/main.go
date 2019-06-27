@@ -9,12 +9,11 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	store := NewSyncStore()
-	_ = store.CreatePuppy(Puppy{
-		ID:     "1",
+	store := NewMapStore()
+	id := store.CreatePuppy(Puppy{
 		Colour: "Red",
 	})
 
-	puppy, _ := store.ReadPuppy("1")
+	puppy, _ := store.ReadPuppy(id)
 	fmt.Fprint(out, puppy.Colour)
 }

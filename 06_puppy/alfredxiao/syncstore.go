@@ -3,20 +3,20 @@ package main
 import (
 	"fmt"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type syncStore struct {
 	data sync.Map
 }
 
-func (s *syncStore) CreatePuppy(p Puppy) error {
-	_, ok := s.data.Load(p.ID)
-	if ok {
-		return fmt.Errorf("puppy with ID[%s] already exists", p.ID)
-	}
+func (s *syncStore) CreatePuppy(p Puppy) string {
+	id := uuid.New().String()
 
-	s.data.Store(p.ID, p)
-	return nil
+	p.ID = id
+	s.data.Store(id, p)
+	return id
 }
 
 func (s *syncStore) ReadPuppy(id string) (Puppy, error) {

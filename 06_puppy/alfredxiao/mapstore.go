@@ -2,20 +2,20 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type mapStore struct {
 	data map[string]Puppy
 }
 
-func (s *mapStore) CreatePuppy(p Puppy) error {
-	_, ok := s.data[p.ID]
-	if ok {
-		return fmt.Errorf("puppy with ID[%s] already exists", p.ID)
-	}
+func (s *mapStore) CreatePuppy(p Puppy) string {
+	id := uuid.New().String()
 
-	s.data[p.ID] = p
-	return nil
+	p.ID = id
+	s.data[id] = p
+	return id
 }
 
 func (s *mapStore) ReadPuppy(id string) (Puppy, error) {

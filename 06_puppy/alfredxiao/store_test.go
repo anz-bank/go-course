@@ -3,7 +3,6 @@ package main
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -18,57 +17,53 @@ func (s *storerSuite) SetupTest() {
 }
 
 func (s *storerSuite) TestCreatePuppyHappyCase() {
-	err := s.store.CreatePuppy(Puppy{ID: "1", Colour: "Black"})
-	s.NoError(err, "Happy case puppy creation")
+	puppy := Puppy{Colour: "Black"}
+	id := s.store.CreatePuppy(puppy)
+	puppyRead, err := s.store.ReadPuppy(id)
+	s.Require().NoError(err)
 
-	p, _ := s.store.ReadPuppy("1")
-	s.Equal("Black", p.Colour)
-}
-
-func (s *storerSuite) TestCreatePuppyAlreadyExists() {
-	_ = s.store.CreatePuppy(Puppy{ID: "2"})
-	err := s.store.CreatePuppy(Puppy{ID: "2", Colour: "Red"})
-	s.Error(err, "Puppy creation fails if ID already exists")
+	puppy.ID = id
+	s.Equal(puppy, puppyRead)
 }
 
 func (s *storerSuite) TestReadPuppyHappyCase() {
-	_ = s.store.CreatePuppy(Puppy{ID: "3", Colour: "Blue"})
-	p, err := s.store.ReadPuppy("3")
-	require.NoError(s.T(), err)
+	id := s.store.CreatePuppy(Puppy{Colour: "Blue"})
+	p, err := s.store.ReadPuppy(id)
+	s.Require().NoError(err)
 	s.Equal("Blue", p.Colour)
 }
 
 func (s *storerSuite) TestReadPuppyNonExisting() {
-	_, err := s.store.ReadPuppy("4")
+	_, err := s.store.ReadPuppy("id_that_does_not_exist")
 	s.Error(err)
 }
 
 func (s *storerSuite) TestUpdatePuppyHappyCase() {
-	_ = s.store.CreatePuppy(Puppy{ID: "5", Colour: "Brown"})
-	err := s.store.UpdatePuppy(Puppy{ID: "5", Colour: "Green"})
-	require.NoError(s.T(), err)
-	p, _ := s.store.ReadPuppy("5")
+	id := s.store.CreatePuppy(Puppy{Colour: "Brown"})
+	err := s.store.UpdatePuppy(Puppy{ID: id, Colour: "Green"})
+	s.Require().NoError(err)
+	p, _ := s.store.ReadPuppy(id)
 	s.Equal("Green", p.Colour)
 }
 
 func (s *storerSuite) TestUpdatePuppyNonExisting() {
-	err := s.store.UpdatePuppy(Puppy{ID: "6"})
+	err := s.store.UpdatePuppy(Puppy{ID: "id_that_does_not_exist_either"})
 	s.Error(err)
 }
 
 func (s *storerSuite) TestDeletePuppyHappyCase() {
-	_ = s.store.CreatePuppy(Puppy{ID: "7", Colour: "Brown"})
-	deleted, err := s.store.DeletePuppy("7")
-	require.NoError(s.T(), err)
-	require.Equal(s.T(), true, deleted)
+	id := s.store.CreatePuppy(Puppy{Colour: "Brown"})
+	deleted, err := s.store.DeletePuppy(id)
+	s.Require().NoError(err)
+	s.Require().Equal(true, deleted)
 
-	_, err = s.store.ReadPuppy("7")
-	s.Error(err, "Puppy gone after deletion")
+	_, err = s.store.ReadPuppy(id)
+	s.Error(err, "Puppy should be gone after deletion")
 }
 
 func (s *storerSuite) TestDeletePuppyNonExisting() {
-	deleted, err := s.store.DeletePuppy("8")
-	require.Error(s.T(), err)
+	deleted, err := s.store.DeletePuppy("id_that_does_not_exist_again")
+	s.Require().Error(err)
 	s.Equal(false, deleted)
 }
 
