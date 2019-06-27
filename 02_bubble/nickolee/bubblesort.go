@@ -12,15 +12,15 @@ var out io.Writer = os.Stdout
 func bubbleSort(s []int) []int {
 	result := make([]int, len(s))
 	copy(result, s)
+	sorted := false
 
-	unsorted := true
-	for unsorted {
-		// perform the check to see if sorting is complete to exit for loop
-		unsorted = false
+	// perform the check to see if sorting is complete to exit for loop
+	for !sorted {
+		sorted = true
 		for i := len(result) - 1; i > 0; i-- {
 			if result[i] < result[i-1] {
 				result[i], result[i-1] = result[i-1], result[i]
-				unsorted = true
+				sorted = false
 			}
 		}
 	}
