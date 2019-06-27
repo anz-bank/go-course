@@ -27,12 +27,18 @@ func (s *mapStore) ReadPuppy(id string) (Puppy, error) {
 	return p, nil
 }
 
-func (s *mapStore) UpdatePuppy(p Puppy) error {
-	_, ok := s.data[p.ID]
+func (s *mapStore) UpdatePuppy(id string, p Puppy) error {
+	if id != p.ID {
+		return fmt.Errorf("bad update request, two IDs (%s, %s) do not match",
+			id, p.ID)
+	}
+
+	_, ok := s.data[id]
 	if !ok {
 		return fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
 	}
-	s.data[p.ID] = p
+
+	s.data[id] = p
 	return nil
 }
 

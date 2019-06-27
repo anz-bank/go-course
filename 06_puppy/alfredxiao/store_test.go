@@ -40,15 +40,21 @@ func (s *storerSuite) TestReadPuppyNonExisting() {
 
 func (s *storerSuite) TestUpdatePuppyHappyCase() {
 	id := s.store.CreatePuppy(Puppy{Colour: "Brown"})
-	err := s.store.UpdatePuppy(Puppy{ID: id, Colour: "Green"})
+	err := s.store.UpdatePuppy(id, Puppy{ID: id, Colour: "Green"})
 	s.Require().NoError(err)
 	p, err := s.store.ReadPuppy(id)
 	s.Require().NoError(err)
 	s.Equal("Green", p.Colour)
 }
 
+func (s *storerSuite) TestUpdatePuppyMismatchIDs() {
+	err := s.store.UpdatePuppy("id1", Puppy{ID: "id2"})
+	s.Error(err)
+}
+
 func (s *storerSuite) TestUpdatePuppyNonExisting() {
-	err := s.store.UpdatePuppy(Puppy{ID: "id_that_does_not_exist_either"})
+	id := "id_that_does_not_exist_either"
+	err := s.store.UpdatePuppy(id, Puppy{ID: id})
 	s.Error(err)
 }
 

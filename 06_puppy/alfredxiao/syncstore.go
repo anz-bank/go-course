@@ -28,12 +28,18 @@ func (s *syncStore) ReadPuppy(id string) (Puppy, error) {
 	return p.(Puppy), nil
 }
 
-func (s *syncStore) UpdatePuppy(p Puppy) error {
-	_, ok := s.data.Load(p.ID)
+func (s *syncStore) UpdatePuppy(id string, p Puppy) error {
+	if id != p.ID {
+		return fmt.Errorf("bad update request, two IDs (%s, %s) do not match",
+			id, p.ID)
+	}
+
+	_, ok := s.data.Load(id)
 	if !ok {
 		return fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
 	}
-	s.data.Store(p.ID, p)
+
+	s.data.Store(id, p)
 	return nil
 }
 

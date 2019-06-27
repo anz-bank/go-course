@@ -10,6 +10,6 @@ type Puppy struct {
 type Storer interface {
 	CreatePuppy(p Puppy) string
 	ReadPuppy(ID string) (Puppy, error)
-	UpdatePuppy(p Puppy) error
+	UpdatePuppy(ID string, p Puppy) error
 	DeletePuppy(ID string) error
 }
