@@ -11,14 +11,11 @@ import (
 func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
-
 	main()
-
 	expected := strconv.Quote(`a:2
 b:1
 `)
 	actual := strconv.Quote(buf.String())
-
 	if expected != actual {
 		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 	}
@@ -53,7 +50,6 @@ func TestLettersFunc(t *testing.T) {
 			t.Fatalf("test case: %s failed. expected: %v, got: %v", testCase.name, testCase.expected, actual)
 		}
 	}
-
 }
 
 func TestSortLettersFunction(t *testing.T) {
@@ -96,5 +92,4 @@ func TestSortLettersFunction(t *testing.T) {
 			t.Fatalf("test case: %s failed. expected: %v, got: %v", testCase.name, testCase.expected, actual)
 		}
 	}
-
 }
