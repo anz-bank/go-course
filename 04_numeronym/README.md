@@ -1,7 +1,7 @@
 # Lab 4 - Numeronym
 
-Create an executable go program in directory `04_numeronym/USERNAME`
-Write a function that returns a slice of numeronyms for its input strings:
+- Create an executable go program in directory `04_numeronym/USERNAME`
+- Write a function that returns a slice of numeronyms for its input strings:
 
 ```
 func numeronyms(vals ...string) []string
