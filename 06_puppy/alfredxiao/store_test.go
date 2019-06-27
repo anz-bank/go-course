@@ -53,18 +53,16 @@ func (s *storerSuite) TestUpdatePuppyNonExisting() {
 
 func (s *storerSuite) TestDeletePuppyHappyCase() {
 	id := s.store.CreatePuppy(Puppy{Colour: "Brown"})
-	deleted, err := s.store.DeletePuppy(id)
+	err := s.store.DeletePuppy(id)
 	s.Require().NoError(err)
-	s.Require().Equal(true, deleted)
 
 	_, err = s.store.ReadPuppy(id)
 	s.Error(err, "Puppy should be gone after deletion")
 }
 
 func (s *storerSuite) TestDeletePuppyNonExisting() {
-	deleted, err := s.store.DeletePuppy("id_that_does_not_exist_again")
+	err := s.store.DeletePuppy("id_that_does_not_exist_again")
 	s.Require().Error(err)
-	s.Equal(false, deleted)
 }
 
 func TestStorers(t *testing.T) {

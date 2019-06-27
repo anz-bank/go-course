@@ -37,13 +37,13 @@ func (s *syncStore) UpdatePuppy(p Puppy) error {
 	return nil
 }
 
-func (s *syncStore) DeletePuppy(id string) (bool, error) {
+func (s *syncStore) DeletePuppy(id string) error {
 	_, ok := s.data.Load(id)
 	if !ok {
-		return false, fmt.Errorf("puppy with ID[%s] does not exists", id)
+		return fmt.Errorf("puppy with ID[%s] does not exists", id)
 	}
 	s.data.Delete(id)
-	return true, nil
+	return nil
 }
 
 func NewSyncStore() Storer {

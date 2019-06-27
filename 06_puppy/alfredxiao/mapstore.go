@@ -36,13 +36,13 @@ func (s *mapStore) UpdatePuppy(p Puppy) error {
 	return nil
 }
 
-func (s *mapStore) DeletePuppy(id string) (bool, error) {
+func (s *mapStore) DeletePuppy(id string) error {
 	p, ok := s.data[id]
 	if !ok {
-		return false, fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
+		return fmt.Errorf("puppy with ID[%s] does not exists", p.ID)
 	}
 	delete(s.data, id)
-	return true, nil
+	return nil
 }
 
 func NewMapStore() Storer {
