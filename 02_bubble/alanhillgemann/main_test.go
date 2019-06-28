@@ -31,6 +31,7 @@ var testCases = map[string]struct {
 
 func TestBubbleSort(t *testing.T) {
 	for name, test := range testCases {
+		test := test
 		t.Run(name, func(t *testing.T) {
 			actual := bubble(test.input)
 			expected := test.expected
