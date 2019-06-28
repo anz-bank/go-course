@@ -12,8 +12,8 @@ func makeCopy(ns []int) []int {
 	return append([]int{}, ns...)
 }
 
-func bubble(s []int) []int {
-	copy := makeCopy(s)
+func bubble(ns []int) []int {
+	copy := makeCopy(ns)
 	n := len(copy)
 	for i := n - 1; i > 0; i-- {
 		for j := 0; j < i; j++ {
@@ -32,16 +32,17 @@ func maybeSwap(ns []int, i, j int) bool {
 }
 
 func insertion(ns []int) []int {
-	n := len(ns)
+	copy := makeCopy(ns)
+	n := len(copy)
 	for i := 1; i < n; i++ {
 		for j := i - 1; j >= 0; j-- {
-			swapped := maybeSwap(ns, j, j+1)
+			swapped := maybeSwap(copy, j, j+1)
 			if !swapped {
 				break
 			}
 		}
 	}
-	return ns
+	return copy
 }
 
 func main() {
