@@ -1,8 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"os"
+)
+
+var out io.Writer = os.Stdout
 
 func isSorted(s []int) bool {
+	if len(s) <= 1 {
+		return true
+	}
 	for index := range s[1:] {
 		if s[index+1] < s[index] {
 			return false
@@ -27,29 +36,27 @@ func remove(s []int, i int) []int {
 }
 
 func bubble(s []int) []int {
-	copy := s
-	sorted := false
-	for !sorted {
-		for index, element := range copy[1:] {
-			if copy[index] > copy[index+1] {
-				copy[index+1] = copy[index]
-				copy[index] = element
+	copied := make([]int, len(s))
+	copy(copied, s)
+	for !isSorted(copied) {
+		for index, element := range copied[1:] {
+			if copied[index] > copied[index+1] {
+				copied[index+1] = copied[index]
+				copied[index] = element
 			}
 		}
-		if isSorted(copy) {
-			sorted = true
-		}
 	}
-	return copy
+	return copied
 }
 
 func insertion(s []int) []int {
-	var sorted []int
-	copy := s
-	for len(copy) > 0 {
-		minIndex := findMin(copy)
-		sorted = append(sorted, copy[minIndex])
-		copy = remove(copy, minIndex)
+	sorted := []int{}
+	copied := make([]int, len(s))
+	copy(copied, s)
+	for len(copied) > 0 {
+		minIndex := findMin(copied)
+		sorted = append(sorted, copied[minIndex])
+		copied = remove(copied, minIndex)
 	}
 	return sorted
 }
@@ -80,7 +87,5 @@ func quick(s []int) []int {
 }
 
 func main() {
-	fmt.Println(bubble([]int{3, 2, 1, 5}))
-	fmt.Println(insertion([]int{3, 2, 1, 5}))
-	fmt.Println(quick([]int{3, 2, 1, 5}))
+	fmt.Fprintln(out, insertion([]int{3, 2, 1, 5}))
 }
