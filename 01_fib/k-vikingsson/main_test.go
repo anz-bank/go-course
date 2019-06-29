@@ -24,7 +24,7 @@ func TestFib(t *testing.T) {
 			out = &buf
 			fib(input)
 			actual := buf.String()
-			if test.expected != actual {
+			if expected != actual {
 				t.Errorf("Unexpected output in fib():\nexpected: %v\nactual: %v\n", expected, actual)
 			}
 			buf.Reset()
