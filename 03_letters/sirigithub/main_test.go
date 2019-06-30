@@ -2,19 +2,19 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLetters(t *testing.T) {
+func TestLetterFrequency(t *testing.T) {
 	tests := []struct {
 		description string
 		input       string
 		expected    []string
 	}{
-		{description: "Simple string", input: "thisisasimplestring", expected: []string{"a:1", "e:1", "g:1", "h:1", "i:4", "l:1", "m:1", "n:1", "p:1", "r:1", "s:4", "t:2"}},
+		{description: "Simple string", input: "thisisasimplestring",
+			expected: []string{"a:1", "e:1", "g:1", "h:1", "i:4", "l:1", "m:1", "n:1", "p:1", "r:1", "s:4", "t:2"}},
 
 		{description: "String with spaces", input: "   223  ", expected: []string{" :5", "2:2", "3:1"}},
 
@@ -29,7 +29,6 @@ func TestLetters(t *testing.T) {
 
 	for _, test := range tests {
 		actual := sortLetters(letters(test.input))
-		fmt.Println(actual)
 		expected := test.expected
 		t.Run(test.description, func(t *testing.T) {
 			assert.Equal(t, actual, expected, "actual %v but expected %v", actual, expected)

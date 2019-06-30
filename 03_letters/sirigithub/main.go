@@ -11,14 +11,12 @@ import (
 
 var out io.Writer = os.Stdout
 
-// letters returns a map of rune literals and its frequency in the given input string s
 func letters(s string) map[rune]int {
-	charecterFreq := make(map[rune]int)
-	// increment the counter if the charecter exists
-	for _, character := range s {
-		charecterFreq[character]++
+	runeFreq := make(map[rune]int)
+	for _, r := range s {
+		runeFreq[r]++
 	}
-	return charecterFreq
+	return runeFreq
 }
 
 // sortLetters returns a sorted slice of strings with elements {key}:{val} from the input map m
