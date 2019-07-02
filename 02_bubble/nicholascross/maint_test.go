@@ -28,12 +28,12 @@ var testCases = map[string]struct {
 	input []int
 	want  []int
 }{
-	"sample1": {input: []int{1, 2, 3, 4, 5}, want: []int{1, 2, 3, 4, 5}},
-	"sample2": {input: []int{5, 4, 3, 2, 1}, want: []int{1, 2, 3, 4, 5}},
-	"sample3": {input: []int{1, 2, 4, 3, 5}, want: []int{1, 2, 3, 4, 5}},
-	"sample4": {input: []int{4, 3, 1, 5, 2}, want: []int{1, 2, 3, 4, 5}},
-	"sample5": {input: []int{5, 1, 2, 4, 3}, want: []int{1, 2, 3, 4, 5}},
-	"sample6": {input: []int{-10, 2, -5, 1, 2, 44, 3}, want: []int{-10, -5, 1, 2, 2, 3, 44}},
+	"already sorted":    {input: []int{1, 2, 3, 4, 5}, want: []int{1, 2, 3, 4, 5}},
+	"reverse order":     {input: []int{5, 4, 3, 2, 1}, want: []int{1, 2, 3, 4, 5}},
+	"first and last":    {input: []int{1, 2, 4, 3, 5}, want: []int{1, 2, 3, 4, 5}},
+	"full sort":         {input: []int{4, 3, 1, 5, 2}, want: []int{1, 2, 3, 4, 5}},
+	"negative numbers":  {input: []int{-5, 1, 2, -4, 3}, want: []int{-5, -4, 1, 2, 3}},
+	"duplicate numbers": {input: []int{3, 5, 6, 3, 2, 1, 2, 1}, want: []int{1, 1, 2, 2, 3, 3, 5, 6}},
 }
 
 func TestBubbleSort(t *testing.T) {
