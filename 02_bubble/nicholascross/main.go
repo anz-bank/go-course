@@ -18,19 +18,14 @@ func bubble(s []int) []int {
 	sort := make([]int, count)
 	copy(sort, s)
 
-	for {
-		swapped := false
+	for sorted := false; !sorted; {
+		sorted = true
 
 		for i := 0; i+1 < count; i++ {
 			if sort[i] > sort[i+1] {
 				sort[i+1], sort[i] = sort[i], sort[i+1]
-				swapped = true
+				sorted = false
 			}
-		}
-
-		if !swapped {
-			//when nothing swapped: sort is complete. break out of outer loop.
-			break
 		}
 	}
 
