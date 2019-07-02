@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,8 +13,8 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("127.0.0.1\n")
-	actual := strconv.Quote(buf.String())
+	expected := "127.0.0.1"
+	actual := buf.String()
 
 	assert.Equalf(t, expected, actual, "Unexpected output")
 }
