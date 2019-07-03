@@ -9,22 +9,22 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-  fib(7)
+	fib(7)
 }
 
 func fib(n int) {
 
-	if(n < 0){
+	if n < 0 {
 		fmt.Fprintln(out, "fib(n) doesn't accept negative integers")
 		return
 	}
 
-	if(n == 0){
+	if n == 0 {
 		fmt.Fprintln(out, n)
 		return
 	}
 
-	current, previous := 1,0
+	current, previous := 1, 0
 
 	// print first value which is always 1
 	fmt.Fprintln(out, current)
