@@ -36,8 +36,7 @@ func fib(n int) {
 		fmt.Fprintln(out, sum)
 
 		// update variables for next iteration
-		previous = current
-		current = sum
+		previous, current = current, sum
 
 	}
 
