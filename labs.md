@@ -54,7 +54,7 @@ Write a function that returns a sorted slice of strings with elements `"{key}:{v
 func sortLetters(m map[rune]int) []string
 ```
 
-Call `fmt.Println(strings.Join(sortLetters(letters("aba"))), "\n")` in `main` to print:
+Call `fmt.Println(strings.Join(sortLetters(letters("aba")), "\n"))` in `main` to print:
 
 ```
 a:2
@@ -120,10 +120,8 @@ Call `fmt.Println(numeronyms("accessibility", "Kubernetes", "abc"))` in `main` t
 
 ```
 ├── README.md
-├── go.mod
-├── go.sum
 ├── pkg
-│   └── USERNAME-puppy
+│   └── puppy
 │       ├── types.go
 │       ├── types_test.go
 │       ├── errors.go
@@ -131,10 +129,9 @@ Call `fmt.Println(numeronyms("accessibility", "Kubernetes", "abc"))` in `main` t
 │       └── store
 │           ├── storer.go
 │           └── .... store files and tests, e.g. mapstore.go
-├── cmd
-│   └── USERNAME-puppy-server
-│       └── main.go
-└── vendor
+└── cmd
+    └── puppy-server
+        └── main.go
 ```
 
 Add project introduction and how to build, run & test it to `README.md`
