@@ -31,7 +31,7 @@ func TestNumeronyms(t *testing.T) {
 			expected: []string{"😄4😄", "😄🏃😄"}},
 		{description: "Unicode Strings", input: []string{"日本語日本語", "äöß€’üüüöäßß"},
 			expected: []string{"日4語", "ä10ß"}},
-		{description: "Strings with special charecters",
+		{description: "Strings with special characters",
 			input:    []string{"a##67&a$", "**(]]"},
 			expected: []string{"a6$", "*3]"}},
 	}
