@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"reflect"
 	"strconv"
 	"testing"
 )
@@ -20,26 +21,32 @@ func TestLetters(t *testing.T) {
 			},
 		},
 		{
+			`abcbcc⌘`,
+			map[rune]int{
+				'a': 1,
+				'b': 2,
+				'c': 3,
+				'⌘': 1,
+			},
+		},
+		{
+			`abcbcc丂`,
+			map[rune]int{
+				'a': 1,
+				'b': 2,
+				'c': 3,
+				'丂': 1,
+			},
+		},
+		{
 			"",
 			map[rune]int{},
 		},
 	}
 	for _, test := range tests {
 		actual := letters(test.input)
-		if len(actual) != len(test.expected) {
-			t.Errorf("len of actual and expected differ")
-		}
-		for k, v := range test.expected {
-			if v != actual[k] {
-				t.Errorf("Unexpected result")
-				t.Errorf("\nActual: %v\nExpected: %v", actual, test.expected)
-				for k, v := range actual {
-					t.Errorf("Actual %v = %v\n", string(k), v)
-				}
-				for k, v := range test.expected {
-					t.Errorf("Expect %v = %v\n", string(k), v)
-				}
-			}
+		if !reflect.DeepEqual(actual, test.expected) {
+			t.Errorf("Fail!\nActual: %v\nExpected: %v", actual, test.expected)
 		}
 	}
 }
