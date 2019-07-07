@@ -16,7 +16,7 @@ type Puppy struct {
 	Value  int
 }
 
-// Storer defines standard CRUD operations for Puppys
+// Storer defines standard CRUD operations for Puppys.
 type Storer interface {
 	CreatePuppy(*Puppy)
 	ReadPuppy(id uint32) *Puppy
@@ -28,12 +28,12 @@ type Storer interface {
 
 type MapStore map[uint32]Puppy
 
-// CreatePuppy stores a copy of Puppy p
+// CreatePuppy stores a copy of Puppy p.
 func (store *MapStore) CreatePuppy(p *Puppy) {
-	(*store)[p.ID] = Puppy{p.ID, p.Breed, p.Colour, p.Value}
+	(*store)[p.ID] = *p
 }
 
-// ReadPuppy retrieves a previously stored Puppy
+// ReadPuppy retrieves a previously stored Puppy.
 func (store *MapStore) ReadPuppy(id uint32) *Puppy {
 	p, ok := (*store)[id]
 	if !ok {
@@ -42,12 +42,14 @@ func (store *MapStore) ReadPuppy(id uint32) *Puppy {
 	return &p
 }
 
-// UpdatePuppy updates details of Puppy in store
+// UpdatePuppy updates details of Puppy in store.
 func (store *MapStore) UpdatePuppy(id uint32, puppy *Puppy) {
-	(*store)[id] = Puppy{puppy.ID, puppy.Breed, puppy.Colour, puppy.Value}
+	if id == puppy.ID {
+		(*store)[id] = *puppy
+	}
 }
 
-// DeletePuppy deletes puppy from store
+// DeletePuppy deletes puppy from store.
 func (store *MapStore) DeletePuppy(id uint32) bool {
 	_, exists := (*store)[id]
 	delete(*store, id)
@@ -60,12 +62,12 @@ type SyncStore struct {
 	sync.Map
 }
 
-// CreatePuppy stores a copy of Puppy p
+// CreatePuppy stores a copy of Puppy p.
 func (store *SyncStore) CreatePuppy(p *Puppy) {
 	store.Store(p.ID, Puppy{p.ID, p.Breed, p.Colour, p.Value})
 }
 
-// ReadPuppy retrieves a previously stored Puppy
+// ReadPuppy retrieves a previously stored Puppy.
 func (store *SyncStore) ReadPuppy(id uint32) *Puppy {
 	generic, ok := store.Load(id)
 	if !ok {
@@ -75,12 +77,14 @@ func (store *SyncStore) ReadPuppy(id uint32) *Puppy {
 	return &puppy
 }
 
-// UpdatePuppy updates details of Puppy in store
+// UpdatePuppy updates details of Puppy in store.
 func (store *SyncStore) UpdatePuppy(id uint32, p *Puppy) {
-	store.Store(p.ID, Puppy{p.ID, p.Breed, p.Colour, p.Value})
+	if id == p.ID {
+		store.Store(p.ID, Puppy{p.ID, p.Breed, p.Colour, p.Value})
+	}
 }
 
-// DeletePuppy deletes puppy from store
+// DeletePuppy deletes puppy from store.
 func (store *SyncStore) DeletePuppy(id uint32) bool {
 	_, exists := store.Load(id)
 	store.Delete(id)

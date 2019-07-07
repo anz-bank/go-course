@@ -53,8 +53,7 @@ func (s *storerSuite) TestDeletePuppy() {
 
 func TestStorer(t *testing.T) {
 	suite.Run(t, &storerSuite{storer: &MapStore{}})
-	ss := SyncStore{}
-	suite.Run(t, &storerSuite{storer: &ss})
+	suite.Run(t, &storerSuite{storer: &SyncStore{}})
 }
 
 func TestMain(t *testing.T) {
