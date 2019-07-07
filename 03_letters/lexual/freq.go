@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"unicode/utf8"
 )
 
 var out io.Writer = os.Stdout
@@ -28,7 +29,8 @@ func sortLetters(m map[rune]int) []string {
 	sort.Strings(keys)
 	sorted := make([]string, len(m))
 	for i, k := range keys {
-		sorted[i] = fmt.Sprintf("%s:%d", k, m[rune(k[0])])
+		r, _ := utf8.DecodeRuneInString(k)
+		sorted[i] = fmt.Sprintf("%s:%d", k, m[r])
 	}
 	return sorted
 }
