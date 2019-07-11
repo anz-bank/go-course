@@ -16,10 +16,9 @@ func main() {
 
 func letters(s string) map[rune]int {
 	m := map[rune]int{}
-	rs := []rune(s)
-	for i := range rs {
-		value := m[rs[i]]
-		m[rs[i]] = value + 1
+	for _, val := range s {
+		value := m[val]
+		m[val] = value + 1
 	}
 	return m
 }
