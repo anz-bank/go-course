@@ -44,8 +44,8 @@ func TestSortLetters(t *testing.T) {
 	}
 	testData := map[string]testCases{
 
-		"Happy Case":                          
-			{map[rune]int{33: 2, 49: 1, 50: 2, 51: 2, 97: 4, 98: 2, 101: 1, 113: 1}, []string{"!:2", "1:1", "2:2", "3:2", "a:4", "b:2", "e:1", "q:1"}},
+		"Happy Case": {map[rune]int{33: 2, 49: 1, 50: 2, 51: 2, 97: 4, 98: 2, 101: 1, 113: 1},
+			[]string{"!:2", "1:1", "2:2", "3:2", "a:4", "b:2", "e:1", "q:1"}},
 		"Empty map should return empty slice": {map[rune]int{}, []string{}},
 	}
 	for scenario, td := range testData {
