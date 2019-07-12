@@ -7,17 +7,16 @@ import (
 	"testing"
 )
 
-//test cases to write : empty array, single element, sorted reverse,some negative elements
-var tests = []struct {
+var tests = map[string]struct {
 	input    []int
 	expected []int
 }{
-	{input: []int{}, expected: []int{}},
-	{input: []int{1}, expected: []int{1}},
-	{input: []int{1, 2, 3, 4, 5}, expected: []int{1, 2, 3, 4, 5}},
-	{input: []int{10, 9, 8, 7, 6}, expected: []int{6, 7, 8, 9, 10}},
-	{input: []int{-10, 9, 8, 7, 6}, expected: []int{-10, 6, 7, 8, 9}},
-	{input: []int{3, 2, 1, 5}, expected: []int{1, 2, 3, 5}},
+	"Empty":                   {input: []int{}, expected: []int{}},
+	"Single element":          {input: []int{1}, expected: []int{1}},
+	"Already Sorted":          {input: []int{1, 2, 3, 4, 5}, expected: []int{1, 2, 3, 4, 5}},
+	"Sorted in reverse order": {input: []int{10, 9, 8, 7, 6}, expected: []int{6, 7, 8, 9, 10}},
+	"Negative elements":       {input: []int{-10, 9, 8, 7, 6}, expected: []int{-10, 6, 7, 8, 9}},
+	"Random order":            {input: []int{3, 2, 1, 5}, expected: []int{1, 2, 3, 5}},
 }
 
 func TestMainOutput(t *testing.T) {
@@ -33,19 +32,25 @@ func TestMainOutput(t *testing.T) {
 }
 
 func TestInsertionSort(t *testing.T) {
-	for _, test := range tests {
-		actual := insertionSort(test.input)
-		if !reflect.DeepEqual(actual, test.expected) {
-			t.Errorf("Unexpected output in main()\nexpected: %d\nactual: %d", test.expected, actual)
-		}
+	for name, test := range tests {
+		test := test
+		t.Run(name, func(t *testing.T) {
+			actual := insertionSort(test.input)
+			if !reflect.DeepEqual(actual, test.expected) {
+				t.Errorf("actual: %d but expected: %d ", test.expected, actual)
+			}
+		})
 	}
 }
 
 func TestBubbleSort(t *testing.T) {
-	for _, test := range tests {
-		actual := bubbleSort(test.input)
-		if !reflect.DeepEqual(actual, test.expected) {
-			t.Errorf("Unexpected output in main()\nexpected: %d\nactual: %d", test.expected, actual)
-		}
+	for name, test := range tests {
+		test := test
+		t.Run(name, func(t *testing.T) {
+			actual := bubbleSort(test.input)
+			if !reflect.DeepEqual(actual, test.expected) {
+				t.Errorf("actual: %d but expected: %d ", test.expected, actual)
+			}
+		})
 	}
 }
