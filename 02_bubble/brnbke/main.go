@@ -9,20 +9,19 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(arr []int) []int {
-	changed := true
 	r := make([]int, len(arr))
 	copy(r, arr)
 
 	for {
-		if !changed {
-			break
-		}
-		changed = false
+		changed := false
 		for i := 0; i < len(r)-1; i++ {
 			if r[i] > r[i+1] {
 				r[i], r[i+1] = r[i+1], r[i]
 				changed = true
 			}
+		}
+		if !changed {
+			break
 		}
 	}
 
@@ -35,12 +34,11 @@ func insertion(arr []int) []int {
 
 	for i := 1; i < len(result); i++ {
 		tmp := result[i]
-		for j := i - 1; j > -1; j-- {
-			if result[j] > tmp {
-				result[j+1], result[j] = result[j], tmp
-			} else {
+		for j := i - 1; j >= 0; j-- {
+			if result[j] <= tmp {
 				break
 			}
+			result[j+1], result[j] = result[j], tmp
 		}
 	}
 
@@ -63,9 +61,9 @@ func mergesort(arr []int) []int {
 	return merge(l, r)
 }
 
-func merge(l []int, r []int) []int {
+func merge(l, r []int) []int {
 
-	result := []int{}
+	result := make([]int, 0, len(l)+len(r))
 
 	for len(l) > 0 && len(r) > 0 {
 		if l[0] <= r[0] {

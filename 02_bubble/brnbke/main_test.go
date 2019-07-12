@@ -36,9 +36,6 @@ var testCases = map[string]struct {
 func TestBubble(t *testing.T) {
 	for name, test := range testCases {
 		test := test
-		var buf bytes.Buffer
-
-		out = &buf
 		t.Run(name, func(t *testing.T) {
 			b := bubble(test.input)
 			result := reflect.DeepEqual(test.want, b)
@@ -52,8 +49,6 @@ func TestBubble(t *testing.T) {
 func TestInsertion(t *testing.T) {
 	for name, test := range testCases {
 		test := test
-		var buf bytes.Buffer
-		out = &buf
 		t.Run(name, func(t *testing.T) {
 			b := insertion(test.input)
 			result := reflect.DeepEqual(test.want, b)
@@ -67,8 +62,6 @@ func TestInsertion(t *testing.T) {
 func TestMergesort(t *testing.T) {
 	for name, test := range testCases {
 		test := test
-		var buf bytes.Buffer
-		out = &buf
 		t.Run(name, func(t *testing.T) {
 			b := mergesort(test.input)
 			result := reflect.DeepEqual(test.want, b)
@@ -94,8 +87,6 @@ func TestMerge(t *testing.T) {
 	}
 	for name, test := range testCases {
 		test := test
-		var buf bytes.Buffer
-		out = &buf
 		t.Run(name, func(t *testing.T) {
 			b := merge(test.left, test.right)
 			result := reflect.DeepEqual(test.want, b)
