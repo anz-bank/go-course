@@ -28,12 +28,12 @@ func (s *SyncStore) CreatePuppy(p *Puppy) error {
 }
 
 // ReadPuppy gets a puppy from the store given an ID
-func (s *SyncStore) ReadPuppy(id uint16) (*Puppy, error) {
+func (s *SyncStore) ReadPuppy(id uint16) (Puppy, error) {
 	if puppyData, ok := s.Load(id); ok {
 		puppy, _ := puppyData.(Puppy)
-		return &puppy, nil
+		return puppy, nil
 	}
-	return nil, fmt.Errorf("no puppy exists with id %d", id)
+	return Puppy{}, fmt.Errorf("no puppy exists with id %d", id)
 }
 
 // UpdatePuppy puts new puppy data to the store, either creating a new one or overriding an old

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	tassert "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -22,16 +23,16 @@ func (s *storerSuite) TestUpdatePuppyIDDoesNotExist() {
 	// given
 	assert := tassert.New(s.T())
 	testPuppy := puppy1()
+	r := require.New(s.T())
 
 	// when
-	err := s.store.UpdatePuppy(11, &testPuppy)
+	uerr := s.store.UpdatePuppy(11, &testPuppy)
 
 	// then
-	assert.NoError(err, "Updating to non-existing puppy ID is not an error")
+	r.NoError(uerr, "Updating to non-existing puppy ID is not an error")
 	newPuppy, err := s.store.ReadPuppy(11)
-	if assert.NoError(err, "Should be able to read a newly added puppy via update") {
-		assert.Equal(&testPuppy, newPuppy, "Newly added puppy should be equal to test puppy")
-	}
+	r.NoError(err, "Should be able to read a newly added puppy via update")
+	assert.Equal(testPuppy, newPuppy, "Newly added puppy should be equal to test puppy")
 }
 
 func (s *storerSuite) TestReadPuppy() {
@@ -39,15 +40,15 @@ func (s *storerSuite) TestReadPuppy() {
 	assert := tassert.New(s.T())
 	testPuppy := puppy1()
 	createError := s.store.CreatePuppy(&testPuppy)
-	s.T().Log(createError)
+	r := require.New(s.T())
+	r.NoError(createError, "Create should not produce an error")
 
 	// when
 	newPuppy, err := s.store.ReadPuppy(11)
 
 	// then
-	if assert.NoError(err, "Should be able to read a newly added puppy") {
-		assert.Equal(&testPuppy, newPuppy, "Newly added puppy should be equal to test puppy")
-	}
+	r.NoError(err, "Should be able to read a newly added puppy")
+	assert.Equal(testPuppy, newPuppy, "Newly added puppy should be equal to test puppy")
 }
 
 func (s *storerSuite) TestDeletePuppy() {
@@ -55,17 +56,17 @@ func (s *storerSuite) TestDeletePuppy() {
 	assert := tassert.New(s.T())
 	testPuppy := puppy1()
 	createError := s.store.CreatePuppy(&testPuppy)
-	s.T().Log(createError)
+	r := require.New(s.T())
+	r.NoError(createError, "Create should not produce an error")
 
 	// when
 	isDeleted, err := s.store.DeletePuppy(11)
 
 	// then
-	if assert.NoError(err, "Should be able to delete a newly added puppy") {
-		assert.True(isDeleted)
-		_, err := s.store.ReadPuppy(11)
-		assert.Error(err, "Puppy not found")
-	}
+	r.NoError(err, "Should be able to delete an existing puppy")
+	assert.True(isDeleted, "A successful delete should return true")
+	_, err = s.store.ReadPuppy(11)
+	assert.Error(err, "Should return error when attempting to read a deleted puppy")
 }
 
 func (s *storerSuite) TestDeleteNonExistingPuppy() {
@@ -86,7 +87,8 @@ func (s *storerSuite) TestCreateExistingPuppy() {
 	assert := tassert.New(s.T())
 	testPuppy := puppy1()
 	createError := s.store.CreatePuppy(&testPuppy)
-	s.T().Log(createError)
+	r := require.New(s.T())
+	r.NoError(createError, "Create should not produce an error")
 
 	// when
 	err := s.store.CreatePuppy(&testPuppy)

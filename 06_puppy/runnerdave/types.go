@@ -11,7 +11,7 @@ type Puppy struct {
 // Storer CRUD methods for the Puppy store
 type Storer interface {
 	CreatePuppy(*Puppy) error
-	ReadPuppy(ID uint16) (*Puppy, error)
+	ReadPuppy(ID uint16) (Puppy, error)
 	UpdatePuppy(ID uint16, p *Puppy) error
 	DeletePuppy(ID uint16) (bool, error)
 }

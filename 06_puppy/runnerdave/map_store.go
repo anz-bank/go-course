@@ -4,13 +4,13 @@ import "fmt"
 
 // MapStore represents a simple map storage for the Puppy store
 type MapStore struct {
-	puppies map[uint16]*Puppy
+	puppies map[uint16]Puppy
 }
 
 // NewMapStore creates a new in-memory store with map intialised
 func NewMapStore() *MapStore {
 	var m MapStore
-	m.puppies = make(map[uint16]*Puppy)
+	m.puppies = make(map[uint16]Puppy)
 	return &m
 }
 
@@ -19,21 +19,21 @@ func (m *MapStore) CreatePuppy(p *Puppy) error {
 	if _, ok := m.puppies[p.ID]; ok {
 		return fmt.Errorf("puppy with id %d already exists", p.ID)
 	}
-	m.puppies[p.ID] = p
+	m.puppies[p.ID] = *p
 	return nil
 }
 
 // ReadPuppy reads store by Puppy ID
-func (m *MapStore) ReadPuppy(id uint16) (*Puppy, error) {
+func (m *MapStore) ReadPuppy(id uint16) (Puppy, error) {
 	if puppy, ok := m.puppies[id]; ok {
 		return puppy, nil
 	}
-	return nil, fmt.Errorf("puppy not found")
+	return Puppy{}, fmt.Errorf("puppy not found")
 }
 
 // UpdatePuppy updates puppy with new value if ID present otherwise creates new Puppy
 func (m *MapStore) UpdatePuppy(id uint16, p *Puppy) error {
-	m.puppies[id] = p
+	m.puppies[id] = *p
 	return nil
 }
 
