@@ -13,11 +13,10 @@ func numeronyms(vals ...string) []string {
 	for i, val := range vals {
 		r := []rune(val)
 		runeLength := len(r)
-		if runeLength < 4 {
-			result[i] = val
-		} else {
-			result[i] = fmt.Sprintf("%c%d%c", r[0], runeLength-2, r[runeLength-1])
+		if runeLength > 3 {
+			val = fmt.Sprintf("%c%d%c", r[0], runeLength-2, r[runeLength-1])
 		}
+		result[i] = val
 	}
 	return result
 }

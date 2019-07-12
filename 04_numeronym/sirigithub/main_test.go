@@ -36,9 +36,10 @@ func TestNumeronyms(t *testing.T) {
 			expected: []string{"a6$", "*3]"}},
 	}
 	for _, test := range tests {
-		actual := numeronyms(test.input...)
-		expected := test.expected
+		test := test
 		t.Run(test.description, func(t *testing.T) {
+			actual := numeronyms(test.input...)
+			expected := test.expected
 			assert.Equal(t, actual, expected, "actual %v but expected %v", actual, expected)
 		})
 	}
