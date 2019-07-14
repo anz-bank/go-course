@@ -33,6 +33,15 @@ func TestBubbleWithSmallSlice(t *testing.T) {
 	a.Equal(expected, sorted)
 }
 
+func TestBubbleWithRepeatedNumbers(t *testing.T) {
+	a := assert.New(t)
+
+	sorted := bubble([]int{3, 1, 2, 3, 2, 1})
+	expected := []int{1, 1, 2, 2, 3, 3}
+
+	a.Equal(expected, sorted)
+}
+
 func TestBubbleWithLargeSlice(t *testing.T) {
 	a := assert.New(t)
 
