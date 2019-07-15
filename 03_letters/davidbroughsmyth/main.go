@@ -19,27 +19,27 @@ func letterFreq(s string) map[rune]int {
 	return f
 }
 
-// Concurrent implementation of letters for speed
-// Returns the letter frequency for string
+// Returns the letter frequency for a string
 func letters(s string) map[rune]int {
-	stringSlice := strings.Fields(s)
-	combineFreq := map[rune]int{}
-	size := len(stringSlice)
+	str := strings.Fields(s)
+	size := len(str)
 	results := make(chan map[rune]int, size)
 
-	for _, ss := range stringSlice {
+	for _, ss := range str {
 		go func(sx string) {
 			results <- letterFreq(sx)
 		}(ss)
 	}
 
-	//Combine the letter frequency maps passed back via the results channel
+	sum := map[rune]int{}
+	// Combine the letter frequency maps passed back via the results channel
 	for i := 0; i < size; i++ {
-		for r, freq := range <-results {
-			combineFreq[r] += freq
+		result := <-results
+		for r, freq := range result {
+			sum[r] += freq
 		}
 	}
-	return combineFreq
+	return sum
 }
 
 func sortLetters(m map[rune]int) []string {

@@ -85,30 +85,54 @@ var tests = map[string]struct {
 
 func TestLetterFreq(t *testing.T) {
 	for name, test := range tests {
-		testList := test
+		test := test
 		t.Run(name, func(t *testing.T) {
-			got := letterFreq(testList.input)
-			assert.Equal(t, testList.wantLetters, got)
+			got := letterFreq(test.input)
+			assert.Equal(t, test.wantLetters, got)
 		})
 	}
 }
 
 func TestLetter(t *testing.T) {
 	for name, test := range tests {
-		testList := test
+		test := test
 		t.Run(name, func(t *testing.T) {
-			got := letters(testList.input)
-			assert.Equal(t, testList.wantLetters, got)
+			got := letters(test.input)
+			assert.Equal(t, test.wantLetters, got)
 		})
 	}
 }
 
 func TestSortLetters(t *testing.T) {
 	for name, test := range tests {
-		testList := test
+		test := test
 		t.Run(name, func(t *testing.T) {
-			got := sortLetters(testList.wantLetters)
-			assert.Equal(t, testList.wantSort, got)
+			got := sortLetters(test.wantLetters)
+			assert.Equal(t, test.wantSort, got)
+		})
+	}
+}
+
+var testConc = map[string]struct {
+	input       string
+	wantLetters map[rune]int
+}{
+	"WordSpaces": {
+		input:       "My Me  Make  More Max",
+		wantLetters: map[rune]int{'M': 5, 'a': 2, 'e': 3, 'k': 1, 'o': 1, 'r': 1, 'x': 1, 'y': 1},
+	},
+	"MixedUnicode": {
+		input:       "4大 4$ 4😸N  n😛😛n 4大",
+		wantLetters: map[rune]int{'4': 4, '$': 1, 'n': 2, 'N': 1, '大': 2, '😸': 1, '😛': 2},
+	},
+}
+
+func TestLetterConcurrency(t *testing.T) {
+	for name, test := range testConc {
+		test := test
+		t.Run(name, func(t *testing.T) {
+			got := letters(test.input)
+			assert.Equal(t, test.wantLetters, got)
 		})
 	}
 }
