@@ -13,28 +13,26 @@ func main() {
 }
 
 func numeronyms(vals ...string) []string {
-
-	numeronyms := make([]string, 0)
+	numeronymStrings := make([]string, 0)
 	for _, val := range vals {
 		if val == "" {
-			numeronyms = append(numeronyms, "")
+			numeronymStrings = append(numeronymStrings, "")
 		} else {
-			strArr := []rune(val)
-			staVal := string(strArr[0])
-			midVal := ""
-			endVal := ""
-			switch {
-			case len(strArr) == 2:
-				endVal = string(strArr[len(strArr)-1])
-			case len(strArr) == 3:
-				midVal = string(strArr[1])
-				endVal = string(strArr[len(strArr)-1])
-			case len(strArr) > 3:
-				midVal = fmt.Sprint(len(strArr) - 2)
-				endVal = string(strArr[len(strArr)-1])
+			runes := []rune(val)
+			firstChar := string(runes[0])
+			middleChar := ""
+			lastChar := ""
+			if len(runes) > 1 {
+				lastChar = string(runes[len(runes)-1])
 			}
-			numeronyms = append(numeronyms, fmt.Sprintf("%s%s%s", staVal, midVal, endVal))
+			if len(runes) == 3 {
+				middleChar = string(runes[1])
+			}
+			if len(runes) > 3 {
+				middleChar = fmt.Sprint(len(runes) - 2)
+			}
+			numeronymStrings = append(numeronymStrings, fmt.Sprintf("%s%s%s", firstChar, middleChar, lastChar))
 		}
 	}
-	return numeronyms
+	return numeronymStrings
 }
