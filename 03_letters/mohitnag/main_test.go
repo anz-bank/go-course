@@ -14,9 +14,9 @@ func TestLetters(t *testing.T) {
 	}
 	testData := map[string]testCases{
 		"Happy Case": {"eaa!baabq23123!",
-			map[rune]int{33: 2, 49: 1, 50: 2, 51: 2, 97: 4, 98: 2, 101: 1, 113: 1}},
+			map[rune]int{'!': 2, '1': 1, '2': 2, '3': 2, 'a': 4, 'b': 2, 'e': 1, 'q': 1}},
 		"Empty string should return empty map": {"", map[rune]int{}},
-		"Unicode string test":                  {"\u00C0\u00C0\u00C0\u00C0\u00C1\u00C1", map[rune]int{192: 4, 193: 2}},
+		"Unicode string test":                  {"😀😀😀😀🤓🤓", map[rune]int{'😀': 4, '🤓': 2}},
 	}
 
 	for scenario, td := range testData {
@@ -44,7 +44,7 @@ func TestSortLetters(t *testing.T) {
 	}
 	testData := map[string]testCases{
 
-		"Happy Case": {map[rune]int{33: 2, 49: 1, 50: 2, 51: 2, 97: 4, 98: 2, 101: 1, 113: 1},
+		"Happy Case": {map[rune]int{'!': 2, '1': 1, '2': 2, '3': 2, 'a': 4, 'b': 2, 'e': 1, 'q': 1},
 			[]string{"!:2", "1:1", "2:2", "3:2", "a:4", "b:2", "e:1", "q:1"}},
 		"Empty map should return empty slice": {map[rune]int{}, []string{}},
 	}
