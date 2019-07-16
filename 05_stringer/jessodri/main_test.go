@@ -20,22 +20,21 @@ func TestMainOutput(t *testing.T) {
 	}
 }
 func TestStringMethod(t *testing.T) {
-	testCases := []struct {
-		description string
-		ip          IPAddr
-		expected    string
+	testCases := map[string]struct {
+		input    IPAddr
+		expected string
 	}{
-		{"happy path", IPAddr{127, 0, 0, 1}, "127.0.0.1"},
-		{"one value", IPAddr{127}, "127.0.0.0"},
-		{"two value", IPAddr{127, 0}, "127.0.0.0"},
-		{"three value", IPAddr{127, 0, 0}, "127.0.0.0"},
-		{"empty", IPAddr{}, "0.0.0.0"},
+		"happy path":  {input: IPAddr{127, 0, 0, 1}, expected: "127.0.0.1"},
+		"one value":   {input: IPAddr{127}, expected: "127.0.0.0"},
+		"two value":   {input: IPAddr{127, 0}, expected: "127.0.0.0"},
+		"three value": {input: IPAddr{127, 0, 0}, expected: "127.0.0.0"},
+		"max value":   {input: IPAddr{255, 255, 255, 255}, expected: "255.255.255.255"},
+		"empty":       {input: IPAddr{}, expected: "0.0.0.0"},
 	}
-	for _, tc := range testCases {
-		actual := tc.ip
+	for name, tc := range testCases {
+		actual := tc.input.String()
 		expected := tc.expected
-		t.Run(tc.description, func(t *testing.T) {
-			actual := actual.String()
+		t.Run(name, func(t *testing.T) {
 			if expected != actual {
 				t.Errorf("got %q wanted %q", actual, expected)
 			}
