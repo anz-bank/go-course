@@ -20,7 +20,7 @@ func (m *MapStore) CreatePuppy(p *Puppy) (uint32, error) {
 		if i < 0 {
 			return 0, &Error{
 				Message: "Puppy value can't be less than 0.",
-				Code:    1,
+				Code:    NegativeValue,
 			}
 		}
 	}
@@ -39,7 +39,7 @@ func (m MapStore) ReadPuppy(id uint32) (*Puppy, error) {
 	}
 	return nil, &Error{
 		Message: "Puppy ID can not be found, read operation failed.",
-		Code:    2,
+		Code:    NonExistentPuppy,
 	}
 }
 
@@ -49,7 +49,7 @@ func (m MapStore) UpdatePuppy(id uint32, puppy *Puppy) (bool, error) {
 	if _, ok := m.ms[id]; !ok {
 		return false, &Error{
 			Message: "Puppy ID can not be found, update operation failed.",
-			Code:    2,
+			Code:    NonExistentPuppy,
 		}
 	}
 	puppy.ID = id
@@ -66,6 +66,6 @@ func (m MapStore) DeletePuppy(id uint32) (bool, error) {
 	}
 	return false, &Error{
 		Message: "Puppy ID can not be found, delete operation failed.",
-		Code:    2,
+		Code:    NonExistentPuppy,
 	}
 }
