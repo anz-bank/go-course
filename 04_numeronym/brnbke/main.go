@@ -14,12 +14,11 @@ func numeronyms(vals ...string) []string {
 	for _, val := range vals {
 		l := utf8.RuneCountInString(val)
 		if l > 3 {
-			s := []rune(val)[0]   // starting character
-			e := []rune(val)[l-1] // ending character
-			result = append(result, fmt.Sprintf("%c%d%c", s, l-2, e))
-		} else {
-			result = append(result, val)
+			s, _ := utf8.DecodeRuneInString(val)     // starting character
+			e, _ := utf8.DecodeLastRuneInString(val) // ending character
+			val = fmt.Sprintf("%c%d%c", s, l-2, e)
 		}
+		result = append(result, val)
 	}
 	return result
 }
