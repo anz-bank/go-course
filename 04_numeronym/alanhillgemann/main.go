@@ -24,12 +24,11 @@ func numeronyms(vals ...string) []string {
 			lastChar := ""
 			if len(runes) > 1 {
 				lastChar = string(runes[len(runes)-1])
-			}
-			if len(runes) == 3 {
-				middleChar = string(runes[1])
-			}
-			if len(runes) > 3 {
-				middleChar = fmt.Sprint(len(runes) - 2)
+				if len(runes) == 3 {
+					middleChar = string(runes[1])
+				} else if len(runes) > 3 {
+					middleChar = fmt.Sprint(len(runes) - 2)
+				}
 			}
 			numeronymStrings = append(numeronymStrings, fmt.Sprintf("%s%s%s", firstChar, middleChar, lastChar))
 		}
