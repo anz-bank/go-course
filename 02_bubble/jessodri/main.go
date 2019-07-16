@@ -11,8 +11,8 @@ var out io.Writer = os.Stdout
 func bubble(s []int) []int {
 	b := append([]int{}, s...)
 	length := len(b)
-	for i := 0; i < length; i++ {
-		for j := 0; j < (length - i - 1); j++ {
+	for i := length - 1; i >= 0; i-- {
+		for j := 0; j < i; j++ {
 			if b[j] > b[j+1] {
 				b[j], b[j+1] = b[j+1], b[j]
 			}
@@ -35,7 +35,7 @@ func insertion(s []int) []int {
 	return b
 }
 
-func ologn(s []int) []int {
+func quicksort(s []int) []int {
 	length := len(s)
 	if length <= 1 {
 		return s
@@ -51,8 +51,8 @@ func ologn(s []int) []int {
 			right = append(right, s[i])
 		}
 	}
-	result := append(ologn(left), first)
-	result = append(result, ologn(right)...)
+	result := append(quicksort(left), first)
+	result = append(result, quicksort(right)...)
 	return result
 }
 

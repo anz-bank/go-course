@@ -59,7 +59,7 @@ func TestSorting(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.description, func(t *testing.T) {
-			actual := ologn(tc.unsorted)
+			actual := quicksort(tc.unsorted)
 			expected := tc.sorted
 			if !assert.ElementsMatch(t, expected, actual) {
 				t.Errorf("array was not sorted,\nexpected: %d\nactual: %d", expected, actual)
