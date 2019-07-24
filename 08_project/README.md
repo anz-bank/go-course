@@ -1,14 +1,12 @@
 # Lab 8 - Project Layout
 
-Copy the CRUD puppy from upstream master `07_errors/USERNAME`
-Create directory `08_project/USERNAME` containing
+- Copy the CRUD puppy from upstream master `07_errors/USERNAME`
+- Create directory `08_project/USERNAME` containing
 
 ```
 ├── README.md
-├── go.mod
-├── go.sum
 ├── pkg
-│   └── USERNAME-puppy
+│   └── puppy
 │       ├── types.go
 │       ├── types_test.go
 │       ├── errors.go
@@ -16,10 +14,9 @@ Create directory `08_project/USERNAME` containing
 │       └── store
 │           ├── storer.go
 │           └── .... store files and tests, e.g. mapstore.go
-├── cmd
-│   └── USERNAME-puppy-server
-│       └── main.go
-└── vendor
+└── cmd
+    └── puppy-server
+        └── main.go
 ```
 
 Add project introduction and how to build, run & test it to `README.md`
