@@ -20,6 +20,8 @@ func NewSyncStore() *SyncStore {
 
 // CreatePuppy create a new puppy and store in mapStore.
 func (s *SyncStore) CreatePuppy(p *puppy.Puppy) (uint32, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if i, err := strconv.Atoi(p.Value); err == nil {
 		if i < 0 {
 			return 0, &puppy.Error{
@@ -27,12 +29,16 @@ func (s *SyncStore) CreatePuppy(p *puppy.Puppy) (uint32, error) {
 				Code:    puppy.NegativeValue,
 			}
 		}
+	} else {
+		return 0, &puppy.Error{
+			Message: "Unrecongised puppy value.",
+			Code:    puppy.ErrorValueFormat,
+		}
 	}
-	s.mu.Lock()
 	s.nextID++
 	p.ID = s.nextID
 	s.syncStore.Store(p.ID, *p)
-	s.mu.Unlock()
+
 	return p.ID, nil
 }
 

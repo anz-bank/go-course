@@ -13,6 +13,7 @@ func (e *Error) Error() string {
 }
 
 const (
+	ErrorValueFormat = 1000
 	NegativeValue    = 1001
 	NonExistentPuppy = 1002
 )

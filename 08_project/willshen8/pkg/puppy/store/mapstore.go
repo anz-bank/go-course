@@ -25,6 +25,11 @@ func (m *MapStore) CreatePuppy(p *puppy.Puppy) (uint32, error) {
 				Code:    puppy.NegativeValue,
 			}
 		}
+	} else {
+		return 0, &puppy.Error{
+			Message: "Unrecongised puppy value.",
+			Code:    puppy.ErrorValueFormat,
+		}
 	}
 
 	m.nextID++
