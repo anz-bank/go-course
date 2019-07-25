@@ -103,7 +103,7 @@ func helperTestSortLetters(name string, input map[rune]int, expected []string) f
 				t.Errorf("Test: %s - Expect: %s got: %s", name, expected[i], v)
 			}
 		}
-		assert.Equalf(t, len(expected), len(result), "Lenght missmatch")
+		assert.Equalf(t, len(expected), len(result), "Length mismatch")
 	}
 }
 
