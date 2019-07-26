@@ -14,10 +14,15 @@ func main() {
 
 func bubble(s []int) []int {
 	for j := 0; j < len(s); j++ {
+		swapped := false
 		for i := 1; i < len(s); i++ {
 			if s[i-1] > s[i] {
 				swap(s, i-1, i)
+				swapped = true
 			}
+		}
+		if !swapped {
+			return s
 		}
 	}
 	return s

@@ -16,6 +16,7 @@ func TestBubble(t *testing.T) {
 		{"Happy Day Scenario", []int{2, 5, 8, 1, 13, 1, 3}, []int{1, 1, 2, 3, 5, 8, 13}},
 		{"Slice containing negative numbers", []int{-1, 3, 5, -7}, []int{-7, -1, 3, 5}},
 		{"Empty Slice", []int{}, []int{}},
+		{"slice of lenght 2", []int{5, -1}, []int{-1, 5}},
 	}
 	for _, td := range testData {
 		td := td
