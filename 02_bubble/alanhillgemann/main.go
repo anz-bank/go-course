@@ -13,13 +13,14 @@ func main() {
 }
 
 func bubble(arr []int) []int {
-	for i := 0; i <= len(arr)-1; i++ {
-		end := len(arr) - 2
-		for j := 0; j <= end; j++ {
-			if arr[j] > arr[j+1] {
-				arr[j], arr[j+1] = arr[j+1], arr[j]
+	sortedArr := make([]int, len(arr))
+	copy(sortedArr, arr)
+	for i := len(sortedArr) - 1; i > 0; i-- {
+		for j := 0; j < i; j++ {
+			if sortedArr[j] > sortedArr[j+1] {
+				sortedArr[j], sortedArr[j+1] = sortedArr[j+1], sortedArr[j]
 			}
 		}
 	}
-	return arr
+	return sortedArr
 }

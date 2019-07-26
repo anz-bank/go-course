@@ -15,7 +15,7 @@ func TestMainOutput(t *testing.T) {
 	main()
 	expected := strconv.Quote("[1 2 3 5]")
 	actual := strconv.Quote(buf.String())
-	assert.Equalf(t, expected, actual, "expected %v, actual %v was not sorted", expected, actual)
+	assert.Equal(t, expected, actual)
 }
 
 var testCases = map[string]struct {
@@ -35,7 +35,7 @@ func TestBubbleSort(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			actual := bubble(test.input)
 			expected := test.expected
-			assert.Equalf(t, expected, actual, "expected %v, actual %v", expected, actual)
+			assert.Equal(t, expected, actual)
 
 		})
 	}
