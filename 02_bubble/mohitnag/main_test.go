@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,6 +18,7 @@ func TestBubble(t *testing.T) {
 		{"Empty Slice", []int{}, []int{}},
 	}
 	for _, td := range testData {
+		td := td
 		t.Run(td.Scenario, func(t *testing.T) {
 			sorted := bubble(td.unSorted)
 			assert.Equal(t, td.expected, sorted)
@@ -32,7 +32,5 @@ func TestMain(t *testing.T) {
 	main()
 	expected := "[1 2 3 5]"
 	actual := buf.String()
-	actual = strings.Replace(actual, "\n", ",", -1)
-	actual = strings.TrimRight(actual, ",")
 	assert.Equal(expected, actual)
 }

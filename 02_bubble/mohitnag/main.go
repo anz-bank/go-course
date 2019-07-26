@@ -9,7 +9,7 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fmt.Fprintln(out, bubble([]int{3, 2, 1, 5}))
+	fmt.Fprint(out, bubble([]int{3, 2, 1, 5}))
 }
 
 func bubble(s []int) []int {
