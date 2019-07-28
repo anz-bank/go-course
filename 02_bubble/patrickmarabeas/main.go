@@ -31,6 +31,29 @@ func bubble(s []int) []int {
 	return result
 }
 
+// Insertion implements the Insertion sort algorithm.
+func insertion(s []int) []int {
+	length := len(s)
+	// Create copy
+	result := make([]int, length)
+	copy(result, s)
+	// Increment through the slice
+	// All but first number need to be checked
+	for i := 1; i < length; i++ {
+		// Increment backwards through slice
+		// Start with first unsorted index
+		for j := i; j > 0; j-- {
+			// Swap unsorted values
+			if result[j] < result[j-1] {
+				result[j], result[j-1] = result[j-1], result[j]
+			}
+		}
+	}
+
+	return result
+}
+
 func main() {
 	fmt.Fprintln(out, bubble([]int{3, 2, 1, 5}))
+	fmt.Fprint(out, insertion([]int{3, 2, 1, 5}))
 }

@@ -12,7 +12,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := "[1 2 3 5]\n"
+	expected := "[1 2 3 5]\n[1 2 3 5]"
 	got := buf.String()
 
 	t.Run("Main function", func(t *testing.T) {
@@ -59,6 +59,17 @@ var cases = map[string]struct {
 func TestBubble(t *testing.T) {
 	for name, c := range cases {
 		got, expected := bubble(c.input), c.expected
+		t.Run(name, func(t *testing.T) {
+			if !reflect.DeepEqual(got, expected) {
+				t.Errorf("\nExpected: %d\nGot:      %d", expected, got)
+			}
+		})
+	}
+}
+
+func TestInsertion(t *testing.T) {
+	for name, c := range cases {
+		got, expected := insertion(c.input), c.expected
 		t.Run(name, func(t *testing.T) {
 			if !reflect.DeepEqual(got, expected) {
 				t.Errorf("\nExpected: %d\nGot:      %d", expected, got)
