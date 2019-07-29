@@ -12,7 +12,7 @@ func TestMain(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 	main()
-	expected := "white"
+	expected := "Memstore: white\nSyncstore: white\n"
 	actual := buf.String()
 	assert.Equal(expected, actual)
 }
