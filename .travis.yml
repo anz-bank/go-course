@@ -4,7 +4,7 @@ env:
 go:
   - "1.12.x"
 before_script:
-  - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.16.0
+  - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -x -- -b $(go env GOPATH)/bin v1.17.1
 script:
   - golangci-lint run
   - go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
