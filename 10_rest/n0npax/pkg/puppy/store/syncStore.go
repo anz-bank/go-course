@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"sync"
 
 	puppy "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy"
@@ -22,7 +21,7 @@ func NewSyncStore() *SyncStore {
 // CreatePuppy creates puppy
 func (s *SyncStore) CreatePuppy(p *puppy.Puppy) (int, error) {
 	if p.Value < 0 {
-		return -1, puppy.Errorf(puppy.ErrCodeInvalidInput, "Puppy value have to be positive number")
+		return -1, puppy.Errorf(puppy.ErrCodeInvalidInput, "puppy value have to be positive number")
 	}
 	s.Lock()
 	defer s.Unlock()
@@ -38,13 +37,13 @@ func (s *SyncStore) ReadPuppy(id int) (*puppy.Puppy, error) {
 		p := puppyData.(puppy.Puppy)
 		return &p, nil
 	}
-	return nil, puppy.Errorf(puppy.ErrCodeNotFound, fmt.Sprintf("Puppy with ID (%v) not found", id))
+	return nil, puppy.Errorf(puppy.ErrCodeNotFound, "puppy with ID (%v) not found", id)
 }
 
 // UpdatePuppy updates puppy
 func (s *SyncStore) UpdatePuppy(id int, p *puppy.Puppy) error {
 	if p.Value < 0 {
-		return puppy.Errorf(puppy.ErrCodeInvalidInput, "Puppy value have to be positive number")
+		return puppy.Errorf(puppy.ErrCodeInvalidInput, "puppy value have to be positive number")
 	}
 	if id != p.ID {
 		return puppy.Errorf(puppy.ErrCodeInvalidInput, "ID is corrupted. Please ensure object ID matched provided ID")
@@ -52,7 +51,7 @@ func (s *SyncStore) UpdatePuppy(id int, p *puppy.Puppy) error {
 	s.Lock()
 	defer s.Unlock()
 	if _, ok := s.Load(id); !ok {
-		return puppy.Errorf(puppy.ErrCodeNotFound, fmt.Sprintf("Puppy with ID (%v) not found", id))
+		return puppy.Errorf(puppy.ErrCodeNotFound, "puppy with ID (%v) not found", id)
 	}
 	s.Store(id, *p)
 	return nil
@@ -63,7 +62,7 @@ func (s *SyncStore) DeletePuppy(id int) (bool, error) {
 	s.Lock()
 	defer s.Unlock()
 	if _, ok := s.Load(id); !ok {
-		return false, puppy.Errorf(puppy.ErrCodeNotFound, fmt.Sprintf("Puppy with ID (%v) not found", id))
+		return false, puppy.Errorf(puppy.ErrCodeNotFound, "puppy with ID (%v) not found", id)
 	}
 	s.Delete(id)
 	return true, nil

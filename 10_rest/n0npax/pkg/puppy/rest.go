@@ -60,13 +60,11 @@ func RestBackend(s Storer) *gin.Engine {
 			return
 		}
 		var p Puppy
-		err = c.BindJSON(&p)
-		if err != nil {
+		if err = c.BindJSON(&p); err != nil {
 			checkError(err, c)
 			return
 		}
-		err = s.UpdatePuppy(id, &p)
-		if err != nil {
+		if err = s.UpdatePuppy(id, &p); err != nil {
 			checkError(err, c)
 			return
 		}
@@ -81,8 +79,7 @@ func checkError(err error, c *gin.Context) {
 	code := ErrCodeInternal
 	message := err.Error()
 	// puppy error
-	myErr, ok := err.(*Error)
-	if ok {
+	if myErr, ok := err.(*Error); ok {
 		code = myErr.Code
 		message = myErr.Message
 	}

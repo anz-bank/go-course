@@ -16,9 +16,8 @@ import (
 )
 
 var (
-	out       io.Writer = os.Stderr
-	logFatalf           = log.Fatal
-	parser              = parseArgs
+	logFatalf = log.Fatal
+	parser    = parseArgs
 )
 
 func main() {
@@ -26,28 +25,24 @@ func main() {
 	if err != nil {
 		logFatalf(err)
 	}
-	logFatalf(runPuppyServer(config))
+	logFatalf(runPuppyServer(&config))
 }
 
-func runPuppyServer(c config) error {
-	s, err := createStorer(c.sType)
-	c.storer = s
+func runPuppyServer(c *config) error {
+	s, err := createStorer(c)
 	if err != nil {
 		return err
 	}
-	if err := feedStorer(c); err != nil {
+	if err := feedStorer(*c, s); err != nil {
 		return err
 	}
-	fmt.Println(c)
-	return nil
-	//return puppy.RestBackend(store).Run(fmt.Sprintf(":%d", c.port))
+	return puppy.RestBackend(s).Run(fmt.Sprintf(":%d", c.port))
 }
 
 type config struct {
 	puppyFile io.Reader
 	sType     string
 	port      int
-	storer    puppy.Storer
 }
 
 func parseArgs(args []string) (config, error) {
@@ -57,14 +52,12 @@ func parseArgs(args []string) (config, error) {
 	kingpin.Flag("data", "path to file with puppies data").Short('d').FileVar(&puppyFile)
 	kingpin.Flag("port", "Port number").Short('p').Default("8181").IntVar(&port)
 	kingpin.Flag("store", "Store type").Short('s').Default("map").EnumVar(&storeType, "map", "sync")
-	kingpin.Parse()
 	_, err := kingpin.CommandLine.Parse(args)
-
-	return config{puppyFile, storeType, port, nil}, err
+	return config{puppyFile, storeType, port}, err
 }
 
-func createStorer(s string) (puppy.Storer, error) {
-	switch s {
+func createStorer(c *config) (puppy.Storer, error) {
+	switch c.sType {
 	case "sync":
 		return store.NewSyncStore(), nil
 	case "map":
@@ -83,32 +76,22 @@ func readPuppies(r io.Reader) ([]puppy.Puppy, error) {
 		return nil, errors.New("error during reading puppies from file")
 	}
 	var puppies []puppy.Puppy
-	err = json.Unmarshal(b, &puppies)
-	if err != nil {
+	if err = json.Unmarshal(b, &puppies); err != nil {
 		return nil, errors.New(string(b))
 	}
 	return puppies, nil
 }
 
-func feedStorer(c config) error {
+func feedStorer(c config, s puppy.Storer) error {
 	puppies, err := readPuppies(c.puppyFile)
 	if err != nil {
 		return err
 	}
 	for _, p := range puppies {
 		p := p
-		_, err := c.storer.CreatePuppy(&p)
-		if err != nil {
+		if _, err := s.CreatePuppy(&p); err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-func exitOnError(err error) {
-	if err != nil {
-		fmt.Fprintln(out, err)
-		os.Exit(1)
-	}
-
 }

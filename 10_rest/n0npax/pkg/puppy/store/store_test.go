@@ -1,6 +1,7 @@
 package store
 
 import (
+	"math/rand"
 	"testing"
 
 	puppy "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy"
@@ -8,26 +9,19 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type storerImpl int
-
-const (
-	syncStorer storerImpl = iota
-	memStorer
-)
-
 var (
 	puppy0 = func() puppy.Puppy {
 		return puppy.Puppy{
 			Breed:  "Type A",
 			Colour: "Grey",
-			Value:  300,
+			Value:  rand.Intn(100) + 100,
 		}
 	}
 	puppy1 = func() puppy.Puppy {
 		return puppy.Puppy{
 			Breed:  "Type B",
 			Colour: "Brown",
-			Value:  400,
+			Value:  rand.Intn(300) + 300,
 		}
 	}
 	puppyNegativeValue = func() puppy.Puppy {
@@ -50,66 +44,81 @@ var (
 type storerSuite struct {
 	suite.Suite
 	store puppy.Storer
-	impl  storerImpl
 }
 
 func (s *storerSuite) SetupTest() {
-	switch s.impl {
-	case syncStorer:
+	switch s.store.(type) {
+	case *SyncStore:
 		s.store = NewSyncStore()
-	case memStorer:
+	case *MemStore:
 		s.store = NewMemStore()
 	default:
 		panic("Unrecognised storer implementation")
 	}
-	p := puppy0()
-	_, err := s.store.CreatePuppy(&p)
+	puppy := puppy0()
+	_, err := s.store.CreatePuppy(&puppy)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (s *storerSuite) TestCreatePuppySuccessful() {
+// Create
+func (s *storerSuite) CreatePuppySuccessful() {
 	assert := tassert.New(s.T())
-	newPuppy0, newPuppy1 := puppy0(), puppy1()
-	id0, err := s.store.CreatePuppy(&newPuppy0)
-	assert.NoError(err, "Creating p should be ok")
-	id1, err := s.store.CreatePuppy(&newPuppy1)
-	assert.NoError(err, "Creating p should be ok")
-	assert.Equal(id0, id1-1, "2nd id should be 1st +1, got %v and %v", id0, id1)
+	puppies := []puppy.Puppy{puppy0(), puppy1()}
+	for i, p := range puppies {
+		p := p
+		id, err := s.store.CreatePuppy(&p)
+		assert.NoError(err, "Creating p should be ok")
+		puppies[i].ID = id
+	}
+	assert.Equal(puppies[0].ID, puppies[1].ID-1, "2nd id should be 1st +1")
 }
 
-func (s *storerSuite) TestCreatePuppyNegativeValue() {
+func (s *storerSuite) CreatePuppyNegativeValue() {
 	assert := tassert.New(s.T())
 	newPuppy := puppyNegativeValue()
 	_, err := s.store.CreatePuppy(&newPuppy)
 	assert.Error(err, "negative ID should cause an error")
 }
 
-func (s *storerSuite) TestReadPuppySuccessful() {
+func (s *storerSuite) TestReadPuppy() {
+	s.Run("OK", s.CreatePuppySuccessful)
+	s.Run("NegativeValue", s.CreatePuppyNegativeValue)
+}
+
+// Read
+func (s *storerSuite) ReadPuppySuccessful() {
 	assert := tassert.New(s.T())
 	newPuppy := puppy0()
 	id, err := s.store.CreatePuppy(&newPuppy)
 	assert.NoError(err, "Creating p should be ok")
 	readPuppy, err := s.store.ReadPuppy(id)
 	if assert.NoError(err, "Should be able to read puppy0 from store") {
-		assert.Equal(&newPuppy, readPuppy, "store should return identic puppy")
+		assert.Equal(&newPuppy, readPuppy, "store should return identical puppy")
 	}
 }
 
-func (s *storerSuite) TestReadPuppyIDDoesNotExist() {
+func (s *storerSuite) ReadPuppyIDDoesNotExist() {
 	assert := tassert.New(s.T())
 	_, err := s.store.ReadPuppy(1000)
 	assert.Error(err, "Should get an error when attempting to read an non-existing puppy")
 }
 
-func (s *storerSuite) TestReadPuppyNegativeID() {
+func (s *storerSuite) ReadPuppyNegativeID() {
 	assert := tassert.New(s.T())
 	_, err := s.store.ReadPuppy(-1)
 	assert.Error(err, "negative ID should cause an error")
 }
 
-func (s *storerSuite) TestUpdatePuppy() {
+func (s *storerSuite) TestReadReadPuppy() {
+	s.Run("OK", s.ReadPuppySuccessful)
+	s.Run("NoID", s.ReadPuppyIDDoesNotExist)
+	s.Run("NegativeID", s.ReadPuppyNegativeID)
+}
+
+// Update
+func (s *storerSuite) UpdatePuppy() {
 	assert := tassert.New(s.T())
 	existingPuppy, err := s.store.ReadPuppy(0)
 	assert.NoError(err, "Reading p should not return error")
@@ -121,7 +130,7 @@ func (s *storerSuite) TestUpdatePuppy() {
 	assert.Equal(existingPuppy.Colour, p.Colour, "Updated colour missmatch")
 }
 
-func (s *storerSuite) TestUpdatePuppyCorruptedID() {
+func (s *storerSuite) UpdatePuppyCorruptedID() {
 	assert := tassert.New(s.T())
 	existingPuppy, err := s.store.ReadPuppy(0)
 	assert.NoError(err, "Reading p should be ok")
@@ -129,28 +138,37 @@ func (s *storerSuite) TestUpdatePuppyCorruptedID() {
 	assert.Error(err, "Should get an error when attempting to update with corrupted id")
 }
 
-func (s *storerSuite) TestUpdatePuppyIDDoesNotExist() {
+func (s *storerSuite) UpdatePuppyIDDoesNotExist() {
 	assert := tassert.New(s.T())
 	newPuppy := puppy0()
 	err := s.store.UpdatePuppy(1000, &newPuppy)
 	assert.Error(err, "Should get an error when attempting to update an non-existing puppy")
 }
 
-func (s *storerSuite) TestUpdatePuppyNegativeID() {
+func (s *storerSuite) UpdatePuppyNegativeID() {
 	assert := tassert.New(s.T())
 	newPuppy := puppyNegativeID()
 	err := s.store.UpdatePuppy(newPuppy.ID, &newPuppy)
 	assert.Error(err, "negative ID should cause an error")
 }
 
-func (s *storerSuite) TestUpdatePuppyNegativeValue() {
+func (s *storerSuite) UpdatePuppyNegativeValue() {
 	assert := tassert.New(s.T())
 	newPuppy := puppyNegativeValue()
 	err := s.store.UpdatePuppy(newPuppy.ID, &newPuppy)
 	assert.Error(err, "negative ID should cause an error")
 }
 
-func (s *storerSuite) TestDeletePuppySuccessful() {
+func (s *storerSuite) TestUpdateReadPuppy() {
+	s.Run("OK", s.UpdatePuppy)
+	s.Run("CorruptedID", s.UpdatePuppyCorruptedID)
+	s.Run("NoID", s.UpdatePuppyIDDoesNotExist)
+	s.Run("NegativeID", s.UpdatePuppyNegativeID)
+	s.Run("NegativeValue", s.UpdatePuppyNegativeValue)
+}
+
+// Delete
+func (s *storerSuite) DeletePuppySuccessful() {
 	assert := tassert.New(s.T())
 	existingPuppy := puppy0()
 	deleted, err := s.store.DeletePuppy(0)
@@ -160,19 +178,26 @@ func (s *storerSuite) TestDeletePuppySuccessful() {
 	assert.Error(err, "Should not be able to read a deleted ID")
 }
 
-func (s *storerSuite) TestDeletePuppyIDDoesNotExist() {
+func (s *storerSuite) DeletePuppyIDDoesNotExist() {
 	assert := tassert.New(s.T())
 	_, err := s.store.DeletePuppy(1000)
 	assert.Error(err, "Should not be able to delete p with non existing ID")
 }
 
-func (s *storerSuite) TestDeletePuppyNegativeID() {
+func (s *storerSuite) DeletePuppyNegativeID() {
 	assert := tassert.New(s.T())
 	_, err := s.store.DeletePuppy(-1)
 	assert.Error(err, "negative ID should cause an error")
 }
 
+func (s *storerSuite) TestDeletePuppy() {
+	s.Run("OK", s.DeletePuppySuccessful)
+	s.Run("NoID", s.DeletePuppyIDDoesNotExist)
+	s.Run("NegativeID", s.DeletePuppyNegativeID)
+}
+
+// Run suite
 func TestStorer(t *testing.T) {
-	suite.Run(t, &storerSuite{impl: syncStorer})
-	suite.Run(t, &storerSuite{impl: memStorer})
+	suite.Run(t, &storerSuite{store: NewMemStore()})
+	suite.Run(t, &storerSuite{store: NewSyncStore()})
 }

@@ -16,24 +16,16 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type storerImpl int
-
-const (
-	syncStorer storerImpl = iota
-	memStorer
-)
-
 type storerSuite struct {
 	suite.Suite
 	store puppy.Storer
-	impl  storerImpl
 }
 
 func (s *storerSuite) SetupTest() {
-	switch s.impl {
-	case syncStorer:
+	switch s.store.(type) {
+	case *store.SyncStore:
 		s.store = store.NewSyncStore()
-	case memStorer:
+	case *store.MemStore:
 		s.store = store.NewMemStore()
 	default:
 		panic("Unrecognised storer implementation")
@@ -53,8 +45,8 @@ func (s *storerSuite) SetupTest() {
 }
 
 func TestStorer(t *testing.T) {
-	suite.Run(t, &storerSuite{impl: syncStorer})
-	suite.Run(t, &storerSuite{impl: memStorer})
+	suite.Run(t, &storerSuite{store: store.NewMemStore()})
+	suite.Run(t, &storerSuite{store: store.NewSyncStore()})
 }
 
 func sendRequest(r http.Handler, method, path string, payload io.Reader) *httptest.ResponseRecorder {
@@ -78,7 +70,13 @@ func deleteReq(r http.Handler, path string, payload io.Reader) *httptest.Respons
 }
 
 // GET
-func (s *storerSuite) TestGetNotFound() {
+func (s *storerSuite) TestGet() {
+	s.Run("OK", s.GetOK)
+	s.Run("NotFound", s.GetNotFound)
+	s.Run("CorruptedID", s.GetCorruptedID)
+}
+
+func (s *storerSuite) GetNotFound() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := getReq(router, "/api/puppy/1000", nil)
@@ -89,10 +87,10 @@ func (s *storerSuite) TestGetNotFound() {
 	value, exists := response["message"]
 	assert.Nil(err)
 	assert.True(exists)
-	assert.Equal("Puppy with ID (1000) not found", value)
+	assert.Equal("puppy with ID (1000) not found", value)
 }
 
-func (s *storerSuite) TestGetCorruptedID() {
+func (s *storerSuite) GetCorruptedID() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := getReq(router, "/api/puppy/0x01", nil)
@@ -106,7 +104,7 @@ func (s *storerSuite) TestGetCorruptedID() {
 	assert.Equal(`strconv.Atoi: parsing "0x01": invalid syntax`, value)
 }
 
-func (s *storerSuite) TestGet() {
+func (s *storerSuite) GetOK() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	var response puppy.Puppy
@@ -123,14 +121,20 @@ func (s *storerSuite) TestGet() {
 }
 
 // POST
-func (s *storerSuite) TestPostCorrupted() {
+func (s *storerSuite) TestPost() {
+	s.Run("OK", s.PostOK)
+	s.Run("CorruptedID", s.PostCorrupted)
+	s.Run("BadValue", s.PostBadValue)
+}
+
+func (s *storerSuite) PostCorrupted() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := postReq(router, "/api/puppy/", strings.NewReader("broken payload"))
 	assert.Equal(400, w.Code)
 }
 
-func (s *storerSuite) TestPost() {
+func (s *storerSuite) PostOK() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	p := puppy.Puppy{Value: 71, Colour: "red"}
@@ -147,7 +151,7 @@ func (s *storerSuite) TestPost() {
 	assert.True(ok)
 }
 
-func (s *storerSuite) TestPostBadValue() {
+func (s *storerSuite) PostBadValue() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	p := puppy.Puppy{Value: -44, Colour: "red"}
@@ -160,21 +164,28 @@ func (s *storerSuite) TestPostBadValue() {
 }
 
 // Put
-func (s *storerSuite) TestPutCorrupted() {
+func (s *storerSuite) TestPut() {
+	s.Run("OK", s.PutOK)
+	s.Run("BadID", s.PutBadID)
+	s.Run("CorruptedID", s.PutCorrupted)
+	s.Run("BadValue", s.PutBadValue)
+}
+
+func (s *storerSuite) PutCorrupted() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := putReq(router, "/api/puppy/0", strings.NewReader("broken payload"))
 	assert.Equal(400, w.Code)
 }
 
-func (s *storerSuite) TestPutBadID() {
+func (s *storerSuite) PutBadID() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := putReq(router, "/api/puppy/0x01", strings.NewReader("broken payload"))
 	assert.Equal(500, w.Code)
 }
 
-func (s *storerSuite) TestPut() {
+func (s *storerSuite) PutOK() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	p := puppy.Puppy{Value: 71, Colour: "red"}
@@ -186,7 +197,7 @@ func (s *storerSuite) TestPut() {
 	assert.Equal(204, w.Code)
 }
 
-func (s *storerSuite) TestPutBadValue() {
+func (s *storerSuite) PutBadValue() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	p := puppy.Puppy{Value: -44, Colour: "red"}
@@ -200,20 +211,26 @@ func (s *storerSuite) TestPutBadValue() {
 
 // Delete
 func (s *storerSuite) TestDelete() {
+	s.Run("OK", s.DeleteOK)
+	s.Run("BadID", s.DeleteBadID)
+	s.Run("NonExisting", s.DeleteNotExisting)
+}
+
+func (s *storerSuite) DeleteOK() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := deleteReq(router, "/api/puppy/0", nil)
 	assert.Equal(204, w.Code)
 }
 
-func (s *storerSuite) TestDeleteBadID() {
+func (s *storerSuite) DeleteBadID() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := deleteReq(router, "/api/puppy/0x01", nil)
 	assert.Equal(500, w.Code)
 }
 
-func (s *storerSuite) TestDeleteNotExisting() {
+func (s *storerSuite) DeleteNotExisting() {
 	assert := tassert.New(s.T())
 	router := puppy.RestBackend(s.store)
 	w := deleteReq(router, "/api/puppy/1000", nil)
