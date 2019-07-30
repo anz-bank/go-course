@@ -13,35 +13,33 @@ type MapStore struct {
 
 // NewMapStore creates a new in-memory store with map intialised.
 func NewMapStore() *MapStore {
-	var m MapStore
-	m.puppyMap = make(PuppyMap)
-	return &m
+	return &MapStore{puppyMap: PuppyMap{}}
 }
 
 // CreatePuppy adds a new puppy to the map store.
-func (m *MapStore) CreatePuppy(p *Puppy) (uint32, error) {
+func (m *MapStore) CreatePuppy(p Puppy) (uint32, error) {
 	m.currID++
 	p.ID = m.currID //ensure the ID within p always matches the map store key (puppyID)
-	m.puppyMap[m.currID] = *p
+	m.puppyMap[m.currID] = p
 	return p.ID, nil
 }
 
 //ReadPuppy gets a puppy from the map store with the given ID.
-func (m *MapStore) ReadPuppy(puppyID uint32) (*Puppy, error) {
+func (m *MapStore) ReadPuppy(puppyID uint32) (Puppy, error) {
 	if puppyOut, ok := m.puppyMap[puppyID]; ok {
-		return &puppyOut, nil
+		return puppyOut, nil
 	}
-	return nil, fmt.Errorf("no puppy found with id %d", puppyID)
+	return Puppy{}, fmt.Errorf("no puppy found with id %d", puppyID)
 }
 
 // UpdatePuppy modifies puppy data in the map store, either creating a new one or overwriting an old one.
-func (m *MapStore) UpdatePuppy(puppyID uint32, p *Puppy) (uint32, error) {
+func (m *MapStore) UpdatePuppy(puppyID uint32, p Puppy) (uint32, error) {
 	if _, ok := m.puppyMap[puppyID]; !ok {
 		m.currID++
 		puppyID = m.currID
 	}
 	p.ID = puppyID //ensure the ID within p always matches the map store key (puppyID)
-	m.puppyMap[puppyID] = *p
+	m.puppyMap[puppyID] = p
 	return p.ID, nil
 }
 
