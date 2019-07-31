@@ -45,11 +45,11 @@ func (s *SyncStore) UpdatePuppy(id uint16, p *puppy.Puppy) error {
 	if err := puppy.ValidateValue(p.Value); err != nil {
 		return err
 	}
+	s.Lock()
+	defer s.Unlock()
 	if _, ok := s.Load(id); !ok {
 		return puppy.Errorf(puppy.ErrIDNotFound, "puppy with ID:%d not found", id)
 	}
-	s.Lock()
-	defer s.Unlock()
 	s.Store(id, *p)
 	return nil
 }
