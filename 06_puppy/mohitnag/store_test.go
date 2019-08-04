@@ -98,16 +98,16 @@ func (s *storer) TestDeletePuppy() {
 	testCases := []struct {
 		Scenario      string
 		ID            uint32
-		ExpectedError string
+		ExpectedError error
 	}{
-		{"Delete already existing Puppy", 1, "<nil>"},
-		{"Delete a non-existing Puppy should fail", 32, "puppy with Id 32 does not exists"},
+		{"Delete already existing Puppy", 1, nil},
+		{"Delete a non-existing Puppy should fail", 32, fmt.Errorf("puppy with Id 32 does not exists")},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		s.T().Run(tc.Scenario, func(t *testing.T) {
 			err := s.store.DeletePuppy(tc.ID)
-			assert.Equal(tc.ExpectedError, fmt.Sprint(err))
+			assert.Equal(tc.ExpectedError, err)
 		})
 	}
 }
