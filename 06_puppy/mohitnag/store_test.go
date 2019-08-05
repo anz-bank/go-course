@@ -11,12 +11,12 @@ import (
 type storer struct {
 	suite.Suite
 	store      Storer
-	storerType func() Storer
+	makeStorer func() Storer
 	puppy      Puppy
 }
 
 func (s *storer) SetupTest() {
-	s.store = s.storerType()
+	s.store = s.makeStorer()
 	s.puppy = Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "$2"}
 }
 
@@ -114,9 +114,9 @@ func (s *storer) TestDeletePuppy() {
 
 func TestStorers(t *testing.T) {
 	suite.Run(t, &storer{
-		storerType: func() Storer { return &MapStore{} },
+		makeStorer: func() Storer { return &MapStore{} },
 	})
 	suite.Run(t, &storer{
-		storerType: func() Storer { return &SyncStore{} },
+		makeStorer: func() Storer { return &SyncStore{} },
 	})
 }
