@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 )
 
@@ -14,9 +13,6 @@ func TestMainOutput(t *testing.T) {
 
 	expected := "127.0.0.1"
 	actual := buf.String()
-
-	fmt.Println("expected: ", expected)
-	fmt.Println("actual: ", actual)
 
 	if expected != actual {
 		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
@@ -42,8 +38,6 @@ func TestStringMethod(t *testing.T) {
 
 	for _, testCase := range tests {
 		actual := testCase.input.String()
-		fmt.Println(testCase.name, "expected: ", testCase.expected)
-		fmt.Println(testCase.name, "actual: ", actual)
 		if actual != testCase.expected {
 			t.Fatalf("test case: %s failed. expected: %v, got: %v", testCase.name, testCase.expected, actual)
 		}

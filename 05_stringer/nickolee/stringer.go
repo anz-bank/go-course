@@ -16,5 +16,4 @@ func (ip IPAddr) String() string {
 
 func main() {
 	fmt.Fprint(out, IPAddr{127, 0, 0, 1})
-
 }
