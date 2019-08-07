@@ -5,7 +5,7 @@ import "encoding/json"
 // Puppy represents an item in the puppy store
 type Puppy struct {
 	Breed  string  `json:"breed"`
-	Colour string  `json:"color,omitempty"`
+	Colour string  `json:"color"`
 	ID     int16   `json:"id"`
 	Value  float32 `json:"value"`
 }
