@@ -32,5 +32,4 @@ func numeronym(s string) string {
 
 func main() {
 	fmt.Fprintln(out, numeronyms("accessibility", "Kubernetes", "abc"))
-
 }

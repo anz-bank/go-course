@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -36,13 +35,10 @@ func TestNumeronymsFunc(t *testing.T) {
 
 	for _, testCase := range tests {
 		actual := numeronyms(testCase.input...)
-		fmt.Println(testCase.name, "expected: ", testCase.expected)
-		fmt.Println(testCase.name, "actual: ", actual)
 		if !reflect.DeepEqual(actual, testCase.expected) {
 			t.Fatalf("test case: %s failed. expected: %v, got: %v", testCase.name, testCase.expected, actual)
 		}
 	}
-
 }
 
 func TestNumeronyms(t *testing.T) {
@@ -63,12 +59,11 @@ func TestNumeronyms(t *testing.T) {
 		{name: "strings with emojis", input: "a👍👍z", expected: "a2z"},
 		{name: "strings with emojis", input: "👍👍👍", expected: "👍👍👍"},
 		{name: "unicode string with empty space", input: "👍👍👍$€₡ 👍", expected: "👍6👍"},
+		{name: "unicode string of numbers", input: "123456789", expected: "179"},
 	}
 
 	for _, testCase := range tests {
 		actual := numeronym(testCase.input)
-		fmt.Println(testCase.name, "expected: ", testCase.expected)
-		fmt.Println(testCase.name, "actual: ", actual)
 		if actual != testCase.expected {
 			t.Fatalf("test case: %s failed. expected: %v, got: %v", testCase.name, testCase.expected, actual)
 		}
