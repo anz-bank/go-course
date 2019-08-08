@@ -9,6 +9,7 @@ import (
 
 	"github.com/anz-bank/go-course/09_json/willshen8/pkg/puppy"
 	store "github.com/anz-bank/go-course/09_json/willshen8/pkg/puppy/store"
+
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -16,40 +17,33 @@ var out io.Writer = os.Stdout
 
 var (
 	args     = os.Args[1:]
-	fileName = kingpin.Flag("data", "Puppy Json File Name").Short('d').String()
+	fileName = kingpin.Flag("data", "Puppy Json File Name").Short('d').ExistingFile()
 )
 
 func main() {
-	var file *string
-	var jsonData []byte
-	var decodedPuppies []puppy.Puppy
-	var mystore = store.NewMapStore()
-
-	file = processCommandLineArgs(args)
-	jsonData = readFile(*file)
-
-	if err := json.Unmarshal(jsonData, &decodedPuppies); err != nil {
-		panic(err)
-	}
+	mystore := store.NewMapStore()
+	file := parseCmdArgs(args)
+	decodedPuppies := readFileAndMarshal(*file)
 
 	if savePuppyErr := createPuppies(mystore, decodedPuppies); savePuppyErr != nil {
 		panic(savePuppyErr)
 	}
 }
 
-func processCommandLineArgs(args []string) *string {
+func parseCmdArgs(args []string) *string {
 	if _, parseError := kingpin.CommandLine.Parse(args); parseError != nil {
 		panic(parseError)
 	}
 	return fileName
 }
 
-func readFile(file string) []byte {
-	jsonData, err := ioutil.ReadFile(file)
-	if err != nil {
+func readFileAndMarshal(file string) []puppy.Puppy {
+	jsonData, _ := ioutil.ReadFile(file) //no need to check file error as kingpin check it already
+	var decodedPuppies []puppy.Puppy
+	if err := json.Unmarshal(jsonData, &decodedPuppies); err != nil {
 		panic(err)
 	}
-	return jsonData
+	return decodedPuppies
 }
 
 func createPuppies(store store.Storer, decodedPuppies []puppy.Puppy) error {

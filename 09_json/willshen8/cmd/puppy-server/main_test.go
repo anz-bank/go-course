@@ -15,7 +15,7 @@ func TestLongFlag(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 
-	args = []string{"--data", "puppies.json"}
+	args = []string{"--data", "./../../puppyData/puppies.json"}
 
 	main()
 	expected := `{1 Jack Russell Terrier White and Brown 1500}
@@ -34,7 +34,7 @@ func TestShortFlag(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 
-	args = []string{"-d", "puppies.json"}
+	args = []string{"-d", "./../../puppyData/puppies.json"}
 
 	main()
 	expected := `{1 Jack Russell Terrier White and Brown 1500}
@@ -49,17 +49,22 @@ func TestShortFlag(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestBadFileName(t *testing.T) {
-	args = []string{"--data=helloWorld.json"}
+func TestFileWithWrongPath(t *testing.T) {
+	args = []string{"--data", "blah.json"}
+	assert.Panics(t, main)
+}
+
+func TestNonExistentFile(t *testing.T) {
+	args = []string{"--data", "./../../puppyData/helloWorld.json"}
 	assert.Panics(t, main)
 }
 
 func TestSavePuppiesToStore(t *testing.T) {
-	args = []string{"--data=invalid_puppies.json"}
+	args = []string{"--data", "./../../puppyData/invalid_puppies.json"}
 	assert.Panics(t, main)
 }
 
 func TestUnmarshalJSON(t *testing.T) {
-	args = []string{"--data=type_mismatch.json"}
+	args = []string{"--data", "./../../puppyData/type_mismatch.json"}
 	assert.Panics(t, main)
 }

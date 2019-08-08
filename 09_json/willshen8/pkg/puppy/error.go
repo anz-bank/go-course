@@ -3,8 +3,8 @@ package puppy
 import "fmt"
 
 type Error struct {
-	Message string
-	Code    int
+	Message string `json:"message"`
+	Code    int    `json:"code"`
 }
 
 func (e *Error) Error() string {
