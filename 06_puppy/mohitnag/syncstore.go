@@ -23,7 +23,6 @@ func (s *SyncStore) ReadPuppy(id uint32) (Puppy, error) {
 
 // UpdatePuppy updates a Puppy in syncstore
 func (s *SyncStore) UpdatePuppy(p Puppy) error {
-
 	if _, ok := s.Load(p.ID); !ok {
 		return fmt.Errorf("puppy with Id %d does not exists", p.ID)
 	}

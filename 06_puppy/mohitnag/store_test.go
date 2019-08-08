@@ -8,27 +8,32 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type storer struct {
+type storerSuite struct {
 	suite.Suite
 	store      Storer
 	makeStorer func() Storer
 	puppy      Puppy
 }
 
-func (s *storer) SetupTest() {
+func (s *storerSuite) SetupTest() {
 	s.store = s.makeStorer()
 	s.puppy = Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "$2"}
+	err := s.store.CreatePuppy(s.puppy)
+	if err != nil {
+		s.FailNow("Error in Test Setup")
+	}
 }
 
-func (s *storer) TestCreatePuppy() {
+func (s *storerSuite) TestCreatePuppy() {
 	assert := assert.New(s.T())
+	s.puppy = Puppy{ID: 2, Breed: "dog", Colour: "black", Value: "$2"}
 	testCases := []struct {
 		Scenario      string
 		Input         Puppy
 		ExpectedError string
 	}{
 		{"Create Puppy", s.puppy, "<nil>"},
-		{"Creating already existing Puppy should fail", s.puppy, "puppy with Id 1 already exists"},
+		{"Creating already existing Puppy should fail", s.puppy, "puppy with Id 2 already exists"},
 	}
 	for _, tc := range testCases {
 		tc := tc
@@ -39,10 +44,8 @@ func (s *storer) TestCreatePuppy() {
 	}
 }
 
-func (s *storer) TestReadPuppy() {
+func (s *storerSuite) TestReadPuppy() {
 	assert := assert.New(s.T())
-	err := s.store.CreatePuppy(s.puppy)
-	assert.NoError(err)
 	testCases := []struct {
 		Scenario      string
 		ID            uint32
@@ -63,10 +66,8 @@ func (s *storer) TestReadPuppy() {
 
 }
 
-func (s *storer) TestUpdatePuppy() {
+func (s *storerSuite) TestUpdatePuppy() {
 	assert := assert.New(s.T())
-	err := s.store.CreatePuppy(s.puppy)
-	assert.NoError(err)
 	puppyUpdate := Puppy{ID: 1, Breed: "dog", Colour: "black", Value: "$2"}
 	puppyNonExist := Puppy{ID: 32, Breed: "dog", Colour: "black", Value: "$2"}
 
@@ -91,10 +92,8 @@ func (s *storer) TestUpdatePuppy() {
 	}
 }
 
-func (s *storer) TestDeletePuppy() {
+func (s *storerSuite) TestDeletePuppy() {
 	assert := assert.New(s.T())
-	err := s.store.CreatePuppy(s.puppy)
-	assert.NoError(err)
 	testCases := []struct {
 		Scenario      string
 		ID            uint32
@@ -113,10 +112,10 @@ func (s *storer) TestDeletePuppy() {
 }
 
 func TestStorers(t *testing.T) {
-	suite.Run(t, &storer{
+	suite.Run(t, &storerSuite{
 		makeStorer: func() Storer { return &MapStore{} },
 	})
-	suite.Run(t, &storer{
+	suite.Run(t, &storerSuite{
 		makeStorer: func() Storer { return &SyncStore{} },
 	})
 }
