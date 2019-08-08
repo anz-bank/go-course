@@ -10,7 +10,7 @@ import (
 func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
-	args = []string{"--data", "../../data.json"}
+	args = []string{"--data", "../../puppydata/data.json"}
 
 	main()
 
@@ -59,7 +59,7 @@ func TestMainOutputNoValueForFlag(t *testing.T) {
 func TestMainOutputInvalidData(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
-	args = []string{"--data", "../../invalid-data.json"}
+	args = []string{"--data", "../../puppydata/invalid-data.json"}
 
 	main()
 
@@ -76,7 +76,7 @@ func TestMainOutputInvalidData(t *testing.T) {
 func TestMainOutputInvalidPuppy(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
-	args = []string{"--data", "../../invalid-puppies.json"}
+	args = []string{"--data", "../../puppydata/invalid-puppies.json"}
 
 	main()
 
@@ -95,7 +95,7 @@ func TestMainOutputInvalidPuppy(t *testing.T) {
 func TestMainOutputRepeatedPuppy(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
-	args = []string{"--data", "../../repeated-puppy.json"}
+	args = []string{"--data", "../../puppydata/repeated-puppy.json"}
 
 	main()
 

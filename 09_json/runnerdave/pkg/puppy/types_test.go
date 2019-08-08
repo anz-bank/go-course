@@ -18,7 +18,7 @@ func TestMarshallingPuppies(t *testing.T) {
 		{Puppy{ID: 11, Colour: "Brown", Value: 12.30},
 			`{"breed": "", "color": "Brown", "id": 11, "value": 12.30}`},
 		{Puppy{},
-			`{"breed": "", "color": "", "id": 0, "value": 0}`},
+			`{"breed": "", "id": 0, "value": 0}`},
 	}
 
 	for _, table := range tables {
@@ -40,7 +40,7 @@ func TestUnmarshallingPuppies(t *testing.T) {
 			Puppy{ID: 11, Breed: "Chihuahua", Colour: "Brown", Value: 12.30}},
 		{`{"breed": "", "color": "Brown", "id": 11, "value": 12.30}`,
 			Puppy{ID: 11, Colour: "Brown", Value: 12.30}},
-		{`{"breed": "", "color": "", "id": 0, "value": 0}`,
+		{`{"breed": "", "id": 0, "value": 0}`,
 			Puppy{}},
 	}
 
@@ -65,7 +65,7 @@ func TestPuppyStringer(t *testing.T) {
 		{Puppy{ID: 11, Colour: "Brown", Value: 12.30},
 			`{"breed": "", "color": "Brown", "id": 11, "value": 12.30}`},
 		{Puppy{},
-			`{"breed": "", "color": "", "id": 0, "value": 0}`},
+			`{"breed": "", "id": 0, "value": 0}`},
 	}
 
 	for _, table := range tables {

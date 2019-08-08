@@ -40,7 +40,7 @@ func main() {
 }
 
 func unmarshalPuppies(d []byte) ([]puppy.Puppy, error) {
-	puppies := make([]puppy.Puppy, 0)
+	puppies := []puppy.Puppy{}
 	if err := json.Unmarshal(d, &puppies); err != nil {
 		fmt.Fprintf(out, "Could not unmarshall puppies, error: %v", err)
 		return nil, err
