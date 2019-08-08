@@ -67,10 +67,6 @@ func TestNumeronymsOutput(t *testing.T) {
 			expected: []string{"😀"}},
 		"alphabet + emoji": {input: []string{"a😀bc"},
 			expected: []string{"a2c"}},
-		/*
-			"emoji only": {input: []string{"😀😁😂🤣😃😄😅😆😉😊"},
-				expected: []string{"😀8😊"}},
-		*/
 	}
 
 	for name, test := range testCases {
