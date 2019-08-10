@@ -6,8 +6,8 @@ go:
 before_script:
   - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -x -- -b $(go env GOPATH)/bin v1.17.1
 script:
+  - for f in $(find -executable -type f); do file -i $f | awk '{print $NF}' | grep -q binary || { echo 'FAIL - bin file found'; exit 1; }; done
   - golangci-lint run
-  - find * -executable -type f  | xargs  -IITEM sh -c 'echo "FAIL - Binary file ITEM was commited)"; exit 1'
   - go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
   - "{ go tool cover -func=coverage.out | grep '^total:.*100.0%'; } || { echo 'FAIL - Coverage below 100%'; exit 1; }"
 after_success:
