@@ -4,7 +4,7 @@ import (
 	"strconv"
 )
 
-// CreatePuppy creates a Puppy in memstore
+// CreatePuppy creates a Puppy in syncstore
 func (s *SyncStore) CreatePuppy(p Puppy) error {
 	s.m.Lock()
 	defer s.m.Unlock()
@@ -19,7 +19,7 @@ func (s *SyncStore) CreatePuppy(p Puppy) error {
 	return ErrorF(Duplicate, "puppy with Id %d already exists", p.ID)
 }
 
-// ReadPuppy reads a Puppy from memstore
+// ReadPuppy reads a Puppy from syncstore
 func (s *SyncStore) ReadPuppy(id uint32) (Puppy, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
@@ -29,7 +29,7 @@ func (s *SyncStore) ReadPuppy(id uint32) (Puppy, error) {
 	return Puppy{}, ErrorF(NotFound, "puppy with Id %d does not exists", id)
 }
 
-// UpdatePuppy updates a Puppy
+// UpdatePuppy updates a Puppy in syncstore
 func (s *SyncStore) UpdatePuppy(p Puppy) error {
 	s.m.Lock()
 	defer s.m.Unlock()
@@ -40,13 +40,13 @@ func (s *SyncStore) UpdatePuppy(p Puppy) error {
 	return nil
 }
 
-// DeletePuppy deletes a Puppy
-func (s *SyncStore) DeletePuppy(id uint32) bool {
+// DeletePuppy deletes a Puppy from syncstore
+func (s *SyncStore) DeletePuppy(id uint32) error {
 	s.m.Lock()
 	defer s.m.Unlock()
 	if _, ok := s.Load(id); !ok {
-		return false
+		return ErrorF(NotFound, "puppy with Id %d does not exists", id)
 	}
 	s.Delete(id)
-	return true
+	return nil
 }

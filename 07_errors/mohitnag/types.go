@@ -10,7 +10,7 @@ type Puppy struct {
 	Value  string
 }
 
-// MemStore stores Puppy details with Puppy Id as Key and Puppy  as value
+// MapStore stores Puppy details with Puppy Id as Key and Puppy  as value
 type MapStore map[uint32]Puppy
 
 // SyncStore stores Puppy details with Puppy Id as Key and Puppy  as value
@@ -24,5 +24,5 @@ type Storer interface {
 	CreatePuppy(Puppy) error
 	ReadPuppy(ID uint32) (Puppy, error)
 	UpdatePuppy(Puppy Puppy) error
-	DeletePuppy(ID uint32) bool
+	DeletePuppy(ID uint32) error
 }
