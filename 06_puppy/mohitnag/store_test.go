@@ -8,49 +8,51 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type storer struct {
+type storerSuite struct {
 	suite.Suite
 	store      Storer
-	storerType func() Storer
+	makeStorer func() Storer
+	puppy      Puppy
 }
 
-func (s *storer) SetupTest() {
-	s.store = s.storerType()
+func (s *storerSuite) SetupTest() {
+	s.store = s.makeStorer()
+	s.puppy = Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "$2"}
+	err := s.store.CreatePuppy(s.puppy)
+	if err != nil {
+		s.FailNow("Error in Test Setup")
+	}
 }
 
-func (s *storer) TestCreatePuppy() {
+func (s *storerSuite) TestCreatePuppy() {
 	assert := assert.New(s.T())
-	puppy := Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "$2"}
+	s.puppy = Puppy{ID: 2, Breed: "dog", Colour: "black", Value: "$2"}
 	testCases := []struct {
 		Scenario      string
 		Input         Puppy
 		ExpectedError string
 	}{
-		{"Create Puppy", puppy, "<nil>"},
-		{"Creating already existing Puppy should fail", puppy, "puppy with Id 1 already exists"},
+		{"Create Puppy", s.puppy, "<nil>"},
+		{"Creating already existing Puppy should fail", s.puppy, "puppy with Id 2 already exists"},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		s.T().Run(tc.Scenario, func(t *testing.T) {
 			err := s.store.CreatePuppy(tc.Input)
 			assert.Equal(tc.ExpectedError, fmt.Sprint(err))
-
 		})
 	}
 }
 
-func (s *storer) TestReadPuppy() {
+func (s *storerSuite) TestReadPuppy() {
 	assert := assert.New(s.T())
-	puppy := Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "$2"}
-	err := s.store.CreatePuppy(puppy)
-	assert.NoError(err)
 	testCases := []struct {
 		Scenario      string
 		ID            uint32
 		Expected      Puppy
 		ExpectedError string
 	}{
-		{"Read already existing Puppy", 1, puppy, "<nil>"},
+		{"Read already existing Puppy", 1, s.puppy, "<nil>"},
 		{"Reading a non-existing Puppy should fail", 32, Puppy{}, "puppy with Id 32 does not exists"},
 	}
 	for _, tc := range testCases {
@@ -64,11 +66,8 @@ func (s *storer) TestReadPuppy() {
 
 }
 
-func (s *storer) TestUpdatePuppy() {
+func (s *storerSuite) TestUpdatePuppy() {
 	assert := assert.New(s.T())
-	puppy := Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "$2"}
-	err := s.store.CreatePuppy(puppy)
-	assert.NoError(err)
 	puppyUpdate := Puppy{ID: 1, Breed: "dog", Colour: "black", Value: "$2"}
 	puppyNonExist := Puppy{ID: 32, Breed: "dog", Colour: "black", Value: "$2"}
 
@@ -91,36 +90,32 @@ func (s *storer) TestUpdatePuppy() {
 			assert.Equal(tc.ExpectedError, fmt.Sprint(err))
 		})
 	}
-
 }
 
-func (s *storer) TestDeletePuppy() {
+func (s *storerSuite) TestDeletePuppy() {
 	assert := assert.New(s.T())
-	puppy := Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "$2"}
-	err := s.store.CreatePuppy(puppy)
-	assert.NoError(err)
 	testCases := []struct {
-		Scenario string
-		ID       uint32
-		Expected bool
+		Scenario      string
+		ID            uint32
+		ExpectedError error
 	}{
-		{"Delete already existing Puppy", 1, true},
-		{"Delete a non-existing Puppy should fail", 32, false},
+		{"Delete already existing Puppy", 1, nil},
+		{"Delete a non-existing Puppy should fail", 32, fmt.Errorf("puppy with Id 32 does not exists")},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		s.T().Run(tc.Scenario, func(t *testing.T) {
-			isDeleted := s.store.DeletePuppy(tc.ID)
-			assert.Equal(tc.Expected, isDeleted)
+			err := s.store.DeletePuppy(tc.ID)
+			assert.Equal(tc.ExpectedError, err)
 		})
 	}
 }
 
 func TestStorers(t *testing.T) {
-	suite.Run(t, &storer{
-		storerType: func() Storer { return &MemStore{} },
+	suite.Run(t, &storerSuite{
+		makeStorer: func() Storer { return &MapStore{} },
 	})
-	suite.Run(t, &storer{
-		storerType: func() Storer { return &SyncStore{} },
+	suite.Run(t, &storerSuite{
+		makeStorer: func() Storer { return &SyncStore{} },
 	})
 }
