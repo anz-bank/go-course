@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
-	puppy "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy"
+	puppy "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy"
 	tassert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )

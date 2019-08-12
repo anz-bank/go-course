@@ -3,7 +3,7 @@ package store
 import (
 	"sync"
 
-	puppy "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy"
+	puppy "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy"
 )
 
 // MemStore map based type for storing puppies data

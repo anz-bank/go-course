@@ -2,13 +2,14 @@ package puppy
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // Error codes
 const (
-	ErrCodeInvalidInput = 400
-	ErrCodeNotFound     = 404
-	ErrCodeInternal     = 500
+	ErrCodeInvalidInput = http.StatusBadRequest
+	ErrCodeNotFound     = http.StatusNotFound
+	ErrCodeInternal     = http.StatusInternalServerError
 )
 
 // Error wrapps errors with code, message and error itself

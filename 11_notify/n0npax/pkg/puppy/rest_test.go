@@ -1,18 +1,20 @@
 package puppy_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
+	puppy "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy"
+	store "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy/store"
 	tassert "github.com/stretchr/testify/assert"
-
-	puppy "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy"
-	store "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy/store"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -30,7 +32,6 @@ func (s *storerSuite) SetupTest() {
 	default:
 		panic("Unrecognised storer implementation")
 	}
-
 	for i := 0; i < 5; i++ {
 		p := puppy.Puppy{
 			Breed:  "Type A",
@@ -42,6 +43,8 @@ func (s *storerSuite) SetupTest() {
 			panic(err)
 		}
 	}
+	puppy.PuppyDeleteNotifyF = func(int) {}
+	puppy.SlowRequestDuration = "0"
 }
 
 func TestStorer(t *testing.T) {
@@ -69,6 +72,79 @@ func deleteReq(r http.Handler, path string, payload io.Reader) *httptest.Respons
 	return sendRequest(r, "DELETE", path, payload)
 }
 
+// Notify Lostpuppy
+func TestLostPuppyReqBadUrl(t *testing.T) {
+	for _, url := range []string{"foo.bar", "file:///etc/passwd"} {
+		puppy.LostPuppyURL = url
+		t.Run(url, func(t *testing.T) {
+			var buf bytes.Buffer
+			log.SetOutput(&buf)
+			defer func() {
+				log.SetOutput(os.Stderr)
+			}()
+			puppy.LostPuppyReq(0)
+			tassert.Contains(t, buf.String(), "unsupported protocol scheme")
+		})
+	}
+}
+
+func TestLostPuppyReq(t *testing.T) {
+	for _, url := range []string{"http://example.com", "https://jsonplaceholder.typicode.com/todos/1"} {
+		puppy.LostPuppyURL = url
+		t.Run(url, func(t *testing.T) {
+			var buf bytes.Buffer
+			log.SetOutput(&buf)
+			defer func() {
+				log.SetOutput(os.Stderr)
+			}()
+			puppy.LostPuppyReq(0)
+			tassert.Contains(t, buf.String(), "lostpuppy service response code")
+		})
+	}
+}
+
+// LostPuppyBackend
+func TestLostPuppy(t *testing.T) {
+	t.Run("Odd", LostPupptOdd)
+	t.Run("Even", LostPupptEven)
+	t.Run("Err", LostPupptErr)
+}
+
+func LostPupptErr(t *testing.T) {
+	assert := tassert.New(t)
+	router := puppy.LostPuppyBackend()
+	payload := string(`{"id": "llama"}`)
+	w := postReq(router, "/api/lostpuppy/", strings.NewReader(payload))
+	assert.Equal(400, w.Code)
+}
+
+func LostPupptEven(t *testing.T) {
+	for i := -3; i <= 10; i++ {
+		num := i * 2
+		t.Run(fmt.Sprintf("even: %d", num), func(t *testing.T) {
+			assert := tassert.New(t)
+			router := puppy.LostPuppyBackend()
+			payload := fmt.Sprintf(`{"id": %d}`, num)
+			w := postReq(router, "/api/lostpuppy/", strings.NewReader(payload))
+			assert.Equal(201, w.Code)
+		})
+	}
+}
+
+func LostPupptOdd(t *testing.T) {
+	for i := -3; i <= 10; i++ {
+		num := i*2 + 1
+		t.Run(fmt.Sprintf("even: %d", num), func(t *testing.T) {
+			assert := tassert.New(t)
+			router := puppy.LostPuppyBackend()
+			payload := fmt.Sprintf(`{"id": %d}`, num)
+			w := postReq(router, "/api/lostpuppy/", strings.NewReader(payload))
+			assert.Equal(500, w.Code)
+		})
+	}
+}
+
+// RestBackend
 // GET
 func (s *storerSuite) TestGet() {
 	s.Run("OK", s.GetOK)
@@ -163,7 +239,7 @@ func (s *storerSuite) PostBadValue() {
 	assert.Equal(400, w.Code)
 }
 
-// Put
+// PUT
 func (s *storerSuite) TestPut() {
 	s.Run("OK", s.PutOK)
 	s.Run("BadID", s.PutBadID)
@@ -209,7 +285,7 @@ func (s *storerSuite) PutBadValue() {
 	assert.Equal(400, w.Code)
 }
 
-// Delete
+// DELETE
 func (s *storerSuite) TestDelete() {
 	s.Run("OK", s.DeleteOK)
 	s.Run("BadID", s.DeleteBadID)

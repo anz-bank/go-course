@@ -7,12 +7,13 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
 
 	"gopkg.in/alecthomas/kingpin.v2"
 
-	puppy "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy"
-	store "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy/store"
+	puppy "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy"
+	store "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy/store"
 )
 
 var (
@@ -36,24 +37,28 @@ func runPuppyServer(c *config) error {
 	if err := feedStorer(*c, s); err != nil {
 		return err
 	}
+	puppy.LostPuppyURL = c.lostpuppyURL
 	return puppy.RestBackend(s).Run(fmt.Sprintf(":%d", c.port))
 }
 
 type config struct {
-	puppyFile io.Reader
-	sType     string
-	port      int
+	puppyFile    io.Reader
+	sType        string
+	port         int
+	lostpuppyURL string
 }
 
 func parseArgs(args []string) (config, error) {
 	var storeType string
+	var lostpuppyURL *url.URL
 	var port int
 	var puppyFile *os.File
 	kingpin.Flag("data", "path to file with puppies data").Short('d').FileVar(&puppyFile)
 	kingpin.Flag("port", "Port number").Short('p').Default("8181").IntVar(&port)
+	kingpin.Flag("lostpuppy", "lostpuppy service endpoint").Short('l').Required().URLVar(&lostpuppyURL)
 	kingpin.Flag("store", "Store type").Short('s').Default("map").EnumVar(&storeType, "map", "sync")
 	_, err := kingpin.CommandLine.Parse(args)
-	return config{puppyFile, storeType, port}, err
+	return config{puppyFile, storeType, port, lostpuppyURL.String()}, err
 }
 
 func createStorer(c *config) (puppy.Storer, error) {
@@ -73,7 +78,7 @@ func readPuppies(r io.Reader) ([]puppy.Puppy, error) {
 	}
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
-		return nil, errors.New("error during reading puppies from file")
+		return nil, errors.New("failed to read puppies from file")
 	}
 	var puppies []puppy.Puppy
 	if err = json.Unmarshal(b, &puppies); err != nil {

@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"bou.ke/monkey"
-	puppy "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy"
-	store "github.com/anz-bank/go-course/10_rest/n0npax/pkg/puppy/store"
+	puppy "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy"
+	store "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy/store"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,7 +22,7 @@ const (
 )
 
 func TestMain(t *testing.T) {
-	os.Args = []string{"", "-s", "map", "-p", "88888888"}
+	os.Args = []string{"", "-s", "map", "-p", "88888888", "--lostpuppy", "https://wp.pl"}
 
 	fakeExit := func(int) {
 		panic("foo-arg")
@@ -33,8 +33,6 @@ func TestMain(t *testing.T) {
 }
 
 func TestMainFakeArgs(t *testing.T) {
-	os.Args = []string{"", "-s", "map", "-d", "/dev/null", "-p", "8888"}
-
 	parser = func([]string) (config, error) {
 		return config{}, errors.New("test")
 	}
@@ -181,9 +179,10 @@ func TestMainReadPuppies(t *testing.T) {
 }
 
 func TestParseArgs(t *testing.T) {
-	args := []string{"-s", "map", "-d", "/dev/null", "--port", "1234"}
+	args := []string{"-s", "map", "-d", "/dev/null", "--port", "1234", "--lostpuppy", "http://foo.bar"}
 	config, err := parseArgs(args)
 	assert.NoError(t, err)
 	assert.Equal(t, config.port, 1234)
 	assert.Equal(t, config.sType, "map")
+	assert.Equal(t, config.lostpuppyURL, "http://foo.bar")
 }

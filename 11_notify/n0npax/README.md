@@ -1,6 +1,6 @@
 # n0npax's puppy
 
-This project is source completed lab10 from [go course](https://github.com/anz-bank/go-course/)
+This project is source completed lab11 from [go course](https://github.com/anz-bank/go-course/)
 
 ## Prerequisites
 
@@ -14,14 +14,20 @@ Build and install this project with
 
     go install ./...
 
-Build and execute its binary with
+Run apps with:
 
-    go build -o lab10 cmd/puppy-server/main.go
-    ./lab10
+    go run cmd/lostpuppy-service/main.go
+    go run cmd/puppy-server/main.go
+
+Or build with:
+
+    go build -o puppy-server cmd/puppy-server/main.go
+    go build -o lost-puppy-svc cmd/lostpuppy-service/main.go
 
 Help and parameters description
 
-    ./lab10 --help
+    ./puppy-server --help
+    ./lostpuppy-svc --help
 
 Test it with
 
@@ -29,6 +35,7 @@ Test it with
 
 Lint it with
 
+    goimports -w .
     golangci-lint run
 
 Review coverage with
@@ -37,6 +44,16 @@ Review coverage with
 
 ## API
 
+### Lost puppy service
+Following endpoints are supported:
+
+        POST   /api/lostpuppy/      Payload: id
+
+Example request:
+
+	curl -X POST http://${IP_OR_FQDN}:${PORT}/api/lostpuppy/ -d '{"id":42}'
+
+### Puppy server
 Following endpoints are supported:
 
 	GET    /api/puppy/{id}
