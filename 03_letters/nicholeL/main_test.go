@@ -47,10 +47,12 @@ func TestSortLetters(t *testing.T) {
 		input    map[rune]int
 		excepted []string
 	}{
-		"one":   {map[rune]int{97: 2, 98: 1}, []string{"a:2", "b:1"}},
-		"two":   {map[rune]int{97: 3, 98: 1, 99: 2, 100: 3}, []string{"a:3", "b:1", "c:2", "d:3"}},
-		"three": {map[rune]int{1: 2, 3: 1, 97: 3, 98: 1, 99: 2, 100: 3}, []string{"\x01:2", "\x03:1", "a:3", "b:1", "c:2", "d:3"}},
-		"four":  {map[rune]int{97: 3, 98: 1, 99: 8, 100: 3, 67: 1}, []string{"C:1", "a:3", "b:1", "c:8", "d:3"}},
+		"one": {map[rune]int{97: 2, 98: 1}, []string{"a:2", "b:1"}},
+		"two": {map[rune]int{97: 3, 98: 1, 99: 2, 100: 3}, []string{"a:3", "b:1", "c:2", "d:3"}},
+		"three": {map[rune]int{1: 2, 3: 1, 97: 3, 98: 1, 99: 2, 100: 3}, []string{"\x01:2", "\x03:1",
+			"a:3", "b:1", "c:2", "d:3"}},
+		"four": {map[rune]int{97: 3, 98: 1, 99: 8, 100: 3, 67: 1}, []string{"C:1", "a:3", "b:1",
+			"c:8", "d:3"}},
 	}
 	for key, testCase := range testCases {
 		test := testCase
