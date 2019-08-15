@@ -1,7 +1,7 @@
 package main
 
 /*
-	https://github.com/undrewb/go-course/tree/lab1/02_bubble
+	https://github.com/anz-bank/go-course/tree/master/02_bubble
 
 	Lab 2 - Bubble sort
 	Create an executable go program in directory 02_bubble/USERNAME
@@ -49,8 +49,7 @@ func insertion(input []int) []int {
 
 	for i := 0; i <= len(sorted)-1; i++ {
 		for j := i; j > 0 && sorted[j-1] > sorted[j]; j-- {
-			sorted[j], sorted[j-1] =
-				sorted[j-1], sorted[j]
+			sorted[j], sorted[j-1] = sorted[j-1], sorted[j]
 		}
 	}
 	return sorted
