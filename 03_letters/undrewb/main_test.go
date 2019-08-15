@@ -8,8 +8,6 @@ import (
 	"testing"
 )
 
-// var out io.Writer = os.Stdout
-
 func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
@@ -67,7 +65,7 @@ var sortLettersTestData = []struct {
 
 func TestSortLetters(t *testing.T) {
 	for _, tt := range sortLettersTestData {
-		tt := tt // as per sean- suggestion on this discussion https://github.com/kyoh86/scopelint/issues/4
+		tt := tt 
 		t.Run(tt.name, func(t *testing.T) {
 			got := strings.Join(sortLetters(letters(tt.input)), ",")
 			if got != tt.want {

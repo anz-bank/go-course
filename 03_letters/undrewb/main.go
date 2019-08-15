@@ -1,7 +1,5 @@
 package main
 
-// https://github.com/anz-bank/go-course/tree/master/03_letters
-
 import (
 	"fmt"
 	"io"
