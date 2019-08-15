@@ -65,7 +65,7 @@ var sortLettersTestData = []struct {
 
 func TestSortLetters(t *testing.T) {
 	for _, tt := range sortLettersTestData {
-		tt := tt 
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			got := strings.Join(sortLetters(letters(tt.input)), ",")
 			if got != tt.want {
