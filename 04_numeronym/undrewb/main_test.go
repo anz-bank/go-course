@@ -26,12 +26,26 @@ var numeronymsData = []struct {
 	input []string
 	want  []string
 }{
-	{name: "lab example",
+	{
+		name:  "lab example",
 		input: []string{"accessibility", "Kubernetes", "abc"},
-		want:  []string{"a11y", "K8s", "abc"}},
-	{name: "empty",
+		want:  []string{"a11y", "K8s", "abc"},
+	},
+	{
+		name:  "empty",
 		input: []string{},
-		want:  []string{}},
+		want:  []string{},
+	},
+	{
+		name:  "unicode example",
+		input: []string{"ចឆជឈញដឋឌឍណតថទធនបផពភមយ", "ঌএঐওঔকখগঘঙচছজঝঞটঠডঢণতথদ", "АБВ", "АБВГДЕЖ", "👍👍"},
+		want:  []string{"ច19យ", "ঌ21দ", "АБВ", "А5Ж", "👍👍"},
+	},
+	{
+		name:  "unicode/ascii mix  example",
+		input: []string{"aaចឆជឈញដឋឌឍណតថទធនបផពភមយbb", "aঌএঐওঔকখগঘঙচছজঝঞটঠডঢণতথদ", "АБc", "АБВerЕЖ", "a👍👍x"},
+		want:  []string{"a23b", "a22দ", "АБc", "А5Ж", "a2x"},
+	},
 }
 
 func TestNumeronyms(t *testing.T) {
@@ -57,6 +71,9 @@ var numeronymData = []struct {
 	{name: "emptyr", input: "", want: ""},
 	{name: "space example", input: "blah blah", want: "b7h"},
 	{name: "i1bn", input: "internationalization", want: "i18n"},
+	{name: "thai", input: "ចឆជឈញដឋឌឍណតថទធនបផពភមយ", want: "ច19យ"},
+	{name: "short greek", input: "АБВ", want: "АБВ"},
+	{name: "emoji mix", input: "👍👍axsx", want: "👍4x"},
 }
 
 func TestNumeronym(t *testing.T) {

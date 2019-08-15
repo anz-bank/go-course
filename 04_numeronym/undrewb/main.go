@@ -21,10 +21,9 @@ func numeronyms(vals ...string) []string {
 }
 
 func numeronym(s string) string {
-	outs := s
-	if len(s) > 3 {
+	if len([]rune(s)) > 3 {
 		r := []rune(s)
-		outs = fmt.Sprintf("%c%d%c", r[0], len(r)-2, r[len(r)-1])
+		s = fmt.Sprintf("%c%d%c", r[0], len(r)-2, r[len(r)-1])
 	}
-	return outs
+	return s
 }
