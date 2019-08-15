@@ -11,10 +11,10 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fmt.Fprintln(out, strings.Join(sortLetters(letters("aba")), "\n"))
+	fmt.Fprintln(out, strings.Join(sortLetters(lettersFreq("aba")), "\n"))
 }
 
-func letters(s string) map[rune]int {
+func lettersFreq(s string) map[rune]int {
 	lettersMap := make(map[rune]int)
 	for _, letter := range s {
 		lettersMap[letter]++
