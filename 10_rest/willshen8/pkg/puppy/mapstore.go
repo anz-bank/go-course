@@ -16,18 +16,12 @@ func NewMapStore() *MapStore {
 
 // CreatePuppy create a new puppy and store in mapStore.
 func (m *MapStore) CreatePuppy(p *Puppy) (uint32, error) {
-	if i, err := strconv.Atoi(p.Value); err == nil {
-		if i < 0 {
-			return 0, &Error{
-				Message: PuppyValueLessThanZero,
-				Code:    NegativeValue,
-			}
-		}
-	} else {
-		return 0, &Error{
-			Message: InvalidPuppyValue,
-			Code:    ErrorValueFormat,
-		}
+	i, err := strconv.Atoi(p.Value)
+	if err != nil {
+		return 0, Errorf(ErrInvalidInput, ErrInvalidInput.String())
+	}
+	if i < 0 {
+		return 0, Errorf(ErrInvalidInput, ErrInvalidInput.String())
 	}
 
 	m.nextID++
@@ -42,35 +36,30 @@ func (m MapStore) ReadPuppy(id uint32) (*Puppy, error) {
 	if p, ok := m.ms[id]; ok {
 		return &p, nil
 	}
-	return nil, &Error{
-		Message: PuppyValueNotFound,
-		Code:    NonExistentPuppy,
-	}
+	return nil, Errorf(ErrNotFound, "Puppy ID (%v) not found", id)
 }
 
 // UpdatePuppy updates the store with key of id with the new puppy.
-// It returns a boolean whether the operation is successful or not.
-func (m MapStore) UpdatePuppy(id uint32, p *Puppy) (bool, error) {
+func (m MapStore) UpdatePuppy(id uint32, p *Puppy) error {
 	if _, ok := m.ms[id]; !ok {
-		return false, &Error{
-			Message: InvliadIDForUpdate,
-			Code:    NonExistentPuppy,
-		}
+		return Errorf(ErrNotFound, "Puppy ID can't be found, update operation failed")
+	}
+	i, err := strconv.Atoi(p.Value)
+	if err != nil {
+		return Errorf(ErrInvalidInput, "Puppy value is not recognised")
+	} else if i < 0 {
+		return Errorf(ErrInvalidInput, "Puppy value can't be negative")
 	}
 	p.ID = id
 	m.ms[id] = *p
-	return true, nil
+	return nil
 }
 
 // DeletePuppy delete the puppy given the id.
-// It returns true/success or false/unsuccessful.
-func (m MapStore) DeletePuppy(id uint32) (bool, error) {
+func (m MapStore) DeletePuppy(id uint32) error {
 	if _, ok := m.ms[id]; ok {
 		delete(m.ms, id)
-		return true, nil
+		return nil
 	}
-	return false, &Error{
-		Message: InvalidIDForDelete,
-		Code:    NonExistentPuppy,
-	}
+	return Errorf(ErrNotFound, "Puppy ID can't be found, delete operation failed")
 }

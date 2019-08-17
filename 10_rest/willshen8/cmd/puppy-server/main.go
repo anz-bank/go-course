@@ -21,22 +21,31 @@ var out io.Writer = os.Stdout
 
 var (
 	args     = os.Args[1:]
-	fileName = kingpin.Flag("data", "Puppy Json File Name").Short('d').ExistingFile()
+	fileName = kingpin.Flag("data", "Puppy Json File Name").Short('d').File()
 	port     = kingpin.Flag("port", "Port of the server").Short('p').Default("8888").Int()
-	storer   = kingpin.Flag("store", "Map/Sync Store").Short('s').Default("map").String()
+	storer   = kingpin.Flag("store", "Map/Sync Store").Short('s').Default("map").Enum("map", "sync")
 )
 
 // Config contains arguments parsed from commandline flags.
 type Config struct {
-	file   string
+	file   *os.File
 	port   int
 	storer string
 }
 
 func main() {
-	cmdConfigs := parseCmdArgs(args)
-	newStorer, _ := createStorer(cmdConfigs)
-	decodedPuppies, _ := parseFileFlag(cmdConfigs)
+	cmdConfigs, err := parseCmdArgs(args)
+	if err != nil {
+		fmt.Println(err)
+	}
+	newStorer, storerErr := createStorer(cmdConfigs.storer)
+	if storerErr != nil {
+		panic(storerErr)
+	}
+	decodedPuppies, parseErr := parseJSONPuppies(cmdConfigs.file)
+	if parseErr != nil {
+		panic(parseErr)
+	}
 	portFlag, portErr := parsePortFlag(cmdConfigs)
 	if portErr != nil {
 		fmt.Println(portErr)
@@ -52,8 +61,8 @@ func main() {
 }
 
 // creatStorer will take the commandline arg and create the appropriate store
-func createStorer(c *Config) (puppy.Storer, error) {
-	switch c.storer {
+func createStorer(store string) (puppy.Storer, error) {
+	switch store {
 	case "map":
 		return puppy.NewMapStore(), nil
 	case "sync":
@@ -62,45 +71,36 @@ func createStorer(c *Config) (puppy.Storer, error) {
 	return nil, errors.New("map/sync are the only acceptable flag values")
 }
 
-func parseCmdArgs(args []string) *Config {
+func parseCmdArgs(args []string) (Config, error) {
+	var parsedConig Config
 	if _, parseError := kingpin.CommandLine.Parse(args); parseError != nil {
-		panic(parseError)
+		return parsedConig, parseError
 	}
-	return &Config{file: *fileName, port: *port, storer: *storer}
+	return Config{file: *fileName, port: *port, storer: *storer}, nil
 }
 
-func parseFileFlag(c *Config) ([]puppy.Puppy, error) {
-	var file *string
+// parseJSONPuppies read from io input and unmarshal them into puyppy JSONS
+func parseJSONPuppies(r io.Reader) ([]puppy.Puppy, error) {
 	var puppies []puppy.Puppy
-	file = &c.file
-	jsonData := readFile(*file)
-
+	jsonData, _ := ioutil.ReadAll(r) // error already handled by kingpin
 	if err := json.Unmarshal(jsonData, &puppies); err != nil {
 		return nil, err
 	}
 	return puppies, nil
 }
 
-//parsePortFlag check for valid port number entered from commandLine
-func parsePortFlag(c *Config) (string, error) {
+// parsePortFlag check for valid port number entered from commandLine
+func parsePortFlag(c Config) (string, error) {
 	if c.port < 0 || c.port > 65535 {
-		return "8888", errors.New("invalid port number entered, default port 8888 will be used")
+		return "0", errors.New("invalid port number entered")
 	}
 	return strconv.Itoa(c.port), nil
 }
 
-func readFile(file string) []byte {
-	jsonData, err := ioutil.ReadFile(file)
-	if err != nil {
-		panic(err)
-	}
-	return jsonData
-}
-
 // createPuppies takes an array of puppies and saves it to a puppy storer
-func createPuppies(s puppy.Storer, decodedPuppies []puppy.Puppy) (puppy.Storer, error) {
-	for _, jsonPuppy := range decodedPuppies {
-		jsonPuppy := jsonPuppy //fixes linter issue
+func createPuppies(s puppy.Storer, puppies []puppy.Puppy) (puppy.Storer, error) {
+	for _, jsonPuppy := range puppies {
+		jsonPuppy := jsonPuppy // fixes linter issue
 		if _, saveErr := s.CreatePuppy(&jsonPuppy); saveErr != nil {
 			return nil, saveErr
 		}
