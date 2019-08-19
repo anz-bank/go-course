@@ -8,12 +8,12 @@ import (
 
 var out io.Writer = os.Stdout
 
-//Compare two adjacent numbers
+//bubbleSort compares two adjacent numbers
 func bubbleSort(s []int) []int {
-	for index := 0; index < len(s); index++ {
-		for count := 0; count < len(s)-index-1; count++ {
-			if s[count] >= s[count+1] {
-				s[count], s[count+1] = s[count+1], s[count]
+	for i := len(s); i > 0; i-- {
+		for j := 1; j < i; j++ {
+			if s[j-1] >= s[j] {
+				s[j], s[j-1] = s[j-1], s[j]
 			}
 		}
 	}
@@ -21,17 +21,18 @@ func bubbleSort(s []int) []int {
 }
 
 func insertSort(s []int) []int {
-
-	for first := 1; first < len(s); first++ {
-		index := first
-		temp := s[first]
-		for index > 0 && temp < s[index-1] {
-			s[index] = s[index-1]
-			index--
+	for i := 1; i < len(s); i++ {
+		var j int
+		for j = i; j > 0; j-- {
+			if s[j-1] <= s[i] {
+				break // We've found the insertion point
+			}
 		}
-		s[index] = temp
+		// insert s[i] at s[j] moving the rest up
+		tmp := s[i]
+		copy(s[j+1:i+1], s[j:i])
+		s[j] = tmp
 	}
-
 	return s
 }
 
