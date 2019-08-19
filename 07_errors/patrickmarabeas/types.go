@@ -24,4 +24,5 @@ type MapStore struct {
 type SyncStore struct {
 	uuid int
 	sync.Map
+	sync.RWMutex
 }

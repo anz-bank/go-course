@@ -13,9 +13,11 @@ func (store *SyncStore) Create(puppy Puppy) (int, error) {
 		return -1, NewError(NegativeValue)
 	}
 
+	store.Lock()
 	puppy.ID = store.uuid
 	store.Store(puppy.ID, puppy)
 	store.uuid++
+	store.Unlock()
 
 	return puppy.ID, nil
 }
@@ -23,9 +25,11 @@ func (store *SyncStore) Create(puppy Puppy) (int, error) {
 // Read returns the puppy matching the provided uuid.
 // An empty Puppy struct is returned if the identifier does not exist.
 func (store *SyncStore) Read(id int) (Puppy, error) {
+	store.RLock()
 	if value, ok := store.Load(id); ok {
 		return value.(Puppy), nil
 	}
+	store.RUnlock()
 
 	return Puppy{}, NewError(IDNotFound)
 }
@@ -42,6 +46,7 @@ func (store *SyncStore) Update(id int, puppy Puppy) (bool, error) {
 
 	puppy.ID = id
 	store.Store(id, puppy)
+
 	return true, nil
 }
 
@@ -52,6 +57,9 @@ func (store *SyncStore) Destroy(id int) (bool, error) {
 		return false, NewError(IDNotFound)
 	}
 
+	store.Lock()
 	store.Delete(id)
+	store.Unlock()
+
 	return true, nil
 }
