@@ -2,12 +2,8 @@ package main
 
 import (
 	"bytes"
-	"io"
-	"os"
 	"testing"
 )
-
-var out io.Writer = os.Stdout
 
 func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
@@ -15,7 +11,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := ""
+	expected := "hello"
 
 	got := buf.String()
 
