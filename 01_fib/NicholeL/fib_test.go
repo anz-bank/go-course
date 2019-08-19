@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"strconv"
 	"testing"
 )
 
@@ -24,7 +23,6 @@ func TestAbs(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func TestFib(t *testing.T) {
@@ -64,14 +62,13 @@ func TestFib(t *testing.T) {
 -8
 13
 `},
-		{99, `Fibonacci numbers greater than 92 not supported`},
 	}
 	for _, testCase := range tests {
 		var buf bytes.Buffer
 		out = &buf
 		fib(testCase.input)
-		excepted := strconv.Quote(testCase.excepted)
-		actual := strconv.Quote(buf.String())
+		excepted := testCase.excepted
+		actual := buf.String()
 		if excepted != actual {
 			t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", excepted, actual)
 		}
