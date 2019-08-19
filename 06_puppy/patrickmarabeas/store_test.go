@@ -77,4 +77,5 @@ func (suite *StoreSuite) TestIdIncrementOnDelete() {
 
 func TestStore(t *testing.T) {
 	suite.Run(t, &StoreSuite{store: NewMapStore()})
+	suite.Run(t, &StoreSuite{store: NewSyncStore()})
 }
