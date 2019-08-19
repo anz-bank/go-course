@@ -29,12 +29,12 @@ func main() {
 	logFatalf(runPuppyServer(&config))
 }
 
-func runPuppyServer(c *config) error {
+var runPuppyServer = func(c *config) error {
 	s, err := createStorer(c)
 	if err != nil {
 		return err
 	}
-	if err := feedStorer(*c, s); err != nil {
+	if err := feedStorer(c.puppyReader, s); err != nil {
 		return err
 	}
 	puppy.LostPuppyURL = c.lostpuppyURL
@@ -42,7 +42,7 @@ func runPuppyServer(c *config) error {
 }
 
 type config struct {
-	puppyFile    io.Reader
+	puppyReader  io.Reader
 	sType        string
 	port         int
 	lostpuppyURL string
@@ -87,8 +87,8 @@ func readPuppies(r io.Reader) ([]puppy.Puppy, error) {
 	return puppies, nil
 }
 
-func feedStorer(c config, s puppy.Storer) error {
-	puppies, err := readPuppies(c.puppyFile)
+func feedStorer(r io.Reader, s puppy.Storer) error {
+	puppies, err := readPuppies(r)
 	if err != nil {
 		return err
 	}

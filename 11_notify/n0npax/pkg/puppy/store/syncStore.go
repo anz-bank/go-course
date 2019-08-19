@@ -58,12 +58,12 @@ func (s *SyncStore) UpdatePuppy(id int, p *puppy.Puppy) error {
 }
 
 // DeletePuppy deletes puppy
-func (s *SyncStore) DeletePuppy(id int) (bool, error) {
+func (s *SyncStore) DeletePuppy(id int) error {
 	s.Lock()
 	defer s.Unlock()
 	if _, ok := s.Load(id); !ok {
-		return false, puppy.Errorf(puppy.ErrCodeNotFound, "puppy with ID (%v) not found", id)
+		return puppy.Errorf(puppy.ErrCodeNotFound, "puppy with ID (%v) not found", id)
 	}
 	s.Delete(id)
-	return true, nil
+	return nil
 }

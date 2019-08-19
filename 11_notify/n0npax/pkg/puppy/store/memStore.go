@@ -58,12 +58,12 @@ func (m *MemStore) UpdatePuppy(id int, p *puppy.Puppy) error {
 }
 
 // DeletePuppy deletes puppy
-func (m *MemStore) DeletePuppy(id int) (bool, error) {
+func (m *MemStore) DeletePuppy(id int) error {
 	m.Lock()
 	defer m.Unlock()
 	if _, ok := m.m[id]; !ok {
-		return false, puppy.Errorf(puppy.ErrCodeNotFound, "puppy with ID (%v) not found", id)
+		return puppy.Errorf(puppy.ErrCodeNotFound, "puppy with ID (%v) not found", id)
 	}
 	delete(m.m, id)
-	return true, nil
+	return nil
 }

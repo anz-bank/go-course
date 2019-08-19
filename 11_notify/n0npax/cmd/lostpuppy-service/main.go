@@ -25,7 +25,7 @@ func main() {
 
 func parseArgs(args []string) (int, error) {
 	var port int
-	kingpin.Flag("port", "Port number").Short('p').Default("8181").IntVar(&port)
+	kingpin.Flag("port", "Port number").Short('p').Default("8182").IntVar(&port)
 	_, err := kingpin.CommandLine.Parse(args)
 	return port, err
 }

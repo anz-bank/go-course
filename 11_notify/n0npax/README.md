@@ -11,37 +11,38 @@ This project is source completed lab11 from [go course](https://github.com/anz-b
 ## Build, execute, test, lint
 
 Build and install this project with
-
-    go install ./...
-
+```bash
+go install ./...
+```
 Run apps with:
-
-    go run cmd/lostpuppy-service/main.go
-    go run cmd/puppy-server/main.go
-
+```bash
+go run cmd/lostpuppy-service/main.go
+go run cmd/puppy-server/main.go
+```
 Or build with:
-
-    go build -o puppy-server cmd/puppy-server/main.go
-    go build -o lost-puppy-svc cmd/lostpuppy-service/main.go
-
+```bash
+go build -o puppy-server cmd/puppy-server/main.go
+go build -o lost-puppy-svc cmd/lostpuppy-service/main.go
+```
 Help and parameters description
-
-    ./puppy-server --help
-    ./lostpuppy-svc --help
-
+```bash
+./puppy-server --help
+./lostpuppy-svc --help
+```
 Test it with
-
-    go test -race -coverprofile=coverage.out -covermode=atomic ./...
-
+```bash
+go test -race -coverprofile=coverage.out -covermode=atomic ./...
+```
 Lint it with
-
-    goimports -w .
-    golangci-lint run
-
+```bash
+goimports -w .
+golangci-lint run
+gosec .
+```
 Review coverage with
-
-    go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
-
+```bash
+go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
+```
 ## API
 
 ### Lost puppy service
@@ -50,9 +51,10 @@ Following endpoints are supported:
         POST   /api/lostpuppy/      Payload: id
 
 Example request:
-
-	curl -X POST http://${IP_OR_FQDN}:${PORT}/api/lostpuppy/ -d '{"id":42}'
-
+```bash
+export HOST=localhost PORT=8182
+curl -X POST http://${HOST}:${PORT}/api/lostpuppy/ -d '{"id":42}'
+```
 ### Puppy server
 Following endpoints are supported:
 
@@ -64,5 +66,10 @@ Following endpoints are supported:
 	Puppy ID in Json will be ignored if provided as payload
 
 Example request:
-
-	curl -X POST http://${IP_OR_FQDN}:${PORT}/api/puppy/ -d '{"id":0,"value":4,"breed":"Type: D","colour":"Red"}'
+```bash
+export HOST=localhost PORT=8181
+curl -X POST http://${HOST}:${PORT}/api/puppy/ -d '{"value":1410,"breed":"Type: D","colour":"White"}'
+curl -X PUT http://${HOST}:${PORT}/api/puppy/42 -d '{"value":71,"breed":"Type: G","colour":"Red"}'
+curl -X DELETE http://${HOST}:${PORT}/api/puppy/42
+curl http://${HOST}:${PORT}/api/puppy/42
+```

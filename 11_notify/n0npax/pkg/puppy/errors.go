@@ -7,7 +7,7 @@ import (
 
 // Error codes
 const (
-	ErrCodeInvalidInput = http.StatusBadRequest
+	ErrCodeInvalidInput = http.StatusUnprocessableEntity
 	ErrCodeNotFound     = http.StatusNotFound
 	ErrCodeInternal     = http.StatusInternalServerError
 )

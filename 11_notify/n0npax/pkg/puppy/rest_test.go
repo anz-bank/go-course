@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	puppy "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy"
 	store "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy/store"
@@ -43,8 +44,7 @@ func (s *storerSuite) SetupTest() {
 			panic(err)
 		}
 	}
-	puppy.PuppyDeleteNotifyF = func(int) {}
-	puppy.SlowRequestDuration = "0"
+	puppy.SlowRequestDuration = time.Duration(0)
 }
 
 func TestStorer(t *testing.T) {
@@ -99,47 +99,6 @@ func TestLostPuppyReq(t *testing.T) {
 			}()
 			puppy.LostPuppyReq(0)
 			tassert.Contains(t, buf.String(), "lostpuppy service response code")
-		})
-	}
-}
-
-// LostPuppyBackend
-func TestLostPuppy(t *testing.T) {
-	t.Run("Odd", LostPupptOdd)
-	t.Run("Even", LostPupptEven)
-	t.Run("Err", LostPupptErr)
-}
-
-func LostPupptErr(t *testing.T) {
-	assert := tassert.New(t)
-	router := puppy.LostPuppyBackend()
-	payload := string(`{"id": "llama"}`)
-	w := postReq(router, "/api/lostpuppy/", strings.NewReader(payload))
-	assert.Equal(400, w.Code)
-}
-
-func LostPupptEven(t *testing.T) {
-	for i := -3; i <= 10; i++ {
-		num := i * 2
-		t.Run(fmt.Sprintf("even: %d", num), func(t *testing.T) {
-			assert := tassert.New(t)
-			router := puppy.LostPuppyBackend()
-			payload := fmt.Sprintf(`{"id": %d}`, num)
-			w := postReq(router, "/api/lostpuppy/", strings.NewReader(payload))
-			assert.Equal(201, w.Code)
-		})
-	}
-}
-
-func LostPupptOdd(t *testing.T) {
-	for i := -3; i <= 10; i++ {
-		num := i*2 + 1
-		t.Run(fmt.Sprintf("even: %d", num), func(t *testing.T) {
-			assert := tassert.New(t)
-			router := puppy.LostPuppyBackend()
-			payload := fmt.Sprintf(`{"id": %d}`, num)
-			w := postReq(router, "/api/lostpuppy/", strings.NewReader(payload))
-			assert.Equal(500, w.Code)
 		})
 	}
 }
@@ -236,7 +195,7 @@ func (s *storerSuite) PostBadValue() {
 	assert.Nil(err)
 	payload := string(b)
 	w := postReq(router, "/api/puppy/", strings.NewReader(payload))
-	assert.Equal(400, w.Code)
+	assert.Equal(422, w.Code)
 }
 
 // PUT
@@ -282,7 +241,7 @@ func (s *storerSuite) PutBadValue() {
 	assert.Nil(err)
 	payload := string(b)
 	w := putReq(router, "/api/puppy/0", strings.NewReader(payload))
-	assert.Equal(400, w.Code)
+	assert.Equal(422, w.Code)
 }
 
 // DELETE

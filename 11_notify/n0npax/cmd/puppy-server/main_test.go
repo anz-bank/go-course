@@ -6,7 +6,6 @@ import (
 	"strings"
 	"testing"
 
-	"bou.ke/monkey"
 	puppy "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy"
 	store "github.com/anz-bank/go-course/11_notify/n0npax/pkg/puppy/store"
 	"github.com/stretchr/testify/assert"
@@ -22,14 +21,15 @@ const (
 )
 
 func TestMain(t *testing.T) {
-	os.Args = []string{"", "-s", "map", "-p", "88888888", "--lostpuppy", "https://wp.pl"}
-
-	fakeExit := func(int) {
-		panic("foo-arg")
+	os.Args = []string{"", "-s", "map", "-p", "8080", "--lostpuppy", "https://wp.pl"}
+	orgF := runPuppyServer
+	defer func() {
+		runPuppyServer = orgF
+	}()
+	runPuppyServer = func(*config) error {
+		panic("test main")
 	}
-	patch := monkey.Patch(os.Exit, fakeExit)
-	defer patch.Unpatch()
-	assert.Panics(t, main)
+	assert.Panics(t, main, "test main")
 }
 
 func TestMainFakeArgs(t *testing.T) {
@@ -45,7 +45,7 @@ func TestMainFakeArgs(t *testing.T) {
 func TestRunPuppyServerBadFile(t *testing.T) {
 	pf, err := os.Open("/dev/null")
 	assert.NoError(t, err)
-	c := config{port: 8888, sType: "map", puppyFile: pf}
+	c := config{port: 8888, sType: "map", puppyReader: pf}
 	err = runPuppyServer(&c)
 	assert.Error(t, err)
 }
@@ -58,7 +58,7 @@ func TestRunPuppyServerBadStorerType(t *testing.T) {
 
 func TestRunPuppyServer(t *testing.T) {
 	file := strings.NewReader(testData)
-	c := config{port: -22, sType: "map", puppyFile: file}
+	c := config{port: -22, sType: "map", puppyReader: file}
 	err := runPuppyServer(&c)
 	assert.Error(t, err)
 }
@@ -99,8 +99,8 @@ func TestFeedStore(t *testing.T) {
 		s := s
 		t.Run(k, func(t *testing.T) {
 			file := strings.NewReader(testData)
-			c := config{puppyFile: file}
-			err := feedStorer(c, s)
+			c := config{puppyReader: file}
+			err := feedStorer(c.puppyReader, s)
 			assert.NoError(t, err)
 		})
 	}
@@ -115,8 +115,8 @@ func TestFeedStoreCorruptedData(t *testing.T) {
 		s := s
 		t.Run(k, func(t *testing.T) {
 			file := strings.NewReader(corruptedTestData)
-			c := config{puppyFile: file}
-			err := feedStorer(c, s)
+			c := config{puppyReader: file}
+			err := feedStorer(c.puppyReader, s)
 			assert.Error(t, err)
 		})
 	}
@@ -131,8 +131,8 @@ func TestFeedStoreNegativeVal(t *testing.T) {
 		s := s
 		t.Run(k, func(t *testing.T) {
 			file := strings.NewReader(negativeValueTestData)
-			c := config{puppyFile: file}
-			err := feedStorer(c, s)
+			c := config{puppyReader: file}
+			err := feedStorer(c.puppyReader, s)
 			assert.Error(t, err)
 		})
 	}

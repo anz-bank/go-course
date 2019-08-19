@@ -171,22 +171,21 @@ func (s *storerSuite) TestUpdateReadPuppy() {
 func (s *storerSuite) DeletePuppySuccessful() {
 	assert := tassert.New(s.T())
 	existingPuppy := puppy0()
-	deleted, err := s.store.DeletePuppy(0)
+	err := s.store.DeletePuppy(0)
 	assert.NoError(err, "Delete should successfully delete a puppy")
-	assert.True(deleted, "Delete should return true indicating a p was deleted")
 	_, err = s.store.ReadPuppy(existingPuppy.ID)
 	assert.Error(err, "Should not be able to read a deleted ID")
 }
 
 func (s *storerSuite) DeletePuppyIDDoesNotExist() {
 	assert := tassert.New(s.T())
-	_, err := s.store.DeletePuppy(1000)
+	err := s.store.DeletePuppy(1000)
 	assert.Error(err, "Should not be able to delete p with non existing ID")
 }
 
 func (s *storerSuite) DeletePuppyNegativeID() {
 	assert := tassert.New(s.T())
-	_, err := s.store.DeletePuppy(-1)
+	err := s.store.DeletePuppy(-1)
 	assert.Error(err, "negative ID should cause an error")
 }
 

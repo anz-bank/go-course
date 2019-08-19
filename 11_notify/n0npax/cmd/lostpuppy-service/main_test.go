@@ -5,29 +5,25 @@ import (
 	"os"
 	"testing"
 
-	"bou.ke/monkey"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMain(t *testing.T) {
-	os.Args = []string{"", "-p", "88888888"}
-
-	fakeExit := func(int) {
-		panic("foo-arg")
+	os.Args = []string{"", "-p", "--", "-8080"}
+	logFatalf = func(...interface{}) {
+		panic("test main")
 	}
-	patch := monkey.Patch(os.Exit, fakeExit)
-	defer patch.Unpatch()
-	assert.Panics(t, main)
+	assert.Panics(t, main, "test main")
 }
 
 func TestMainFakeArgs(t *testing.T) {
 	os.Args = []string{"", "-s", "map", "-d", "/dev/null", "-p", "8888"}
 
 	parser = func([]string) (int, error) {
-		return 80, errors.New("test")
+		return 80, errors.New("test main fake args")
 	}
 	logFatalf = func(...interface{}) {
-		panic("test")
+		panic("test main fake args")
 	}
 	assert.Panics(t, main)
 }
