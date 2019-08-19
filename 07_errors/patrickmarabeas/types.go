@@ -1,21 +1,19 @@
 package main
 
-import (
-	"sync"
-)
+import "sync"
 
 type Puppy struct {
 	ID    int
 	Breed string
 	Color string
-	Value string
+	Value int // cents
 }
 
 type Storer interface {
-	Create(puppy Puppy) int
-	Read(ID int) Puppy
-	Update(ID int, puppy Puppy) bool
-	Destroy(ID int) bool
+	Create(puppy Puppy) (int, error)
+	Read(ID int) (Puppy, error)
+	Update(ID int, puppy Puppy) (bool, error)
+	Destroy(ID int) (bool, error)
 }
 
 type MapStore struct {
