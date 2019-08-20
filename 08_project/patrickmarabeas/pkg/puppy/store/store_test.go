@@ -1,8 +1,9 @@
-package main
+package store
 
 import (
 	"testing"
 
+	p "github.com/anz-bank/go-course/08_project/patrickmarabeas/pkg/puppy"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -15,7 +16,7 @@ type StoreSuite struct {
 func (suite *StoreSuite) TestCreate() {
 	a := assert.New(suite.T())
 
-	id, error := suite.store.Create(Puppy{Breed: "Wolf", Color: "Grey", Value: 450})
+	id, error := suite.store.Create(p.Puppy{Breed: "Wolf", Color: "Grey", Value: 450})
 	a.Equal(id, 0)
 	a.Equal(error, nil)
 }
@@ -23,7 +24,7 @@ func (suite *StoreSuite) TestCreate() {
 func (suite *StoreSuite) TestCreateSecond() {
 	a := assert.New(suite.T())
 
-	id, error := suite.store.Create(Puppy{Breed: "Boxer", Color: "Brown", Value: 300})
+	id, error := suite.store.Create(p.Puppy{Breed: "Boxer", Color: "Brown", Value: 300})
 	a.Equal(id, 1)
 	a.Equal(error, nil)
 }
@@ -31,16 +32,16 @@ func (suite *StoreSuite) TestCreateSecond() {
 func (suite *StoreSuite) TestCreateNegativeNumber() {
 	a := assert.New(suite.T())
 
-	id, error := suite.store.Create(Puppy{Breed: "Wolf", Color: "Grey", Value: -100})
+	id, error := suite.store.Create(p.Puppy{Breed: "Wolf", Color: "Grey", Value: -100})
 	a.Equal(id, -1)
-	a.Equal(error, NewError(NegativeValue))
+	a.Equal(error, p.NewError(p.NegativeValue))
 }
 
 func (suite *StoreSuite) TestRead() {
 	a := assert.New(suite.T())
 
 	data, error := suite.store.Read(0)
-	a.Equal(data, Puppy{ID: 0, Breed: "Wolf", Color: "Grey", Value: 450})
+	a.Equal(data, p.Puppy{ID: 0, Breed: "Wolf", Color: "Grey", Value: 450})
 	a.Equal(error, nil)
 }
 
@@ -48,36 +49,36 @@ func (suite *StoreSuite) TestReadNonExistent() {
 	a := assert.New(suite.T())
 
 	success, error := suite.store.Read(100)
-	a.Equal(success, Puppy{})
-	a.Equal(error, NewError(IDNotFound))
+	a.Equal(success, p.Puppy{})
+	a.Equal(error, p.NewError(p.IDNotFound))
 }
 
 func (suite *StoreSuite) TestUpdate() {
 	a := assert.New(suite.T())
 
-	success, error := suite.store.Update(0, Puppy{Breed: "Doberman", Color: "Black", Value: 500})
+	success, error := suite.store.Update(0, p.Puppy{Breed: "Doberman", Color: "Black", Value: 500})
 	a.Equal(success, true)
 	a.Equal(error, nil)
 
 	data, error := suite.store.Read(0)
-	a.Equal(data, Puppy{ID: 0, Breed: "Doberman", Color: "Black", Value: 500})
+	a.Equal(data, p.Puppy{ID: 0, Breed: "Doberman", Color: "Black", Value: 500})
 	a.Equal(error, nil)
 }
 
 func (suite *StoreSuite) TestUpdateNonExistent() {
 	a := assert.New(suite.T())
 
-	success, error := suite.store.Update(100, Puppy{Breed: "Doberman", Color: "Black", Value: 500})
+	success, error := suite.store.Update(100, p.Puppy{Breed: "Doberman", Color: "Black", Value: 500})
 	a.Equal(success, false)
-	a.Equal(error, NewError(IDNotFound))
+	a.Equal(error, p.NewError(p.IDNotFound))
 }
 
 func (suite *StoreSuite) TestUpdateNegativeNumber() {
 	a := assert.New(suite.T())
 
-	success, error := suite.store.Update(0, Puppy{Breed: "Doberman", Color: "Black", Value: -500})
+	success, error := suite.store.Update(0, p.Puppy{Breed: "Doberman", Color: "Black", Value: -500})
 	a.Equal(success, false)
-	a.Equal(error, NewError(NegativeValue))
+	a.Equal(error, p.NewError(p.NegativeValue))
 }
 
 func (suite *StoreSuite) TestDestroy() {
@@ -88,8 +89,8 @@ func (suite *StoreSuite) TestDestroy() {
 	a.Equal(error, nil)
 
 	data, error := suite.store.Read(1)
-	a.Equal(data, Puppy{})
-	a.Equal(error, NewError(IDNotFound))
+	a.Equal(data, p.Puppy{})
+	a.Equal(error, p.NewError(p.IDNotFound))
 }
 
 func (suite *StoreSuite) TestDestroyNonExistent() {
@@ -97,16 +98,16 @@ func (suite *StoreSuite) TestDestroyNonExistent() {
 
 	success, error := suite.store.Destroy(100)
 	a.Equal(success, false)
-	a.Equal(error, NewError(IDNotFound))
+	a.Equal(error, p.NewError(p.IDNotFound))
 }
 
 func (suite *StoreSuite) TestIdIncrementOnDelete() {
 	a := assert.New(suite.T())
-	id, _ := suite.store.Create(Puppy{Breed: "Greyhound", Color: "Light Brown", Value: 700})
+	id, _ := suite.store.Create(p.Puppy{Breed: "Greyhound", Color: "Light Brown", Value: 700})
 	success, _ := suite.store.Destroy(id)
 	a.Equal(success, true)
 
-	newID, _ := suite.store.Create(Puppy{Breed: "Greyhound", Color: "Light Brown", Value: 700})
+	newID, _ := suite.store.Create(p.Puppy{Breed: "Greyhound", Color: "Light Brown", Value: 700})
 	a.Equal(newID, 3)
 }
 

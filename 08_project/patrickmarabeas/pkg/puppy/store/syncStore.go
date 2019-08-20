@@ -1,4 +1,16 @@
-package main
+package store
+
+import (
+	"sync"
+
+	p "github.com/anz-bank/go-course/08_project/patrickmarabeas/pkg/puppy"
+)
+
+type SyncStore struct {
+	uuid int
+	sync.Map
+	sync.RWMutex
+}
 
 // NewSyncStore returns a pointer to a new instance of the SyncStore struct which implements the Storer interface.
 func NewSyncStore() Storer {
@@ -8,9 +20,9 @@ func NewSyncStore() Storer {
 }
 
 // Create increments the uuid and adds the provided Puppy struct to the store with this identifier.
-func (store *SyncStore) Create(puppy Puppy) (int, error) {
+func (store *SyncStore) Create(puppy p.Puppy) (int, error) {
 	if puppy.Value < 0 {
-		return -1, NewError(NegativeValue)
+		return -1, p.NewError(p.NegativeValue)
 	}
 
 	store.Lock()
@@ -24,24 +36,24 @@ func (store *SyncStore) Create(puppy Puppy) (int, error) {
 
 // Read returns the puppy matching the provided uuid.
 // An empty Puppy struct is returned if the identifier does not exist.
-func (store *SyncStore) Read(id int) (Puppy, error) {
+func (store *SyncStore) Read(id int) (p.Puppy, error) {
 	store.RLock()
 	if value, ok := store.Load(id); ok {
-		return value.(Puppy), nil
+		return value.(p.Puppy), nil
 	}
 	store.RUnlock()
 
-	return Puppy{}, NewError(IDNotFound)
+	return p.Puppy{}, p.NewError(p.IDNotFound)
 }
 
 // Update modifies the puppy matching the provided uuid in the store with the provided Puppy struct.
 // It returns a bool whether a matching identifier was modified or not.
-func (store *SyncStore) Update(id int, puppy Puppy) (bool, error) {
+func (store *SyncStore) Update(id int, puppy p.Puppy) (bool, error) {
 	if _, ok := store.Load(id); !ok {
-		return false, NewError(IDNotFound)
+		return false, p.NewError(p.IDNotFound)
 	}
 	if puppy.Value < 0 {
-		return false, NewError(NegativeValue)
+		return false, p.NewError(p.NegativeValue)
 	}
 
 	puppy.ID = id
@@ -54,7 +66,7 @@ func (store *SyncStore) Update(id int, puppy Puppy) (bool, error) {
 // It returns a bool whether a matching identifier was deleted or not.
 func (store *SyncStore) Destroy(id int) (bool, error) {
 	if _, ok := store.Load(id); !ok {
-		return false, NewError(IDNotFound)
+		return false, p.NewError(p.IDNotFound)
 	}
 
 	store.Lock()
