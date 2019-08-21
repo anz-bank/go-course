@@ -2,21 +2,28 @@ package main
 
 import (
 	"strconv"
+	"sync"
 )
+
+// SyncStore stores Puppy details with Puppy Id as Key and Puppy  as value
+type SyncStore struct {
+	sync.Map
+	m sync.Mutex
+}
 
 // CreatePuppy creates a Puppy in syncstore
 func (s *SyncStore) CreatePuppy(p Puppy) error {
 	s.m.Lock()
 	defer s.m.Unlock()
-	if _, ok := s.Load(p.ID); !ok {
-		val, _ := strconv.Atoi(p.Value)
-		if val < 0 {
-			return ErrorF(InvalidValue, "puppy with value less than 0 not allowed")
-		}
-		s.Store(p.ID, p)
-		return nil
+	if _, ok := s.Load(p.ID); ok {
+		return ErrorF(Duplicate, "puppy with Id %d already exists", p.ID)
 	}
-	return ErrorF(Duplicate, "puppy with Id %d already exists", p.ID)
+	val, _ := strconv.Atoi(p.Value)
+	if val < 0 {
+		return ErrorF(Invalid, "puppy with value less than 0 not allowed")
+	}
+	s.Store(p.ID, p)
+	return nil
 }
 
 // ReadPuppy reads a Puppy from syncstore

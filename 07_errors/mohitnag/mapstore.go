@@ -4,12 +4,15 @@ import (
 	"strconv"
 )
 
+// MapStore stores Puppy details with Puppy Id as Key and Puppy  as value
+type MapStore map[uint32]Puppy
+
 // CreatePuppy creates a Puppy in mapstore
 func (m MapStore) CreatePuppy(p Puppy) error {
 	if _, ok := m[p.ID]; !ok {
 		val, _ := strconv.Atoi(p.Value)
 		if val < 0 {
-			return ErrorF(InvalidValue, "puppy with value less than 0 not allowed")
+			return ErrorF(Invalid, "puppy with value less than 0 not allowed")
 		}
 		m[p.ID] = p
 		return nil
