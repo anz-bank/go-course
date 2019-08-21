@@ -13,49 +13,40 @@ func TestMainOutput(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 	main()
-	expected := strconv.Quote("[a11y K8s abc]")
-	actual := strconv.Quote(buf.String())
-	if actual != expected {
-		t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
-	}
-}
-
-func TestNumberShorten(t *testing.T) {
-	testCases := map[string]struct {
-		input    string
-		expected string
-	}{
-		"Happy case":                {"accessibility", "a11y"},
-		"length of string is three": {"asd", "asd"},
-		"UnHappy case":              {"", ""},
-	}
-	for key, testCase := range testCases {
-		expected := testCase.expected
-		actual := numberShorten(testCase.input)
-		t.Run(key, func(t *testing.T) {
-			if expected != actual {
-				t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
-			}
-		})
+	if !assert.Equal(t, strconv.Quote("[a11y K8s abc]"), strconv.Quote(buf.String())) {
+		return
 	}
 }
 
 func TestNumeronyms(t *testing.T) {
+	actual := numeronyms("😀😀😀🤓🤓🤓哈哈哈", "asd", "accessibility")
+	expected := []string{"😀7哈", "asd", "a11y"}
+	for i, v := range actual {
+		if expected[i] != v {
+			t.Errorf("Unexpected output. Expected: %q - Actual: %q", expected[i], v)
+		}
+	}
+}
+
+func TestNumeronym(t *testing.T) {
 	testCases := []struct {
 		name     string
-		input    string
+		input    []rune
 		expected string
 	}{
-		{"Empty string", "", ""},
-		{"length of string is one", "s", "s"},
-		{"length of string is two", "ss", "ss"},
-		{"length of string is three", "asd", "asd"},
-		{"length of string more than 3", "dsadasdasffjkjnnvccdf", "d19f"},
+		{"Empty string", []rune{' '}, " "},
+		{"length of string is one", []rune{'s'}, "s"},
+		{"length of string is two", []rune{'s', 's'}, "ss"},
+		{"length of string is three", []rune{'a', 's', 'd'}, "asd"},
+		{"length of string more than 3", []rune{'d', 's', 'a', 'd', 'a', 's', 'd', 'a', 's', 'f', 'f',
+			'j', 'k', 'j', 'n', 'n', 'v', 'c', 'c', 'd', 'f'}, "d19f"},
+		{"string contain emojis and special text", []rune{'😀', '😀', '😀', '🤓', '🤓', '🤓',
+			'哈', '哈', '哈'}, "😀7哈"},
 	}
 
 	for _, testCase := range testCases {
 		expected := testCase.expected
-		actual := numberShorten(testCase.input)
+		actual := numeronym(testCase.input)
 		if !assert.Equal(t, testCase.expected, actual) {
 			t.Errorf("Unexpected output in main()\nexpected: %q\nactual: %q", expected, actual)
 		}
