@@ -3,8 +3,8 @@ package puppy
 import "fmt"
 
 const (
-	// InvalidValue is used when the puppy value is below 0
-	InvalidValue = "invalid input"
+	// Invalid is used when the puppy value is below 0
+	Invalid = "invalid input"
 	// NotFound is used when the puppy with given id is not found
 	NotFound = "puppy not found"
 	//Duplicate is used when the puppy id already exists

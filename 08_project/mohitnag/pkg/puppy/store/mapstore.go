@@ -14,7 +14,7 @@ func (m MapStore) CreatePuppy(p puppy.Puppy) error {
 	if _, ok := m[p.ID]; !ok {
 		val, _ := strconv.Atoi(p.Value)
 		if val < 0 {
-			return puppy.ErrorF(puppy.InvalidValue, "puppy with value less than 0 not allowed")
+			return puppy.ErrorF(puppy.Invalid, "puppy with value less than 0 not allowed")
 		}
 		m[p.ID] = p
 		return nil

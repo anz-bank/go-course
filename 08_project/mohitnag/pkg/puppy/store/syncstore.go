@@ -17,15 +17,15 @@ type SyncStore struct {
 func (s *SyncStore) CreatePuppy(p puppy.Puppy) error {
 	s.m.Lock()
 	defer s.m.Unlock()
-	if _, ok := s.Load(p.ID); !ok {
-		val, _ := strconv.Atoi(p.Value)
-		if val < 0 {
-			return puppy.ErrorF(puppy.InvalidValue, "puppy with value less than 0 not allowed")
-		}
-		s.Store(p.ID, p)
-		return nil
+	if _, ok := s.Load(p.ID); ok {
+		return puppy.ErrorF(puppy.Duplicate, "puppy with Id %d already exists", p.ID)
 	}
-	return puppy.ErrorF(puppy.Duplicate, "puppy with Id %d already exists", p.ID)
+	val, _ := strconv.Atoi(p.Value)
+	if val < 0 {
+		return puppy.ErrorF(puppy.Invalid, "puppy with value less than 0 not allowed")
+	}
+	s.Store(p.ID, p)
+	return nil
 }
 
 // ReadPuppy reads a Puppy from syncstore
