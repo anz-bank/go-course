@@ -12,7 +12,7 @@ func TestMainOutput(t *testing.T) {
 
 	main()
 
-	expected := strconv.Quote("&map[]\n")
+	expected := strconv.Quote("&{map[] 0}\n")
 	actual := strconv.Quote(buf.String())
 
 	if expected != actual {

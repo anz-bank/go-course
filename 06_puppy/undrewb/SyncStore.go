@@ -7,14 +7,26 @@ import (
 
 type SyncStore struct {
 	sync.Map
+	sync.RWMutex
+	nextID uint32
 }
 
-func (store *SyncStore) CreatePuppy(p *Puppy) error {
-	if _, ok := store.Load(p.ID); !ok {
-		store.Store(p.ID, p)
+func InitSyncStore() *SyncStore {
+	return &SyncStore{
+		nextID: 1,
+	}
+}
+
+func (store *SyncStore) CreatePuppy(puppy *Puppy) error {
+	if puppy.ID == 0 {
+		puppy.ID = store.nextID
+		store.nextID++
+	}
+	if _, ok := store.Load(puppy.ID); !ok {
+		store.Store(puppy.ID, puppy)
 		return nil
 	}
-	return fmt.Errorf("store already has a puppy with id : %d", p.ID)
+	return fmt.Errorf("store already has a puppy with id : %d", puppy.ID)
 }
 
 func (store *SyncStore) ReadPuppy(id uint32) (*Puppy, error) {

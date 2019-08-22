@@ -15,10 +15,10 @@ type storerSuite struct {
 
 func TestStorers(t *testing.T) {
 	suite.Run(t, &storerSuite{
-		storerType: func() Storer { return &MapStore{} },
+		storerType: func() Storer { return InitMapStore() },
 	})
 	suite.Run(t, &storerSuite{
-		storerType: func() Storer { return &SyncStore{} },
+		storerType: func() Storer { return InitSyncStore() },
 	})
 }
 
@@ -46,12 +46,16 @@ func (s *storerSuite) TestMapStore_CreatePuppy() {
 		puppy   *Puppy
 		wantErr bool
 	}{
-		{name: "New corgi",
+		{
+			name:    "New corgi",
 			puppy:   corgi,
-			wantErr: false},
-		{name: "Existing corgi",
+			wantErr: false,
+		},
+		{
+			name:    "Existing corgi",
 			puppy:   corgi,
-			wantErr: true},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -74,12 +78,14 @@ func (s *storerSuite) TestMapStore_ReadPuppy() {
 		wantErr bool
 		want    *Puppy
 	}{
-		{name: "lookup existing puppy",
+		{
+			name:    "lookup existing puppy",
 			id:      1000,
 			want:    corgi,
 			wantErr: false,
 		},
-		{name: "lookup non-existing puppy",
+		{
+			name:    "lookup non-existing puppy",
 			id:      1001,
 			want:    nil,
 			wantErr: true,
@@ -93,7 +99,7 @@ func (s *storerSuite) TestMapStore_ReadPuppy() {
 				t.Errorf("ReadPuppy() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(tt.want, got) {
 				t.Errorf("ReadPuppy() = %v, want %v", got, tt.want)
 			}
 		})
@@ -107,12 +113,14 @@ func (s *storerSuite) TestMapStore_DeletePuppy() {
 		want    bool
 		wantErr bool
 	}{
-		{name: "delete existing corgi",
+		{
+			name:    "delete existing corgi",
 			id:      1000,
 			want:    true,
 			wantErr: false,
 		},
-		{name: "delete non-existent corgi",
+		{
+			name:    "delete non-existent corgi",
 			id:      1000,
 			want:    false,
 			wantErr: true,
@@ -126,7 +134,7 @@ func (s *storerSuite) TestMapStore_DeletePuppy() {
 				t.Errorf("DeletePuppy() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
+			if tt.want != got {
 				t.Errorf("DeletePuppy() = %v, want %v", got, tt.want)
 			}
 		})
@@ -144,22 +152,26 @@ func (s *storerSuite) TestMapStore_UpdatePuppy() {
 		wantErr bool
 		puppy   *Puppy
 	}{
-		{name: "update existing puppy",
+		{
+			name:    "update existing puppy",
 			id:      1000,
 			puppy:   albinoCorgi,
 			wantErr: false,
 		},
-		{name: "update non-existing puppy",
+		{
+			name:    "update non-existing puppy",
 			id:      1001,
 			puppy:   albinoCorgi,
 			wantErr: true,
 		},
-		{name: "update with an empty puppy",
+		{
+			name:    "update with an empty puppy",
 			id:      1000,
 			puppy:   nil,
 			wantErr: true,
 		},
-		{name: "update with a corrupt puppy",
+		{
+			name:    "update with a corrupt puppy",
 			id:      1000,
 			puppy:   corruptCorgi,
 			wantErr: true,
