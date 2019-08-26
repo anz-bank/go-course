@@ -36,7 +36,8 @@ var stringerData = []struct {
 		input: IPAddr{68, 2, 44, 125},
 		want:  "68.2.44.125",
 	},
-	{name: "three octet addr",
+	{
+		name: "three octet addr",
 		input: IPAddr{68, 2, 125},
 		want:  "68.2.125.0",
 	},
