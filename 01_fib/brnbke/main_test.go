@@ -71,7 +71,7 @@ func TestAbs(t *testing.T) {
 		input int
 		want  int
 	}{
-		"positve":  {input: 2, want: 2},
+		"positive": {input: 2, want: 2},
 		"negative": {input: -3, want: 3},
 		"zero":     {input: 0, want: 0},
 	}

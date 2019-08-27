@@ -1,0 +1,45 @@
+[
+    {
+      "ID": 1,
+      "Breed": "Jack Russell Terrier",
+      "Color": "White and Brown",
+      "Value": "1500"
+    },
+    {
+      "ID": 1234,
+      "Breed": "Fox Terrier",
+      "Color": "Black",
+      "Value": "1300"
+    },
+    {
+      "ID": 100,
+      "Breed": "German Shepperd",
+      "Color": "Brown",
+      "Value": "2000"
+    },
+    {
+      "ID": 120,
+      "Breed": "Golden Retriever",
+      "Color": "Golden",
+      "Value": "2500"
+    },
+    {
+      "ID": 200,
+      "Breed": "Chihuahua",
+      "Color": "White",
+      "Value": "500"
+    },
+    {
+      "ID": 300,
+      "Breed": "Husky",
+      "Color": "White",
+      "Value": "3500"
+    },
+    {
+      "ID": 700,
+      "Breed": "Pomeranian",
+      "Color": "White",
+      "Value": "700"
+    }
+  ]
+  
