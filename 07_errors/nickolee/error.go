@@ -10,8 +10,7 @@ type Error struct {
 
 // Error() method lets us satisfy error interface for our custom error type
 func (e *Error) Error() string {
-	return fmt.Sprintf("Error code %d: %s",
-		e.Code, e.Message)
+	return fmt.Sprintf("PuppyStoreError %d: %s", e.Code, e.Message)
 }
 
 // Error codes
