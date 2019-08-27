@@ -1,0 +1,44 @@
+[
+  {
+    "id": 2,
+    "breed": "ULTRASURE",
+    "color": "green",
+    "value": 2732.81
+  },
+  {
+    "id": 3,
+    "breed": "EPLODE",
+    "color": "brown",
+    "value": 3889.92
+  },
+  {
+    "id": 4,
+    "breed": "SENTIA",
+    "color": "blue",
+    "value": 1472.29
+  },
+  {
+    "id": 5,
+    "breed": "MAKINGWAY",
+    "color": "brown",
+    "value": 2254.70
+  },
+  {
+    "id": 6,
+    "breed": "VISUALIX",
+    "color": "brown",
+    "value": 3250.57
+  },
+  {
+    "id": 7,
+    "breed": "SPLINX",
+    "color": "brown",
+    "value": 2467.04
+  },
+  {
+    "id": 8,
+    "breed": "POWERNET",
+    "color": "blue",
+    "value": 3970.65
+  }
+]
