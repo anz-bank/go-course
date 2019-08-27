@@ -11,7 +11,7 @@ const (
 	Duplicate = "puppy already exists"
 )
 
-// Error is the authorisationservice package error with a code for comparison
+// Error is the Puppy Store package error with a code for comparison
 type Error struct {
 	Message string
 	Code    string
@@ -24,6 +24,5 @@ func (e *Error) Error() string {
 
 // ErrorF is a utility function creating an error with given code and message
 func ErrorF(code, format string, args ...interface{}) *Error {
-	message := fmt.Sprintf(format, args...)
-	return &Error{Message: message, Code: code}
+	return &Error{Message: fmt.Sprintf(format, args...), Code: code}
 }
