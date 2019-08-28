@@ -1,7 +1,6 @@
 package puppystorer
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -35,9 +34,6 @@ func (suite *StorerSuite) TestCreateAndRetrievePuppy() {
 	actualErr, _ := rawErr.(*Error) // Type cast, err now holds the actual error
 	suite.Equal(ErrNegativePuppyID, actualErr.Code)
 	suite.Equal("Sorry puppy value cannot be negative. The dog has to be worth something :)", actualErr.Message)
-
-	// test Error() method in error.go for 100% coverage
-	suite.Equal(actualErr.Error(), fmt.Sprintf("PuppyStoreError %d: %s", actualErr.Code, actualErr.Message))
 }
 
 func (suite *StorerSuite) TestUpdatePuppy() {
