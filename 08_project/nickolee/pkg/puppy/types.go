@@ -1,4 +1,4 @@
-package puppystorer
+package puppy
 
 // Puppy data structure stores puppy properties
 type Puppy struct {

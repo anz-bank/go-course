@@ -1,19 +1,21 @@
-package puppystorer
+package store
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/anz-bank/go-course/08_project/nickolee/pkg/puppy"
 
 	"github.com/stretchr/testify/suite"
 )
 
 type StorerSuite struct {
 	suite.Suite
-	store Storer
+	store puppy.Storer
 }
 
 // A bunch of seed puppies
-var puppies = []*Puppy{
+var puppies = []*puppy.Puppy{
 	{Breed: "Laika", Colour: "First dog on moon", Value: 2130.50},
 	{Breed: "Pomsky", Colour: "Violet", Value: 777.77},
 	{Breed: "Dalmatian", Colour: "Cruella de vil", Value: 101},
@@ -24,16 +26,16 @@ var puppies = []*Puppy{
 func (suite *StorerSuite) TestCreateAndRetrievePuppy() {
 	puppyID, err := suite.store.CreatePuppy(puppies[3])
 	suite.Nil(err)
-	puppy, err := suite.store.ReadPuppy(puppyID)
+	pup, err := suite.store.ReadPuppy(puppyID)
 	suite.Nil(err)
-	suite.Equal(puppy, puppies[3])
+	suite.Equal(pup, puppies[3])
 
 	// Test negative value puppy
 	_, rawErr := suite.store.CreatePuppy(puppies[4])
 	// Require will stop the test if error is wrong type (graceful handle), preventing a panic on the next line
-	suite.Require().IsType(&Error{}, rawErr)
-	actualErr, _ := rawErr.(*Error) // Type cast, err now holds the actual error
-	suite.Equal(ErrNegativePuppyID, actualErr.Code)
+	suite.Require().IsType(&puppy.Error{}, rawErr)
+	actualErr, _ := rawErr.(*puppy.Error) // Type cast, err now holds the actual error
+	suite.Equal(puppy.ErrNegativePuppyID, actualErr.Code)
 	suite.Equal("Sorry puppy value cannot be negative. The dog has to be worth something :)", actualErr.Message)
 
 	// test Error() method in error.go for 100% coverage
@@ -53,9 +55,9 @@ func (suite *StorerSuite) TestUpdatePuppy() {
 
 	// Test error path
 	rawErr := suite.store.UpdatePuppy(1829246, puppies[1]) // give non-existent id
-	suite.Require().IsType(&Error{}, rawErr)               // handle gracefully
-	actualErr, _ := rawErr.(*Error)                        // Type cast, err now holds the actual error
-	suite.Equal(ErrPuppyNotFound, actualErr.Code)
+	suite.Require().IsType(&puppy.Error{}, rawErr)         // handle gracefully
+	actualErr, _ := rawErr.(*puppy.Error)                  // Type cast, err now holds the actual error
+	suite.Equal(puppy.ErrPuppyNotFound, actualErr.Code)
 	suite.Equal("Sorry puppy with ID 1829246 does not exist", actualErr.Message)
 }
 
@@ -71,10 +73,10 @@ func (suite *StorerSuite) TestDeletePuppy() {
 	suite.Error(err)          // asserting there should be an error since you cannot retrieve a deleted puppy
 
 	// Test error path
-	rawErr := suite.store.DeletePuppy(1829246) // give non-existent id
-	suite.Require().IsType(&Error{}, rawErr)   // handle gracefully
-	actualErr, _ := rawErr.(*Error)            // Type cast, err now holds the actual error
-	suite.Equal(ErrPuppyNotFound, actualErr.Code)
+	rawErr := suite.store.DeletePuppy(1829246)     // give non-existent id
+	suite.Require().IsType(&puppy.Error{}, rawErr) // handle gracefully
+	actualErr, _ := rawErr.(*puppy.Error)          // Type cast, err now holds the actual error
+	suite.Equal(puppy.ErrPuppyNotFound, actualErr.Code)
 	suite.Equal("Sorry puppy with ID 1829246 does not exist", actualErr.Message)
 }
 

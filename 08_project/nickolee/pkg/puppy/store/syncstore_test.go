@@ -1,7 +1,9 @@
-package puppystorer
+package store
 
 import (
 	"testing"
+
+	"github.com/anz-bank/go-course/08_project/nickolee/pkg/puppy"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -11,7 +13,7 @@ func TestCreateAndRetrievePuppySyncStore(t *testing.T) {
 	assert := assert.New(t)
 	ss := SyncStore{}
 
-	tests := []*Puppy{
+	tests := []*puppy.Puppy{
 		{Breed: "Snoopy", Colour: "Is sleepy", Value: 2300.90},
 		{Breed: "Arcanine", Colour: "Level 100", Value: 9300.90},
 		{Breed: "The Hound", Colour: "Of Baskerville", Value: 12300.90},

@@ -1,17 +1,18 @@
-package puppystorer
+package store
 
 import (
 	"testing"
 
+	"github.com/anz-bank/go-course/08_project/nickolee/pkg/puppy"
 	"github.com/stretchr/testify/assert"
 )
 
 // Writing one test to give confidence that mapstore is creating and retrieving puppies correctly
 func TestCreateAndRetrievePuppyMapStore(t *testing.T) {
 	assert := assert.New(t)
-	ms := MapStore{store: make(map[int]Puppy), nextID: 0}
+	ms := MapStore{store: make(map[int]puppy.Puppy), nextID: 0}
 
-	tests := []*Puppy{
+	tests := []*puppy.Puppy{
 		{Breed: "Snoopy", Colour: "Is sleepy", Value: 2300.90},
 		{Breed: "Arcanine", Colour: "Level 100", Value: 9300.90},
 		{Breed: "The Hound", Colour: "Of Baskerville", Value: 12300.90},
