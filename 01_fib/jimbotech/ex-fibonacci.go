@@ -2,7 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"math"
+	"os"
 )
+
+var out io.Writer = os.Stdout
 
 // fibonacci returns a function that returns
 // an number in the fibonacci sequence.
@@ -20,11 +25,20 @@ func fibonacci() func() int {
 		return result
 	}
 }
+
 func fib(n int) {
 	f := fibonacci()
 
-	for i := 0; i < n; i++ {
-		fmt.Println(f())
+	if n < 0 {
+		for i := 0; i > n; i-- {
+			factor := int(math.Pow(-1, float64(i*-1)))
+			fmt.Fprintln(out, f()*factor)
+		}
+
+	} else {
+		for i := 0; i < n; i++ {
+			fmt.Fprintln(out, f())
+		}
 	}
 
 }
