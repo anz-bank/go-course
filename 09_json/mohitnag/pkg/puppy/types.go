@@ -7,6 +7,3 @@ type Puppy struct {
 	Colour string `json:"colour"`
 	Value  string `json:"value"`
 }
-
-// Puppies is an array of Puppy
-type Puppies []Puppy

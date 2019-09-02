@@ -33,9 +33,9 @@ func main() {
 }
 
 func initialisePuppyStore(m *store.MapStore, s *store.SyncStore, fileName string) error {
-	puppies := puppy.Puppies{}
-	puppiesString := readJSON(fileName)
-	if err := json.Unmarshal([]byte(puppiesString), &puppies); err != nil {
+	puppies := []puppy.Puppy{}
+	puppiesBytes := readFile(fileName)
+	if err := json.Unmarshal(puppiesBytes, &puppies); err != nil {
 		panic(err)
 	}
 	for _, puppy := range puppies {
@@ -49,10 +49,10 @@ func initialisePuppyStore(m *store.MapStore, s *store.SyncStore, fileName string
 	return nil
 }
 
-func readJSON(filename string) string {
+func readFile(filename string) []byte {
 	buff, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
-	return string(buff)
+	return buff
 }

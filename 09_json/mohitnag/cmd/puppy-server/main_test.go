@@ -10,6 +10,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	defaultPuppy     = "./../../pkg/puppy/store/testdata/default-puppy.json"
+	invalidPuppyJSON = "./../../pkg/puppy/store/testdata/invalid-puppy.json"
+	duplicatePuppies = "./../../pkg/puppy/store/testdata/duplicate-puppies.json"
+)
+
 func TestMain(t *testing.T) {
 	assert := assert.New(t)
 	var buf bytes.Buffer
@@ -23,44 +29,48 @@ func TestMain(t *testing.T) {
 
 func TestMainError(t *testing.T) {
 	assert := assert.New(t)
-	args = []string{"-d", "./../../pkg/puppy/store/testdata/invalid-puppies.json"}
+	args = []string{"-d", duplicatePuppies}
 	assert.Panics(main)
 }
 
-func TestReadJson(t *testing.T) {
-	t.Run("Valid Json File should pass", func(t *testing.T) {
-		assert := assert.New(t)
-		expect := puppy.Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "2"}
-		actual := puppy.Puppy{}
-		buff := readJSON("./../../pkg/puppy/store/testdata/default-puppy.json")
-		err := json.Unmarshal([]byte(buff), &actual)
-		assert.NoError(err)
-		assert.Equal(expect, actual)
-	})
-	t.Run("Non existing file should fail", func(t *testing.T) {
-		assert := assert.New(t)
-		assert.Panics(func() { readJSON("bad path") })
-	})
+func TestReadFile(t *testing.T) {
+	assert := assert.New(t)
+	expect := puppy.Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "2"}
+	actual := puppy.Puppy{}
+	buff := readFile(defaultPuppy)
+	err := json.Unmarshal(buff, &actual)
+	assert.NoError(err)
+	assert.Equal(expect, actual)
+
+}
+
+func TestReadFileBadPath(t *testing.T) {
+	assert := assert.New(t)
+	assert.Panics(func() { readFile("bad path") })
 }
 
 func TestUnmarshallingError(t *testing.T) {
 	assert := assert.New(t)
-	var buf bytes.Buffer
-	out = &buf
-	args = []string{"--data", "./../../pkg/puppy/store/testdata/invalid-puppy.json"}
+	args = []string{"--data", invalidPuppyJSON}
 	assert.Panics(main)
 }
 
-func TestInitialisePuppyStoreErrors(t *testing.T) {
+func TestInitialisePuppyMapStoreError(t *testing.T) {
 	assert := assert.New(t)
 	puppy := puppy.Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "1"}
 	mapStore := store.MapStore{}
 	syncStore := store.SyncStore{}
 	_ = mapStore.CreatePuppy(puppy)
-	_ = syncStore.CreatePuppy(puppy)
-	err := initialisePuppyStore(&mapStore, &syncStore, "./../../pkg/puppy/store/testdata/invalid-puppies.json")
+	err := initialisePuppyStore(&mapStore, &syncStore, duplicatePuppies)
 	assert.Error(err)
-	newmapStore := store.MapStore{}
-	err = initialisePuppyStore(&newmapStore, &syncStore, "./../../pkg/puppy/store/testdata/invalid-puppies.json")
+}
+
+func TestInitialisePuppySyncStoreError(t *testing.T) {
+	assert := assert.New(t)
+	puppy := puppy.Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "1"}
+	mapStore := store.MapStore{}
+	syncStore := store.SyncStore{}
+	_ = syncStore.CreatePuppy(puppy)
+	err := initialisePuppyStore(&mapStore, &syncStore, duplicatePuppies)
 	assert.Error(err)
 }

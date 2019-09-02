@@ -66,7 +66,6 @@ func (s *storerSuite) TestReadPuppy() {
 	for _, tc := range testCases {
 		tc := tc
 		s.T().Run(tc.Scenario, func(t *testing.T) {
-			fmt.Println(s.puppy)
 			puppy, err := s.store.ReadPuppy(tc.ID)
 			assert.Equal(tc.Expected, puppy)
 			assert.Equal(tc.ExpectedError, fmt.Sprint(err))
