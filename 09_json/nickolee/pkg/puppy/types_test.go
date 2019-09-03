@@ -2,6 +2,7 @@ package puppy
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -25,7 +26,8 @@ func TestJsonMarshaling(t *testing.T) {
 
 	for _, test := range tests {
 		jsonRepresentation, _ := json.Marshal(test.puppyObject) // note that jsonReprentation is a slice of bytes
-		assert.JSONEq(t, test.expectedJSON, string(jsonRepresentation))
+		assert.JSONEq(t, test.expectedJSON, string(jsonRepresentation),
+			fmt.Sprintf("Test case: %s failed", test.name))
 	}
 }
 
@@ -49,6 +51,6 @@ func TestJsonUnmarshaling(t *testing.T) {
 		var unmarshaled Puppy
 		err := json.Unmarshal(test.jsonPuppy, &unmarshaled) // note that jsonReprentation is a slice of bytes
 		assert.NoError(t, err)
-		assert.Equal(t, test.expectedPuppy, unmarshaled)
+		assert.Equal(t, test.expectedPuppy, unmarshaled, fmt.Sprintf("Test case: %s failed", test.name))
 	}
 }

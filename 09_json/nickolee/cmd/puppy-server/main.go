@@ -15,18 +15,17 @@ import (
 var out io.Writer = os.Stdout
 
 var (
-	args        = os.Args[1:]
-	fileName    = kingpin.Flag("data", "This flag supplies a puppy JSON file name").Short('d').String()
-	fileData    []byte
-	unmarshaled puppy.Puppy
+	args     = os.Args[1:]
+	fileName = kingpin.Flag("data", "This flag supplies a puppy JSON file name").Short('d').String()
+	fileData []byte
 )
 
 func main() {
-	// by this point we have read from a file and parsed/unmarshaled the json and we now have []puppy (Go objects)
-	puppies, _ := unmarshalPuppies(fileData)
-	fmt.Printf("%#v \n", puppies)
-	fmt.Println("Number of puppies loaded from file: ", len(puppies))
-	// fmt.Printf("%v \n", puppies)
+	// parse flags and read json from file
+	parseFlagsAndLoadFile()
+
+	// parse/unmarshal the json and we now have []puppy (Go objects)
+	puppies := unmarshalPuppies()
 
 	// instantiate new puppy store
 	store := store.NewMapStore()
@@ -35,60 +34,50 @@ func main() {
 	for _, pup := range puppies {
 		createdPuppy, _ := store.CreatePuppy(&pup)
 		fmt.Fprintf(out, "Puppy with ID %d has been created\n", createdPuppy)
-
 		retrievedPuppy, _ := store.ReadPuppy(createdPuppy)
 		fmt.Fprintln(out, "Retrieved puppy:", retrievedPuppy)
 	}
-
-	// updateResult := store.UpdatePuppy(createdPuppy, &puppy.Puppy{Breed: "Arcanine", Colour: "Level 100", Value: 9300.90})
-	// fmt.Fprintln(out, "Update puppy operation result:", updateResult)
-
-	// deleteResult := store.DeletePuppy(createdPuppy)
-	// fmt.Fprintln(out, "Delete puppy operation result:", deleteResult)
 }
 
-// this runs first
-func init() {
-	// parse flags
-	kingpin.Parse()
-
-	// if data flag is supplied. Reading data from file
-	if *fileName != "" {
-		// At this point Go knows about the file but not what's in it
-		f, err := os.Open(*fileName)
-		if err != nil {
-			panic(err)
-		}
-
-		// reading what's in file. Raw as in it is a raw slice of bytes at this point
-		fileData, err = ioutil.ReadAll(f)
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		// show usage guide if user is not providing args or providing the wrong flags
-		fmt.Println("No data file was provided. See below for usage guidelines: ")
-		fmt.Println("The arguments you provided: ", os.Args[1:])
-		fmt.Println("----------------------------------------------------------")
+// parse flags and load file
+func parseFlagsAndLoadFile() {
+	// parse cli flags and check for flag parse error
+	if _, parseError := kingpin.CommandLine.Parse(args); parseError != nil {
 		printUsage()
+		panic(parseError) // this also includes a panic
 	}
+
+	// if data flag is supplied. Reading data from file and check for file argument error
+	f, err := os.Open(*fileName) // At this point Go knows about the file but not what's in it
+	if err != nil {
+		printUsage()
+		panic(err)
+	}
+
+	// reading what's in file. Raw as in it is a raw slice of bytes at this point
+	fileData, _ = ioutil.ReadAll(f) // no need to check file error as kingpin has checked it already
 }
 
+// show usage guide if user is not providing args or providing the wrong args. Only applies to args not flags
 func printUsage() {
-	kingpin.Usage()
-	os.Exit(1)
+	fmt.Println("No/wrong data file and/or flag was provided. See below for usage guidelines: ")
+	fmt.Println("The arguments you provided: ", args)
+	fmt.Println("----------------------------------------------------------")
+	fmt.Print(`usage: main [<flags>]
+
+Flags:
+	--help           Show context-sensitive help (also try --help-long and --help-man).
+	-d, --data=DATA  This flag supplies a puppy JSON file name	
+`)
 }
 
 // converts stream of bytes in file (json string data) into Go puppy objects
-func unmarshalPuppies(data []byte) ([]puppy.Puppy, error) {
+func unmarshalPuppies() []puppy.Puppy {
 	puppies := []puppy.Puppy{}
 	err := json.Unmarshal(fileData, &puppies)
 	if err != nil {
-		fmt.Printf("Could not unmarshall puppies, error: %v", err)
-		return nil, err
+		fmt.Printf("Could not unmarshal puppies, error: %v\n", err)
+		panic(err)
 	}
-	return puppies, nil
-
-	// fmt.Println("unmarshaled - so it is back to a Go object now: ", unmarshaled)
-	// fmt.Printf("unmarshaled - so it is back to a Go object now: %#v\n", unmarshaled)
+	return puppies
 }
