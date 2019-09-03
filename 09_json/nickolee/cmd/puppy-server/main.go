@@ -17,21 +17,24 @@ var out io.Writer = os.Stdout
 var (
 	args     = os.Args[1:]
 	fileName = kingpin.Flag("data", "This flag supplies a puppy JSON file name").Short('d').String()
-	fileData []byte
 )
 
 func main() {
+	// var to store raw bytes read in from file
+	var fileData []byte
+
 	// parse flags and read json from file
-	parseFlagsAndLoadFile()
+	fileData = parseFlagsAndLoadFile()
 
 	// parse/unmarshal the json and we now have []puppy (Go objects)
-	puppies := unmarshalPuppies()
+	puppies := unmarshalPuppies(fileData)
 
 	// instantiate new puppy store
 	store := store.NewMapStore()
 
 	// create some puppies loaded in from json file and store in store (no pun intended lol)
 	for _, pup := range puppies {
+		pup := pup // to avoid scopelint error: Using a reference for the variable on range scope `pup`
 		createdPuppy, _ := store.CreatePuppy(&pup)
 		fmt.Fprintf(out, "Puppy with ID %d has been created\n", createdPuppy)
 		retrievedPuppy, _ := store.ReadPuppy(createdPuppy)
@@ -40,7 +43,7 @@ func main() {
 }
 
 // parse flags and load file
-func parseFlagsAndLoadFile() {
+func parseFlagsAndLoadFile() (fileData []byte) {
 	// parse cli flags and check for flag parse error
 	if _, parseError := kingpin.CommandLine.Parse(args); parseError != nil {
 		printUsage()
@@ -56,6 +59,7 @@ func parseFlagsAndLoadFile() {
 
 	// reading what's in file. Raw as in it is a raw slice of bytes at this point
 	fileData, _ = ioutil.ReadAll(f) // no need to check file error as kingpin has checked it already
+	return fileData
 }
 
 // show usage guide if user is not providing args or providing the wrong args. Only applies to args not flags
@@ -72,7 +76,7 @@ Flags:
 }
 
 // converts stream of bytes in file (json string data) into Go puppy objects
-func unmarshalPuppies() []puppy.Puppy {
+func unmarshalPuppies(fileData []byte) []puppy.Puppy {
 	puppies := []puppy.Puppy{}
 	err := json.Unmarshal(fileData, &puppies)
 	if err != nil {
