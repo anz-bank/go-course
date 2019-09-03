@@ -14,6 +14,9 @@ It aims to impart several key learnings such as but not limited to:
 - Creating custom error types to suit your project needs
 - Thread safety using sync.Mutex
 - Test coverage using [test suites](https://godoc.org/github.com/stretchr/testify/suite)
+- Implement ability to convert between Go in memory objects to JSON representation and vice versa
+- Implement ability to accept user input from CLI and read data from a file
+- Load data from json text file and store in an instance of storer
 
 ## Prerequisites
 
@@ -28,7 +31,7 @@ To build the project, run the following command while you are in the root of the
 `go build ./...`
 
 ## How to run this project?
-`go run ./cmd/puppy-server/main.go`
+`go run ./cmd/puppy-server/main.go --data puppy-data/puppies.json`
 
 ## How to test this project?
 
