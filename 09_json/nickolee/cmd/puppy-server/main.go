@@ -20,11 +20,8 @@ var (
 )
 
 func main() {
-	// var to store raw bytes read in from file
-	var fileData []byte
-
 	// parse flags and read json from file
-	fileData = parseFlagsAndLoadFile()
+	fileData := parseFlagsAndLoadFile() // fileData var to store raw bytes read in from file
 
 	// parse/unmarshal the json and we now have []puppy (Go objects)
 	puppies := unmarshalPuppies(fileData)
