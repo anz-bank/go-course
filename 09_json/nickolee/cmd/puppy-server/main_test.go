@@ -60,7 +60,12 @@ func TestWrongFileName(t *testing.T) {
 	assert.Panics(t, main)
 }
 
-func TestUnmarshalPuppies(t *testing.T) {
+func TestUnmarshalPuppiesTypeMismatch(t *testing.T) {
 	args = []string{"--data", "./../../puppy-data/type_mismatch.json"}
+	assert.Panics(t, main)
+}
+
+func TestUnmarshalPuppiesInvalidJSON(t *testing.T) {
+	args = []string{"--data", "./../../puppy-data/invalid.json"}
 	assert.Panics(t, main)
 }
