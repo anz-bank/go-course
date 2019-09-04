@@ -16,12 +16,15 @@ var out io.Writer = os.Stdout
 
 var (
 	args     = os.Args[1:]
-	fileName = kingpin.Flag("data", "This flag supplies a puppy JSON file name").Short('d').String()
+	fileName = kingpin.Flag("data", "This flag supplies a puppy JSON file name").Short('d').ExistingFile()
 )
 
 func main() {
-	// parse flags and read json from file
-	fileData := parseFlagsAndLoadFile() // fileData var to store raw bytes read in from file
+	// parse flags/check if user even provided any
+	parseFlags()
+
+	// read json from file
+	fileData := LoadFile() // fileData var to store raw bytes read in from file
 
 	// parse/unmarshal the json and we now have []puppy (Go objects)
 	puppies := unmarshalPuppies(fileData)
@@ -39,37 +42,26 @@ func main() {
 	}
 }
 
-// parse flags and load file
-func parseFlagsAndLoadFile() (fileData []byte) {
+// checking for valid flags. At this point not checking for valid args provided with flags
+func parseFlags() {
 	// parse cli flags and check for flag parse error
+	// I believe this also binds the user input (via terminal) to the var fileName
 	if _, parseError := kingpin.CommandLine.Parse(args); parseError != nil {
-		printUsage()
-		panic(parseError) // this also includes a panic
+		panic(parseError)
 	}
-
-	// if data flag is supplied. Reading data from file and check for file argument error
-	f, err := os.Open(*fileName) // At this point Go knows about the file but not what's in it
-	if err != nil {
-		printUsage()
-		panic(err)
-	}
-
-	// reading what's in file. Raw as in it is a raw slice of bytes at this point
-	fileData, _ = ioutil.ReadAll(f) // no need to check file error as kingpin has checked it already
-	return fileData
 }
 
-// show usage guide if user is not providing args or providing the wrong args. Only applies to args not flags
-func printUsage() {
-	fmt.Println("No/wrong data file and/or flag was provided. See below for usage guidelines: ")
-	fmt.Println("The arguments you provided: ", args)
-	fmt.Println("----------------------------------------------------------")
-	fmt.Print(`usage: main [<flags>]
+// Load file and check for valid files
+func LoadFile() (fileData []byte) {
+	// if data flag is supplied. Read data from file and check for file argument error
+	f, _ := os.Open(*fileName) // At this point Go knows about the file but not what's in it
+	defer f.Close()            // to make sure the file is closed after this function returns
+	// it seems that kingpin.CommandLine.Parse above checks for a variety of errors already such as path
+	// and empty argument etc.
 
-Flags:
-	--help           Show context-sensitive help (also try --help-long and --help-man).
-	-d, --data=DATA  This flag supplies a puppy JSON file name	
-`)
+	// reading what's in file. Raw as in it is a raw slice of bytes at this point
+	fileData, _ = ioutil.ReadAll(f) //no need to check err as kingpin has checked it already
+	return fileData
 }
 
 // converts stream of bytes in file (json string data) into Go puppy objects
