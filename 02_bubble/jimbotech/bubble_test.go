@@ -6,6 +6,17 @@ import (
 	"testing"
 )
 
+func TestNotModifiedInput(t *testing.T) {
+	input := []int{64, 11, 1, 1, 2, 3, 5, 8, 13, 21, 34}
+	original := make([]int, len(input))
+	copy(original, input)
+
+	bubble(input)
+
+	if !reflect.DeepEqual(original, input) {
+		t.Errorf("The input slice was altered %v does not match %v", original, input)
+	}
+}
 func TestBubble(t *testing.T) {
 	input := []int{64, 11, 1, 1, 2, 3, 5, 8, 13, 21, 34}
 	expected := []int{1, 1, 2, 3, 5, 8, 11, 13, 21, 34, 64}

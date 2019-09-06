@@ -9,16 +9,19 @@ import (
 var out io.Writer = os.Stdout
 
 func bubble(s []int) []int {
+	sorted := make([]int, len(s))
+	copy(sorted, s)
+
 	var ss []int
-	for k := range s {
-		ss = s[:len(s)-k-1]
+	for k := range sorted {
+		ss = sorted[:len(sorted)-k-1]
 		for i, val := range ss {
-			if val > s[i+1] {
-				s[i], s[i+1] = s[i+1], s[i]
+			if val > sorted[i+1] {
+				sorted[i], sorted[i+1] = sorted[i+1], sorted[i]
 			}
 		}
 	}
-	return s
+	return sorted
 }
 
 func main() {
