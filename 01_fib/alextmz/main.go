@@ -14,18 +14,9 @@ func main() {
 
 func printfib(n int) {
 	// as per specs: intentionally skip 0
-	for i := 1; i <= n; i++ {
-		fmt.Fprintln(out, fibN(i))
-	}
-}
-
-func fibN(n int) int {
-	switch n {
-	case 0:
-		return 0
-	case 1:
-		return 1
-	default:
-		return (fibN(n-1) + fibN(n-2))
+	n1, n2 := 1, 1
+	for i := 0; i < n; i++ {
+		fmt.Fprintln(out, n1)
+		n1, n2 = n2, n1+n2
 	}
 }

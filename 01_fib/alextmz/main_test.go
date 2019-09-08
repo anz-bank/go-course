@@ -48,30 +48,3 @@ func Test_printfib(t *testing.T) {
 		})
 	}
 }
-
-func Test_fibN(t *testing.T) {
-
-	tests := []struct {
-		name string
-		args int
-		want int
-	}{
-		{"Fibonacci of 0", 0, 0},
-		{"Fibonacci of 1", 1, 1},
-		{"Fibonacci of 2", 2, 1},
-		{"Fibonacci of 3", 3, 2},
-		{"Fibonacci of 7", 7, 13},
-		{"Fibonacci of 20", 20, 6765},
-	}
-
-	for _, tr := range tests {
-		tr2 := tr
-
-		t.Run(tr2.name, func(t *testing.T) {
-			result := fibN(tr2.args)
-			if result != tr2.want {
-				t.Errorf("expected %v, got %v", tr2.want, result)
-			}
-		})
-	}
-}
