@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"math"
 	"os"
 )
 
@@ -26,22 +25,31 @@ func fibonacci() func() int {
 	}
 }
 
-func fib(n int) {
-	f := fibonacci()
-
+func fibSeries(n int) []int {
+	counter := n
 	if n < 0 {
-		for i := 0; i > n; i-- {
-			factor := int(math.Pow(-1, float64(i*-1)))
-			fmt.Fprintln(out, f()*factor)
-		}
-
-	} else {
-		for i := 0; i < n; i++ {
-			fmt.Fprintln(out, f())
-		}
+		counter = n * -1
 	}
+	var fibSerial []int
 
+	f := fibonacci()
+	for i := 0; i < counter; i++ {
+		factor := 1
+		if n < 0 && i%2 != 0 {
+			factor = -1
+		}
+		fibSerial = append(fibSerial, f()*factor)
+	}
+	return fibSerial
 }
+
+func fib(n int) {
+	fibSer := fibSeries(n)
+	for _, v := range fibSer {
+		fmt.Fprintln(out, v)
+	}
+}
+
 func main() {
 	fib(7)
 }
