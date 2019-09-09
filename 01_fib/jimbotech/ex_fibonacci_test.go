@@ -13,7 +13,7 @@ func TestFib(t *testing.T) {
 
 	for _, val := range fibResults {
 		if r := f(); r != val {
-			t.Errorf("Returned value %v does not match %v", r, val)
+			t.Errorf("returned value %v does not match %v", r, val)
 		}
 	}
 }
@@ -52,7 +52,7 @@ func TestZero(t *testing.T) {
 	result := buf.String()
 
 	if len(result) > 0 {
-		t.Errorf("Expected nothing to be printed, got %v", result)
+		t.Errorf("expected nothing to be printed, got %v", result)
 	}
 }
 
