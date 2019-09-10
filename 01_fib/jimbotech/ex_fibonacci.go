@@ -28,7 +28,7 @@ func fibonacci() func() int {
 func fibSeries(n int) []int {
 	counter := n
 	if n < 0 {
-		counter = n * -1
+		counter = -n
 	}
 	var fibSerial []int
 
