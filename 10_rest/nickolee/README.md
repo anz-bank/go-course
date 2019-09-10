@@ -86,9 +86,9 @@ Note that a negative puppy value shall not be accepted.
  Method: PUT
  Example:
 
-    curl -X PUT http://localhost:3000/api/puppy/1 \
+    curl -X PUT http://localhost:7000/api/puppy/1 \
       -d '{
-        "breed": "Spider Dog",
+        "breed": "Spider Dog not Snoop Dogg",
         "colour": "Friendly Neighbourhood Colors",
         "value": 5555
       }'
