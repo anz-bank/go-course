@@ -1,22 +1,28 @@
-# Project: Building Incrementally Towards a Puppy Rest API
+# Project: Final Step in Incrementally Building Towards a Puppy REST API
 
 This project is part of the [go course](https://github.com/anz-bank/go-course/) run by ANZ Bank.
 
 It builds you up incrementally with the ultimate end goal of having a fully functioning Rest API.
+
+And finally after a deep and delightful learning journey we have finally arrived at Lab 10!
 
 It aims to impart several key learnings such as but not limited to:
 
 - Working with custom types in go using structs
 - Understanding and working with interfaces in go
 - Implementing multiple implementations of an interface
+- Working with various tools in the Go toolchain such as `golangci-lint` and `go test -coverprofile=coverage.out` to check for 100% test coverage or fail CI
 - Go standard project layout
 - Best practices with Git. Proper commit messages and PRs. Git rebasing when necessary to keep commit history clean etc.
 - Creating custom error types to suit your project needs
-- Thread safety using sync.Mutex
-- Test coverage using [test suites](https://godoc.org/github.com/stretchr/testify/suite)
-- Implement ability to convert between Go in memory objects to JSON representation and vice versa
+- Thread safety using sync.Mutex to prevent errors associated with data race conditions
+- Test coverage using [test suites] (https://godoc.org/github.com/stretchr/testify/suite) as well as [table driven testing](https://dave.cheney.net/2019/05/07/prefer-table-driven-tests) 
+- Implement ability to convert between Go in memory objects to JSON representation and vice versa using `json.Marshal() and json.Unmarshal()`
 - Implement ability to accept user input from CLI and read data from a file
 - Load data from json text file and store in an instance of storer
+- Learn how to create REST APIs to expose functionality over the network
+- Learn how to test REST APIs with the net/http/httptest package
+- Learning how to use the Go standard library as well as external third party libraries such as [chi](https://godoc.org/github.com/go-chi/chi), [kingpin](https://godoc.org/gopkg.in/alecthomas/kingpin.v2) and [testify](https://godoc.org/github.com/stretchr/testify)
 
 ## Prerequisites
 
@@ -31,7 +37,18 @@ To build the project, run the following command while you are in the root of the
 `go build ./...`
 
 ## How to run this project?
-`go run ./cmd/puppy-server/main.go --data puppy-data/puppies.json`
+`go run ./cmd/puppy-server/main.go --data puppy-data/puppies.json --port 7777 --store map`
+
+Alternatively, simply run:
+`go run ./cmd/puppy-server/main.go`
+
+Which will simply revert to pre-specified default values.
+
+Note that there are three flags which work with main.go:
+
+1. **-d,--data:** if you wish to specify a .json file to load in seed data for the database, pass it as a value to this flag. Note that if no file is specified then a default file is used.
+2. **-s, --store:** either _map_ or _sync_ Note that if not set then the value defaults to _map_
+3. **-p, --port:** if set then an **API** server is started on the user specified port. Must be a valid port number between 0 and 65535
 
 ## How to test this project?
 
@@ -40,3 +57,47 @@ To test this project, follow the steps below:
 1. Run test cases:`go test ./...`
 2. Lint it: `golangci-lint run`
 3. Ensure 100% test coverage `go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out`
+
+## API Spec
+
+### Create puppies
+ Endpoint: {host:port}/api/puppy/
+ Method: POST
+ Example:
+
+    curl -X POST http://localhost:7777/api/puppy/ \
+      -d '{
+        "breed": "Iron Dog",
+        "colour": "Red",
+        "value": 9500
+      }'
+
+Note that a negative puppy value shall not be accepted.
+
+### Retrieve puppies
+ Endpoint: {host:port}/api/puppy/{id}
+ Method: GET
+ Example:
+
+    curl -X GET http://localhost:7777/api/puppy/1
+
+### Modify existing puppies
+ Endpoint: {host:port}/api/puppy/{id}
+ Method: PUT
+ Example:
+
+    curl -X PUT http://localhost:3000/api/puppy/1 \
+      -d '{
+        "breed": "Spider Dog",
+        "colour": "Friendly Neighbourhood Colors",
+        "value": 5555
+      }'
+
+As with POST this will not accept a negative puppy value since we believe every dog has intrinsic value and is worth something!
+
+### Delete puppies
+ Endpoint: {host:port}/api/puppy/{id}
+ Method: DELETE
+ Example:
+
+    curl -X DELETE http://localhost:7777/api/puppy/1
