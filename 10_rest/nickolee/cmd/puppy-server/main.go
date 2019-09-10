@@ -26,9 +26,10 @@ var (
 	args = os.Args[1:]
 	// this loads your file once parseFlags() is run
 	// these are methods too prepare a variable. Basically telling kingpin how to read the flag from cli
-	fileName = kingpin.Flag("data", "This flag supplies a puppy JSON file name").Short('d').Default("../../puppy-data/puppies.json").File()
-	port     = kingpin.Flag("port", "Port to listen on and serve").Short('p').Default("7777").Int()
-	storer   = kingpin.Flag("store", "Map/Sync Store").Short('s').Default("map").Enum("map", "sync")
+	fileName = kingpin.Flag("data", "This flag supplies a puppy JSON file name").
+			Short('d').Default("../../puppy-data/puppies.json").File()
+	port   = kingpin.Flag("port", "Port to listen on and serve").Short('p').Default("7777").Int()
+	storer = kingpin.Flag("store", "Map/Sync Store").Short('s').Default("map").Enum("map", "sync")
 )
 
 // Config contains arguments parsed from commandline flags
@@ -53,13 +54,13 @@ func main() {
 
 	// instantiate new PuppyHandlerAndStorer based on user specified value of storer
 	// create puppy.Storer
-	newStorer, err := createStore(cliConfig.storer) // no need to check err as it defaults to "map"
+	newStorer, _ := createStore(cliConfig.storer) // no need to check err as it defaults to "map"
 
 	// create PuppyHandlerAndStorer - the Rest API wrapper around puppy.Storer
 	phs := rest.NewPuppyHandlerAndStorer(newStorer)
 
 	// get the user specified port
-	userDefinedPort, err := parsePortFlag(cliConfig.port)
+	addr, err := parsePortFlag(cliConfig.port)
 	if err != nil {
 		panic(err)
 	}
@@ -80,7 +81,6 @@ func main() {
 
 	rest.SetupRoutes(r, *phs)
 
-	addr := ":" + userDefinedPort
 	fmt.Printf("Starting server on port %s. Try:\n", addr)
 	fmt.Printf("  curl localhost%s/api/puppy -d ", addr)
 	fmt.Println(`'{"breed": "Snorlax", "colour": "Blue-ish", "value": 8888}'`)
@@ -131,5 +131,5 @@ func parsePortFlag(p int) (string, error) {
 	if p < 0 || p > 65535 {
 		return "0", errors.New("invalid port number entered")
 	}
-	return strconv.Itoa(p), nil
+	return ":" + strconv.Itoa(p), nil
 }

@@ -41,7 +41,8 @@ func (phs *PuppyHandlerAndStorer) handleGet(w http.ResponseWriter, r *http.Reque
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
 	if err != nil {
-		http.Error(w, "Bad Request: "+invalidInputMsg, http.StatusBadRequest) // if err != nil means user didn't provide proper id hence 404
+		// if err != nil means user didn't provide proper id hence 404
+		http.Error(w, "Bad Request: "+invalidInputMsg, http.StatusBadRequest)
 		return
 	}
 	pup, err := phs.Storage.ReadPuppy(id)
@@ -79,7 +80,7 @@ func (phs *PuppyHandlerAndStorer) handlePut(w http.ResponseWriter, r *http.Reque
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
 	if err != nil {
-		http.Error(w, "Unprocessable Entity: "+invalidInputMsg, http.StatusBadRequest) // if err != nil means user didn't provide proper id hence 404
+		http.Error(w, "Unprocessable Entity: "+invalidInputMsg, http.StatusBadRequest)
 		return
 	}
 
@@ -113,7 +114,8 @@ func (phs *PuppyHandlerAndStorer) handleDelete(w http.ResponseWriter, r *http.Re
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
 	if err != nil {
-		http.Error(w, "Bad Request: "+invalidInputMsg, http.StatusBadRequest) // if err != nil means user didn't provide proper id hence 404
+		// if err != nil means user didn't provide proper id hence 400
+		http.Error(w, "Bad Request: "+invalidInputMsg, http.StatusBadRequest)
 		return
 	}
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"os"
 	"testing"
 	"time"
 
@@ -65,11 +66,6 @@ func TestUnmarshalPuppiesTypeMismatch(t *testing.T) {
 	assert.Panics(t, main)
 }
 
-func TestUnmarshalPuppiesInvalidJSON(t *testing.T) {
-	args = []string{"--data", "../../puppy-data/invalid.json"}
-	assert.Panics(t, main)
-}
-
 func TestOutOfBoundsPort(t *testing.T) {
 	args = []string{"-d", "../../puppy-data/puppies.json", "-p", "100000", "-s", "map"}
 	assert.Panics(t, main)
@@ -85,5 +81,12 @@ func TestCreateStoreFunc(t *testing.T) {
 	userInput = "anythingElse"
 	s, err = createStore(userInput)
 	assert.Nil(t, s)
+	assert.Error(t, err)
+}
+
+func TestReadFileAndUnmarshalPuppiesFunc(t *testing.T) {
+	f, _ := os.Open("../../puppy-data/invalid.json")
+	puppies, err := readFileAndUnmarshalPuppies(f)
+	assert.Nil(t, puppies)
 	assert.Error(t, err)
 }

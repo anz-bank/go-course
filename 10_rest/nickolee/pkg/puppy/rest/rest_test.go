@@ -90,12 +90,13 @@ func TestRestAPI(t *testing.T) {
 		expectedMsg string
 	}{
 		{
-			testName:    "Test GET Puppy by ID",
-			httpMethod:  "GET",
-			url:         "/api/puppy/1",
-			payload:     nil,
-			HTTPCode:    http.StatusOK,
-			expectedMsg: "{\"id\":1,\"breed\":\"Extremely Rare Golden Retriever\",\"colour\":\"An extremely rare shade of violet\",\"value\":1000000}\n"},
+			testName:   "Test GET Puppy by ID",
+			httpMethod: "GET",
+			url:        "/api/puppy/1",
+			payload:    nil,
+			HTTPCode:   http.StatusOK,
+			expectedMsg: "{\"id\":1,\"breed\":\"Extremely Rare Golden Retriever\",\"colour\":\"An extremely" +
+				" rare shade of violet\",\"value\":1000000}\n"},
 		{
 			testName:    "Test GET Puppy on invalid endpoint",
 			httpMethod:  "GET",
