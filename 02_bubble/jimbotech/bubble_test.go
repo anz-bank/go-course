@@ -6,6 +6,28 @@ import (
 	"testing"
 )
 
+func TestNilModifiedInput(t *testing.T) {
+	var input []int
+	var original []int
+
+	bubble(input)
+
+	if !reflect.DeepEqual(original, input) {
+		t.Errorf("returned value %v should be nil", input)
+	}
+}
+
+func TestOneModifiedInput(t *testing.T) {
+	input := []int{64}
+	original := make([]int, len(input))
+	copy(original, input)
+
+	bubble(input)
+
+	if !reflect.DeepEqual(original, input) {
+		t.Errorf("returned value %v does not match %v", original, input)
+	}
+}
 func TestNotModifiedInput(t *testing.T) {
 	input := []int{64, 11, 1, 1, 2, 3, 5, 8, 13, 21, 34}
 	original := make([]int, len(input))
@@ -14,7 +36,7 @@ func TestNotModifiedInput(t *testing.T) {
 	bubble(input)
 
 	if !reflect.DeepEqual(original, input) {
-		t.Errorf("The input slice was altered %v does not match %v", original, input)
+		t.Errorf("the input slice was altered %v does not match %v", original, input)
 	}
 }
 func TestBubble(t *testing.T) {
@@ -24,7 +46,7 @@ func TestBubble(t *testing.T) {
 	sortedResult := bubble(input)
 
 	if !reflect.DeepEqual(sortedResult, expected) {
-		t.Errorf("Returned value %v does not match %v", sortedResult, expected)
+		t.Errorf("returned value %v does not match %v", sortedResult, expected)
 	}
 }
 func TestNoInput(t *testing.T) {
@@ -33,7 +55,7 @@ func TestNoInput(t *testing.T) {
 	sortedResult := bubble(input)
 
 	if len(sortedResult) != 0 {
-		t.Errorf("Returned value %v but expected empty slice", sortedResult)
+		t.Errorf("returned value %v but expected empty slice", sortedResult)
 	}
 }
 func TestNoSort(t *testing.T) {
@@ -43,7 +65,7 @@ func TestNoSort(t *testing.T) {
 	sortedResult := bubble(input)
 
 	if !reflect.DeepEqual(sortedResult, expected) {
-		t.Errorf("Returned value %v does not match %v", sortedResult, expected)
+		t.Errorf("returned value %v does not match %v", sortedResult, expected)
 	}
 }
 func TestMain(t *testing.T) {

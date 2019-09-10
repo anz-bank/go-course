@@ -12,11 +12,9 @@ func bubble(s []int) []int {
 	sorted := make([]int, len(s))
 	copy(sorted, s)
 
-	var ss []int
 	for k := range sorted {
-		ss = sorted[:len(sorted)-k-1]
-		for i, val := range ss {
-			if val > sorted[i+1] {
+		for i := range sorted[:len(sorted)-k-1] {
+			if sorted[i] > sorted[i+1] {
 				sorted[i], sorted[i+1] = sorted[i+1], sorted[i]
 			}
 		}
