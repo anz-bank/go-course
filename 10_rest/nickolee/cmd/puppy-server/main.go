@@ -47,7 +47,7 @@ func main() {
 	}
 
 	// read JSON from file + parse/unmarshal the json and we now have []puppy (Go objects)
-	puppies, _ := readFileAndUnmarshalPuppies(cliConfig.file)
+	puppies, err := readFileAndUnmarshalPuppies(cliConfig.file)
 	if err != nil {
 		panic(err)
 	}
@@ -60,10 +60,7 @@ func main() {
 	phs := rest.NewPuppyHandlerAndStorer(newStorer)
 
 	// get the user specified port
-	addr, err := parsePortFlag(cliConfig.port)
-	if err != nil {
-		panic(err)
-	}
+	addr := ":" + strconv.Itoa(cliConfig.port)
 
 	// create some puppies loaded in from json file and store in store (no pun intended lol)
 	for _, pup := range puppies {
@@ -85,9 +82,7 @@ func main() {
 	fmt.Printf("  curl localhost%s/api/puppy -d ", addr)
 	fmt.Println(`'{"breed": "Snorlax", "colour": "Blue-ish", "value": 8888}'`)
 	fmt.Printf("  curl localhost%s/api/puppy/4 \n", addr)
-	if err := http.ListenAndServe(addr, r); err != nil {
-		log.Println("Error: ", err)
-	}
+	log.Print(http.ListenAndServe(addr, r))
 }
 
 // checking for valid flags. At this point not checking for valid args provided with flags
@@ -124,12 +119,4 @@ func createStore(s string) (puppy.Storer, error) {
 		return store.NewSyncStore(), nil
 	}
 	return nil, errors.New("map/sync are the only acceptable flag values")
-}
-
-// parsePortFlag checks for valid port number entered from commandLine
-func parsePortFlag(p int) (string, error) {
-	if p < 0 || p > 65535 {
-		return "0", errors.New("invalid port number entered")
-	}
-	return ":" + strconv.Itoa(p), nil
 }

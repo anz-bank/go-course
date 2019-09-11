@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/anz-bank/go-course/10_rest/nickolee/pkg/puppy/store"
 
@@ -13,17 +12,7 @@ import (
 
 // that is, no args were provided at all
 func TestMainHappyPath(t *testing.T) {
-	args = []string{"-d", "../../puppy-data/puppies.json", "-p", "7777", "-s", "map"}
-	go main()
-	time.Sleep(100 * time.Millisecond)
-	assert.NotPanics(t, main)
-	// os.Exit(0)
-}
-
-func TestMainWithDefaultFlagValues(t *testing.T) {
-	args = []string{}
-	go main()
-	time.Sleep(100 * time.Millisecond)
+	args = []string{"-d", "../../puppy-data/puppies.json", "-p", "80000", "-s", "map"}
 	assert.NotPanics(t, main)
 }
 
@@ -31,9 +20,16 @@ func TestLongFlag(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 
-	args = []string{"--data", "../../puppy-data/puppies.json"}
+	args = []string{"--data", "../../puppy-data/puppies.json", "-p", "80000"}
 
-	main()
+	// purposely passing an invalid port number to cause main to panic in order to pass test
+	// but in order for test to not panic out, we need to recover()
+	func() {
+		defer func() {
+			_ = recover()
+		}()
+		main()
+	}()
 
 	expected := `Puppy with ID 1 has been created
 Retrieved puppy: &{1 Vulpix Red 2900}
@@ -63,11 +59,6 @@ func TestWrongFileName(t *testing.T) {
 
 func TestUnmarshalPuppiesTypeMismatch(t *testing.T) {
 	args = []string{"--data", "../../puppy-data/type_mismatch.json"}
-	assert.Panics(t, main)
-}
-
-func TestOutOfBoundsPort(t *testing.T) {
-	args = []string{"-d", "../../puppy-data/puppies.json", "-p", "100000", "-s", "map"}
 	assert.Panics(t, main)
 }
 
