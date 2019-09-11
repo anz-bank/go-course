@@ -15,17 +15,8 @@ const (
 	notFoundMsg     = "Not Found: Apologies, for the puppy you seek does not exist"
 )
 
-// not entirely sure why u need this but get a vague sense. Check with Dan
-// a special guy who wraps around Storer types and gives them extra abilities to now handle API requests
-// thus enhancing their storing abilities significantly!
-type PuppyHandler interface {
-	handlePost(w http.ResponseWriter, r *http.Request)
-	handleGet(w http.ResponseWriter, r *http.Request)
-	handlePut(w http.ResponseWriter, r *http.Request)
-	handleDelete(w http.ResponseWriter, r *http.Request)
-}
-
-// PuppyHandlerAndStorer will be a guy that implements PuppyHandler
+// PuppyHandlerAndStorer is a special guy who wraps around Storer types and gives them extra abilities
+// to now handle API requests thus enhancing their storing abilities significantly!
 type PuppyHandlerAndStorer struct {
 	Storage puppy.Storer // Using the thread safe sync.map implementation of Storer interface
 	// ask Dan what the significance would be if I used storage store.SyncStore vs just store.SyncStore
