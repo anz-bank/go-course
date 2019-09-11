@@ -28,6 +28,7 @@ func TestOneModifiedInput(t *testing.T) {
 		t.Errorf("returned value %v does not match %v", original, input)
 	}
 }
+
 func TestNotModifiedInput(t *testing.T) {
 	input := []int{64, 11, 1, 1, 2, 3, 5, 8, 13, 21, 34}
 	original := make([]int, len(input))
@@ -39,6 +40,7 @@ func TestNotModifiedInput(t *testing.T) {
 		t.Errorf("the input slice was altered %v does not match %v", original, input)
 	}
 }
+
 func TestBubble(t *testing.T) {
 	input := []int{64, 11, 1, 1, 2, 3, 5, 8, 13, 21, 34}
 	expected := []int{1, 1, 2, 3, 5, 8, 11, 13, 21, 34, 64}
@@ -49,6 +51,7 @@ func TestBubble(t *testing.T) {
 		t.Errorf("returned value %v does not match %v", sortedResult, expected)
 	}
 }
+
 func TestNoInput(t *testing.T) {
 	input := []int{}
 
@@ -58,6 +61,7 @@ func TestNoInput(t *testing.T) {
 		t.Errorf("returned value %v but expected empty slice", sortedResult)
 	}
 }
+
 func TestNoSort(t *testing.T) {
 	input := []int{1, 1, 2, 3, 5, 8, 13, 21, 34}
 	expected := []int{1, 1, 2, 3, 5, 8, 13, 21, 34}
@@ -68,6 +72,7 @@ func TestNoSort(t *testing.T) {
 		t.Errorf("returned value %v does not match %v", sortedResult, expected)
 	}
 }
+
 func TestMain(t *testing.T) {
 	expected := "[1 2 3 5]\n"
 	var buf bytes.Buffer
