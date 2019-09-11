@@ -7,11 +7,11 @@ import (
 )
 
 func TestLetters(t *testing.T) {
-	var sentence = "marry had a little lamb"
+	var sentence = "mary had a little lamb"
 	expected := map[rune]int{
 		'm': 2,
 		'a': 4,
-		'r': 2,
+		'r': 1,
 		'y': 1,
 		'h': 1,
 		'd': 1,
@@ -23,21 +23,20 @@ func TestLetters(t *testing.T) {
 		' ': 4,
 	}
 
-	res := letters(sentence)
+	actual := letters(sentence)
 
-	eq := reflect.DeepEqual(res, expected)
-	if !eq {
-		t.Errorf("Result maps %v differs from expected %v", res, expected)
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("expected %v, actual %v", expected, actual)
 	}
 }
 
 func TestNoLetters(t *testing.T) {
 	var sentence = ""
 
-	res := letters(sentence)
+	actual := letters(sentence)
 
-	if len(res) > 0 {
-		t.Error("Retured map is NOT empty")
+	if len(actual) > 0 {
+		t.Errorf("actual map %v, is NOT empty", actual)
 	}
 }
 
@@ -51,32 +50,32 @@ func TestSorter(t *testing.T) {
 	expected := []string{
 		"\x00:0", "a:93", "ß:100000", "å:-1",
 	}
-	res := sortLetters(testMap)
+	actual := sortLetters(testMap)
 
-	eq := reflect.DeepEqual(res, expected)
-	if !eq {
-		t.Errorf("Result %v differs from expected %v", res, expected)
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("expected %v, actual %v", expected, actual)
 	}
 }
+
 func TestEmptySorter(t *testing.T) {
 	testMap := map[rune]int{}
 
-	res := sortLetters(testMap)
+	actual := sortLetters(testMap)
 
-	if len(res) > 0 {
-		t.Error("Retured map is NOT empty")
+	if len(actual) > 0 {
+		t.Errorf("actual map %v, is NOT empty", actual)
 	}
 }
 
 func TestMain(t *testing.T) {
 
-	want := "a:2\nb:1\n"
+	expected := "a:2\nb:1\n"
 	var buf bytes.Buffer
 	out = &buf
 	main()
-	result := buf.String()
+	actual := buf.String()
 
-	if result != want {
-		t.Errorf("expected %v, got %v", want, result)
+	if actual != expected {
+		t.Errorf("expected %v, actual %v", expected, actual)
 	}
 }
