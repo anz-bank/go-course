@@ -47,7 +47,7 @@ Which will simply revert to pre-specified default values.
 Note that there are three flags which work with main.go:
 
 1. **-d,--data:** if you wish to specify a .json file to load in seed data for the database, pass it as a value to this flag. Note that if no file is specified then a default file is used.
-2. **-s, --store:** either _map_ or _sync_ Note that if not set then the value defaults to _map_
+2. **-s, --store:** either _map_ or _sync_. Note that if not set then the value defaults to _map_
 3. **-p, --port:** if set then an **API** server is started on the user specified port. Must be a valid port number between 0 and 65535
 
 ## How to test this project?
