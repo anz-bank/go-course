@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/anz-bank/go-course/09_json/mohitnag/pkg/puppy"
-	"github.com/anz-bank/go-course/09_json/mohitnag/pkg/puppy/store"
+	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy"
+	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy/store"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
