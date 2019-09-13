@@ -131,17 +131,17 @@ func TestStorers(t *testing.T) {
 
 func defaultPuppy(t *testing.T) puppy.Puppy {
 	pup := puppy.Puppy{}
-	buff := readJSON(t, "testdata/default-puppy.json")
-	if err := json.Unmarshal([]byte(buff), &pup); err != nil {
+	buff := readFile("testdata/default-puppy.json")
+	if err := json.Unmarshal(buff, &pup); err != nil {
 		t.Fatalf("Couldn't unmarshall")
 	}
 	return pup
 }
 
-func readJSON(t *testing.T, filename string) string {
+func readFile(filename string) []byte {
 	buff, err := ioutil.ReadFile(filename)
 	if err != nil {
-		t.Fatalf("Couldn't read file %s", filename)
+		panic(err)
 	}
-	return string(buff)
+	return buff
 }
