@@ -1,65 +1,19 @@
 package main
 
 import (
-	"bytes"
 	"os"
 	"testing"
 
+	puppy "github.com/anz-bank/go-course/10_rest/nickolee/pkg/puppy"
 	"github.com/anz-bank/go-course/10_rest/nickolee/pkg/puppy/store"
 
 	"github.com/stretchr/testify/assert"
 )
 
-// that is, no args were provided at all
-func TestMainHappyPath(t *testing.T) {
-	args = []string{"-d", "../../puppy-data/puppies.json", "-p", "80000", "-s", "map"}
-	assert.NotPanics(t, main)
-}
-
-func TestLongFlag(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
-
-	args = []string{"--data", "../../puppy-data/puppies.json", "-p", "80000"}
-
-	// purposely passing an invalid port number to cause main to panic in order to pass test
-	// but in order for test to not panic out, we need to recover()
-	func() {
-		defer func() {
-			_ = recover()
-		}()
-		main()
-	}()
-
-	expected := `Puppy with ID 1 has been created
-Retrieved puppy: &{1 Vulpix Red 2900}
-Puppy with ID 2 has been created
-Retrieved puppy: &{2 Eevee Light Brown 1290}
-Puppy with ID 3 has been created
-Retrieved puppy: &{3 Vaporeon Sea Blue 3290}
-`
-	actual := buf.String()
-	assert.Equal(t, expected, actual)
-}
-
-func TestParseError(t *testing.T) {
-	args = []string{"--wrongFlag"}
-	assert.Panics(t, main)
-}
-
-func TestEmptyFileName(t *testing.T) {
-	args = []string{"--data"}
-	assert.Panics(t, main)
-}
-
-func TestWrongFileName(t *testing.T) {
-	args = []string{"--data", "iDontExist.json"}
-	assert.Panics(t, main)
-}
-
-func TestUnmarshalPuppiesTypeMismatch(t *testing.T) {
-	args = []string{"--data", "../../puppy-data/type_mismatch.json"}
-	assert.Panics(t, main)
+// testing.M allows you to pass coverage for all but main()
+func TestMain(m *testing.M) {
+	os.Args = []string{""} // this does the trick. Removes main and gives you the 100% coverage
+	os.Exit(m.Run())
 }
 
 // This tests the enumerated arguments a user could provide to the store flag
@@ -75,9 +29,52 @@ func TestCreateStoreFunc(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestReadFileAndUnmarshalPuppiesFunc(t *testing.T) {
-	f, _ := os.Open("../../puppy-data/invalid.json")
-	puppies, err := readFileAndUnmarshalPuppies(f)
+func TestReadFileAndUnmarshalPuppiesInvalid(t *testing.T) {
+	f := "../../puppy-data/invalid.json"
+	puppies, err := readFileAndUnmarshalPuppies(&f)
 	assert.Nil(t, puppies)
 	assert.Error(t, err)
+}
+
+func TestReadFileAndUnmarshalPuppiesValid(t *testing.T) {
+	f := "../../puppy-data/puppies.json"
+	expected := []puppy.Puppy{
+		{ID: 17, Breed: "Vulpix", Colour: "Red", Value: 2900},
+		{ID: 27, Breed: "Eevee", Colour: "Light Brown", Value: 1290},
+		{ID: 37, Breed: "Vaporeon", Colour: "Sea Blue", Value: 3290}}
+
+	puppies, err := readFileAndUnmarshalPuppies(&f)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, puppies)
+}
+
+func TestParseFlagsLong(t *testing.T) {
+	arguments := []string{"--data", "../../puppy-data/invalid.json", "--port", "7777", "--store", "sync"}
+	c, err := parseFlags(arguments)
+
+	assert.NoError(t, err)
+	assert.Equal(t, "../../puppy-data/invalid.json", *c.file)
+	assert.Equal(t, 7777, c.port)
+	assert.Equal(t, "sync", c.storer)
+}
+
+func TestParseFlagsShort(t *testing.T) {
+	arguments := []string{"-d", "../../puppy-data/invalid.json", "-p", "7777", "-s", "sync"}
+	c, err := parseFlags(arguments)
+
+	assert.NoError(t, err)
+	assert.Equal(t, "../../puppy-data/invalid.json", *c.file)
+	assert.Equal(t, 7777, c.port)
+	assert.Equal(t, "sync", c.storer)
+}
+
+func TestParseFlagsDefault(t *testing.T) {
+	fileName = nil // initialise global variable
+	var expectedNilStrPtr *string
+	arguments := []string{}
+	c, err := parseFlags(arguments)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedNilStrPtr, c.file)
+	assert.Equal(t, 7777, c.port)
+	assert.Equal(t, "map", c.storer)
 }

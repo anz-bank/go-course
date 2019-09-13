@@ -27,7 +27,7 @@ func NewPuppyHandlerAndStorer(s puppy.Storer) *PuppyHandlerAndStorer {
 	return &PuppyHandlerAndStorer{Storage: s}
 }
 
-// Implmenting 1/4 methods in PuppyHandler interface: puppy handler for GET /api/puppy/{id}
+// Implementing 1/4 methods in PuppyHandler interface: puppy handler for GET /api/puppy/{id}
 func (phs *PuppyHandlerAndStorer) handleGet(w http.ResponseWriter, r *http.Request) {
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
@@ -39,13 +39,12 @@ func (phs *PuppyHandlerAndStorer) handleGet(w http.ResponseWriter, r *http.Reque
 	pup, err := phs.Storage.ReadPuppy(id)
 	if err != nil {
 		http.Error(w, notFoundMsg, http.StatusNotFound)
-		// http.NotFound(w, r)
 		return
 	}
 	render.JSON(w, r, pup) // if retrieved from storage can now send it back out after json serialisation
 }
 
-// Implmenting 2/4 methods in PuppyHandler interface: puppy handler for  POST /api/puppy/
+// Implementing 2/4 methods in PuppyHandler interface: puppy handler for  POST /api/puppy/
 func (phs *PuppyHandlerAndStorer) handlePost(w http.ResponseWriter, r *http.Request) {
 	var pup puppy.Puppy
 	// the following block is saying if I take the incoming body of the request and if I can successfully unmarshal
@@ -66,7 +65,7 @@ func (phs *PuppyHandlerAndStorer) handlePost(w http.ResponseWriter, r *http.Requ
 	render.JSON(w, r, pup) // confirm this is what has been created on backend
 }
 
-// Implmenting 3/4 methods in PuppyHandler interface: puppy handler for  PUT /api/puppy/{id}
+// Implementing 3/4 methods in PuppyHandler interface: puppy handler for  PUT /api/puppy/{id}
 func (phs *PuppyHandlerAndStorer) handlePut(w http.ResponseWriter, r *http.Request) {
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
@@ -100,7 +99,7 @@ func (phs *PuppyHandlerAndStorer) handlePut(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, pup) // confirm this is what has been created on backend
 }
 
-// Implmenting 4/4 methods in PuppyHandler interface: puppy handler for DELETE /api/puppy/{id}
+// Implementing 4/4 methods in PuppyHandler interface: puppy handler for DELETE /api/puppy/{id}
 func (phs *PuppyHandlerAndStorer) handleDelete(w http.ResponseWriter, r *http.Request) {
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
@@ -121,10 +120,29 @@ func (phs *PuppyHandlerAndStorer) handleDelete(w http.ResponseWriter, r *http.Re
 	render.JSON(w, r, "Puppy successfully deleted")
 }
 
-// SetupRoutes maps the exposed endpoints with their respective handlers
+// SetupRoutes does mapping within endpoints and their corresponding handlers
+// It also adds in a subrouter into our base router which ca handle subpath routing
 func SetupRoutes(r chi.Router, phs PuppyHandlerAndStorer) {
-	r.Get("/api/puppy/{id}", phs.handleGet)
-	r.Post("/api/puppy/", phs.handlePost)
-	r.Put("/api/puppy/{id}", phs.handlePut)
-	r.Delete("/api/puppy/{id}", phs.handleDelete)
+	r.Route("/api/puppy", func(r chi.Router) {
+		r.Get("/{id}", phs.handleGet)
+		r.Post("/", phs.handlePost)
+		r.Put("/{id}", phs.handlePut)
+		r.Delete("/{id}", phs.handleDelete)
+	})
 }
+
+// func (r *Rest) Handle(w http.ResponseWriter, r *http.Request) {
+// 	var p Puppy
+
+// 	// unmarshaling error or Rest layer error
+// 	if err := json.Unmarshal(r.Body, &p); err != nil {
+// 		handleErr(w, r, &Error{Code: http.StatusBadRequest, Message: "Invalid JSON Body"})
+// 	}
+
+// 	// error coming up from storer level
+// 	i, err := r.Storer.DoThing()
+// 	if err != nil {
+// 		handleErr(w, r, err)
+// 		return
+// 	}
+// }

@@ -27,14 +27,14 @@ var (
 	// this loads your file once parseFlags() is run
 	// these are methods too prepare a variable. Basically telling kingpin how to read the flag from cli
 	fileName = kingpin.Flag("data", "This flag supplies a puppy JSON file name").
-			Short('d').Default("../../puppy-data/puppies.json").File()
+			Short('d').String()
 	port   = kingpin.Flag("port", "Port to listen on and serve").Short('p').Default("7777").Int()
 	storer = kingpin.Flag("store", "Map/Sync Store").Short('s').Default("map").Enum("map", "sync")
 )
 
 // Config contains arguments parsed from commandline flags
 type Config struct {
-	file   *os.File
+	file   *string
 	port   int
 	storer string
 }
@@ -67,8 +67,6 @@ func main() {
 		pup := pup // to avoid scopelint error: Using a reference for the variable on range scope `pup`
 		createdPuppy, _ := phs.Storage.CreatePuppy(&pup)
 		fmt.Fprintf(out, "Puppy with ID %d has been created\n", createdPuppy)
-		retrievedPuppy, _ := phs.Storage.ReadPuppy(createdPuppy)
-		fmt.Fprintln(out, "Retrieved puppy:", retrievedPuppy)
 	}
 
 	// setting up REST API wrapper
@@ -79,31 +77,39 @@ func main() {
 	rest.SetupRoutes(r, *phs)
 
 	fmt.Printf("Starting server on port %s. Try:\n", addr)
-	fmt.Printf("  curl localhost%s/api/puppy -d ", addr)
-	fmt.Println(`'{"breed": "Snorlax", "colour": "Blue-ish", "value": 8888}'`)
-	fmt.Printf("  curl localhost%s/api/puppy/4 \n", addr)
 	log.Print(http.ListenAndServe(addr, r))
 }
 
 // checking for valid flags. At this point not checking for valid args provided with flags
-func parseFlags(args []string) (Config, error) {
+func parseFlags(a []string) (Config, error) {
 	// parse cli flags and check for flag parse error
 	// I believe this also binds the user input (via terminal) to the var fileName, port and storer
 	// but now I am extracting them and storing in Config struct in an easy to consume form
 	var parsedConfig Config
-	if _, parseError := kingpin.CommandLine.Parse(args); parseError != nil {
+	if _, parseError := kingpin.CommandLine.Parse(a); parseError != nil {
 		return parsedConfig, parseError
 	}
-	return Config{file: *fileName, port: *port, storer: *storer}, nil
+	return Config{file: fileName, port: *port, storer: *storer}, nil
 }
 
 // Read data from file (converts stream of bytes in file into json string data)
 // And also unmarshals JSON string into Go puppy objects
-func readFileAndUnmarshalPuppies(r io.Reader) ([]puppy.Puppy, error) {
+func readFileAndUnmarshalPuppies(f *string) ([]puppy.Puppy, error) {
+	// handle if no file provided by user
+	if f == nil {
+		return []puppy.Puppy{}, nil
+	}
+
+	// open file
+	file, err := os.Open(*f)
+	if err != nil {
+		return nil, err
+	}
+
 	puppies := []puppy.Puppy{}
 	// rawJSONData is just a byte stream at this point
-	rawJSONData, _ := ioutil.ReadAll(r) // error already handled by kingpin
-	err := json.Unmarshal(rawJSONData, &puppies)
+	rawJSONData, _ := ioutil.ReadAll(file) // error already handled by kingpin
+	err = json.Unmarshal(rawJSONData, &puppies)
 	if err != nil {
 		return nil, err
 	}

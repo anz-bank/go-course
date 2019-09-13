@@ -11,6 +11,7 @@ import (
 	"github.com/anz-bank/go-course/10_rest/nickolee/pkg/puppy"
 	"github.com/anz-bank/go-course/10_rest/nickolee/pkg/puppy/store"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -48,158 +49,243 @@ func createTestRouter() *chi.Mux {
 	return r
 }
 
-// creates a function that can act as a test client to run each test case
-func runTestCase(t *testing.T, httpMethod string, url string, payload []byte, expected string, expectedHTTPCode int) {
-	// create mock http request
-	req, err := http.NewRequest(httpMethod, url, bytes.NewBuffer(payload))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// setup router
-	router := createTestRouter()
-
-	// Setup response recorder that records the test response from the server for later inspection in tests
-	rr := httptest.NewRecorder()
-
-	/* Start test server - it needs a req and a resp which we have created above
-	   This guy basically is like a one-use server that we stand up then tear down
-	   It only exists for executing one test case */
-	router.ServeHTTP(rr, req)
-
-	// Get actual response from one time user server
-	resp := rr.Result()                  // grab the response from the resp recorder
-	defer resp.Body.Close()              // ensure you close the read on the next line
-	body, _ := ioutil.ReadAll(resp.Body) // read the body
-	bodyString := string(body)           // all this while we just had a stream of bytes. Now we get the text
-
-	// check http status - whether expected == actual
-	assert.Equal(t, expectedHTTPCode, resp.StatusCode)
-	// check body - whether expected == actual
-	assert.Equal(t, expected, bodyString)
+func setupTest() (*httptest.Server, *http.Client) {
+	r := createTestRouter()
+	s := httptest.NewServer(r) // Wrapping your handler in a server struct
+	client := s.Client()       // Creating a client that can talk to that server
+	return s, client
 }
 
-func TestRestAPI(t *testing.T) {
+func TestGetPuppy(t *testing.T) {
+	// prepare test data
 	testCases := []struct {
-		// all this is the input for the runTestCase func we created above (the test client)
-		testName    string
-		httpMethod  string
-		url         string
-		payload     []byte
-		HTTPCode    int
-		expectedMsg string
+		testName     string
+		url          string
+		HTTPCode     int
+		expectedBody string
 	}{
 		{
-			testName:   "Test GET Puppy by ID",
-			httpMethod: "GET",
-			url:        "/api/puppy/1",
-			payload:    nil,
-			HTTPCode:   http.StatusOK,
-			expectedMsg: "{\"id\":1,\"breed\":\"Extremely Rare Golden Retriever\",\"colour\":\"An extremely" +
+			testName: "Test GET Puppy by ID",
+			url:      "/api/puppy/1",
+			HTTPCode: http.StatusOK,
+			expectedBody: "{\"id\":1,\"breed\":\"Extremely Rare Golden Retriever\",\"colour\":\"An extremely" +
 				" rare shade of violet\",\"value\":1000000}\n"},
 		{
-			testName:    "Test GET Puppy on invalid endpoint",
-			httpMethod:  "GET",
-			url:         "/api/puppy/invalid",
-			payload:     nil,
-			HTTPCode:    http.StatusBadRequest,
-			expectedMsg: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
+			testName:     "Test GET Puppy on invalid endpoint",
+			url:          "/api/puppy/invalid",
+			HTTPCode:     http.StatusBadRequest,
+			expectedBody: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
 		{
-			testName:    "Test GET Puppy on nonexistent Puppy",
-			httpMethod:  "GET",
-			url:         "/api/puppy/300",
-			payload:     nil,
-			HTTPCode:    http.StatusNotFound,
-			expectedMsg: "Not Found: Apologies, for the puppy you seek does not exist\n"},
-		{
-			testName:    "Test POST Puppy",
-			httpMethod:  "POST",
-			url:         "/api/puppy/",
-			payload:     []byte(`{"Breed": "Arcanine", "Colour": "Brown", "Value": 7000}`),
-			HTTPCode:    http.StatusCreated,
-			expectedMsg: "{\"id\":2,\"breed\":\"Arcanine\",\"colour\":\"Brown\",\"value\":7000}\n"},
-		{
-			testName:    "Test POST with negative value",
-			httpMethod:  "POST",
-			url:         "/api/puppy/",
-			payload:     []byte(`{"Breed": "Arcanine", "Colour": "Brown", "Value": -7000}`),
-			HTTPCode:    http.StatusUnprocessableEntity,
-			expectedMsg: "PuppyStoreError 400: Sorry puppy value cannot be negative. The dog has to be worth something :)\n"},
-		{
-			testName:    "Test POST with JSON decode error",
-			httpMethod:  "POST",
-			url:         "/api/puppy/",
-			payload:     []byte(`{"What: "I don't know", "When": "Now", "Where": "Somewhere"}`),
-			HTTPCode:    http.StatusBadRequest,
-			expectedMsg: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
-		{
-			testName:    "Test PUT puppy by ID",
-			httpMethod:  "PUT",
-			url:         "/api/puppy/1",
-			payload:     []byte(`{"id": 1, "Breed": "Vulpix", "Colour": "Brown-ish", "Value": 2}`),
-			HTTPCode:    http.StatusCreated,
-			expectedMsg: "{\"id\":1,\"breed\":\"Vulpix\",\"colour\":\"Brown-ish\",\"value\":2}\n"},
-		{
-			testName:    "Test PUT puppy with invalid payload",
-			httpMethod:  "PUT",
-			url:         "/api/puppy/1",
-			payload:     []byte(`{INVALID JSON}`),
-			HTTPCode:    http.StatusUnprocessableEntity,
-			expectedMsg: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
-		{
-			testName:    "Test PUT puppy with out of range id",
-			httpMethod:  "PUT",
-			url:         "/api/puppy/300",
-			payload:     []byte(`{"id": 300, "Breed": "Pikachu", "Colour": "Yellow", "Value": 2100}`),
-			HTTPCode:    http.StatusNotFound,
-			expectedMsg: "Not Found: Apologies, for the puppy you seek does not exist\n"},
-		{
-			testName:    "Test PUT with invalid id",
-			httpMethod:  "PUT",
-			url:         "/api/puppy/foo",
-			payload:     []byte(`{"Breed": "Liverbird", "Color": "Red", "Value": 20000}`),
-			HTTPCode:    http.StatusBadRequest,
-			expectedMsg: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
-		{
-			testName:    "Test PUT with non-int puppy value",
-			httpMethod:  "PUT",
-			url:         "/api/puppy/1",
-			payload:     []byte(`{"Breed": "T-Rex", "Colour": "Green-ish", "Value": "blah"}`),
-			HTTPCode:    http.StatusUnprocessableEntity,
-			expectedMsg: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
-		{
-			testName:    "Test PUT with negative puppy value",
-			httpMethod:  "PUT",
-			url:         "/api/puppy/1",
-			payload:     []byte(`{"Breed": "Sphinx", "Color": "Golden", "Value": -500000}`),
-			HTTPCode:    http.StatusUnprocessableEntity,
-			expectedMsg: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
-		{
-			testName:    "Test DELETE puppy by ID",
-			httpMethod:  "DELETE",
-			url:         "/api/puppy/1",
-			payload:     nil,
-			HTTPCode:    http.StatusOK,
-			expectedMsg: "\"Puppy successfully deleted\"\n"},
-		{
-			testName:    "Test DELETE puppy with non-existent id",
-			httpMethod:  "DELETE",
-			url:         "/api/puppy/300",
-			payload:     nil,
-			HTTPCode:    http.StatusNotFound,
-			expectedMsg: "Not Found: Apologies, for the puppy you seek does not exist\n"},
-		{
-			testName:    "Test DELETE puppy with invalid id",
-			httpMethod:  "DELETE",
-			url:         "/api/puppy/invalid",
-			payload:     nil,
-			HTTPCode:    http.StatusBadRequest,
-			expectedMsg: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
+			testName:     "Test GET Puppy on nonexistent Puppy",
+			url:          "/api/puppy/300",
+			HTTPCode:     http.StatusNotFound,
+			expectedBody: "Not Found: Apologies, for the puppy you seek does not exist\n"},
 	}
+
+	// setup test server, router and client + starts server
+	// This guy basically is like a one-use server that we stand up then tear down for each test case
+	// It only exists for executing one test case
+	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	defer ts.Close()
+
+	// run tests by looping through test cases
 	for _, tc := range testCases {
-		tc := tc // prevent scopelint error
+		tc := tc // prevents scopelint error
 		t.Run(tc.testName, func(t *testing.T) {
-			runTestCase(t, tc.httpMethod, tc.url, tc.payload, tc.expectedMsg, tc.HTTPCode)
+			// Call endpoint
+			resp, err := client.Get(ts.URL + tc.url) // ts.URL is the server's base URL
+			require.NoError(t, err)
+			require.NotNil(t, resp)
+
+			// Check response
+			assert.Equal(t, tc.HTTPCode, resp.StatusCode) // compare actual vs expected response code
+			defer resp.Body.Close()                       // ensure you close the read on the next line
+			body, err := ioutil.ReadAll(resp.Body)        // check body of resp
+			require.NoError(t, err)
+			bodyString := string(body)                   // all this while we just had a stream of bytes. Now we get the text
+			assert.Equal(t, tc.expectedBody, bodyString) // check body - whether expected == actual
+		})
+	}
+}
+
+func TestPostPuppy(t *testing.T) {
+	// prepare test data
+	testCases := []struct {
+		testName     string
+		url          string
+		payload      []byte
+		HTTPCode     int
+		expectedBody string
+	}{
+		{
+			testName:     "Test POST Puppy",
+			url:          "/api/puppy/",
+			payload:      []byte(`{"Breed": "Arcanine", "Colour": "Brown", "Value": 7000}`),
+			HTTPCode:     http.StatusCreated,
+			expectedBody: "{\"id\":2,\"breed\":\"Arcanine\",\"colour\":\"Brown\",\"value\":7000}\n"},
+		{
+			testName:     "Test POST with negative value",
+			url:          "/api/puppy/",
+			payload:      []byte(`{"Breed": "Arcanine", "Colour": "Brown", "Value": -7000}`),
+			HTTPCode:     http.StatusUnprocessableEntity,
+			expectedBody: "PuppyStoreError 400: Sorry puppy value cannot be negative. The dog has to be worth something :)\n"},
+		{
+			testName:     "Test POST with JSON decode error",
+			url:          "/api/puppy/",
+			payload:      []byte(`{"What: "I don't know", "When": "Now", "Where": "Somewhere"}`),
+			HTTPCode:     http.StatusBadRequest,
+			expectedBody: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
+	}
+
+	// setup test server, router and client + starts server
+	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	defer ts.Close()
+
+	// run tests by looping through test cases
+	for _, tc := range testCases {
+		tc := tc // prevents scopelint error
+		t.Run(tc.testName, func(t *testing.T) {
+			// Call endpoint (ts.URL is the server's base URL)
+			resp, err := client.Post(ts.URL+tc.url, "application/json", bytes.NewBuffer(tc.payload))
+			require.NoError(t, err)
+			require.NotNil(t, resp)
+
+			// Check response
+			assert.Equal(t, tc.HTTPCode, resp.StatusCode) // compare actual vs expected response code
+			defer resp.Body.Close()                       // ensure you close the read on the next line
+			body, err := ioutil.ReadAll(resp.Body)        // check body of resp
+			require.NoError(t, err)
+			bodyString := string(body) // all this while we just had a stream of bytes. Now we get the text
+			// fmt.Printf("Test Case %s ran: %v\n", tc.testName, bodyString)
+			assert.Equal(t, tc.expectedBody, bodyString) // check body - whether expected == actual
+		})
+	}
+}
+
+func TestPutPuppy(t *testing.T) {
+	// prepare test data
+	testCases := []struct {
+		testName     string
+		url          string
+		payload      []byte
+		HTTPCode     int
+		expectedBody string
+	}{
+		{
+			testName:     "Test PUT puppy by ID",
+			url:          "/api/puppy/1",
+			payload:      []byte(`{"id": 1, "Breed": "Vulpix", "Colour": "Brown-ish", "Value": 2}`),
+			HTTPCode:     http.StatusCreated,
+			expectedBody: "{\"id\":1,\"breed\":\"Vulpix\",\"colour\":\"Brown-ish\",\"value\":2}\n"},
+		{
+			testName:     "Test PUT puppy with invalid payload",
+			url:          "/api/puppy/1",
+			payload:      []byte(`{INVALID JSON}`),
+			HTTPCode:     http.StatusUnprocessableEntity,
+			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+		{
+			testName:     "Test PUT puppy with out of range id",
+			url:          "/api/puppy/300",
+			payload:      []byte(`{"id": 300, "Breed": "Pikachu", "Colour": "Yellow", "Value": 2100}`),
+			HTTPCode:     http.StatusNotFound,
+			expectedBody: "Not Found: Apologies, for the puppy you seek does not exist\n"},
+		{
+			testName:     "Test PUT with invalid id",
+			url:          "/api/puppy/foo",
+			payload:      []byte(`{"Breed": "Liverbird", "Color": "Red", "Value": 20000}`),
+			HTTPCode:     http.StatusBadRequest,
+			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+		{
+			testName:     "Test PUT with non-int puppy value",
+			url:          "/api/puppy/1",
+			payload:      []byte(`{"Breed": "T-Rex", "Colour": "Green-ish", "Value": "blah"}`),
+			HTTPCode:     http.StatusUnprocessableEntity,
+			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+		{
+			testName:     "Test PUT with negative puppy value",
+			url:          "/api/puppy/1",
+			payload:      []byte(`{"Breed": "Sphinx", "Color": "Golden", "Value": -500000}`),
+			HTTPCode:     http.StatusUnprocessableEntity,
+			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+	}
+
+	// setup test server, router and client + starts server
+	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	defer ts.Close()
+
+	// run tests by looping through test cases
+	for _, tc := range testCases {
+		tc := tc // prevents scopelint error
+		t.Run(tc.testName, func(t *testing.T) {
+			// setup request
+			req, err := http.NewRequest("PUT", ts.URL+tc.url, bytes.NewBuffer(tc.payload))
+			require.NoError(t, err)
+
+			// Call endpoint
+			resp, err := client.Do(req) // ts.URL is the server's base URL
+			require.NoError(t, err)
+			require.NotNil(t, resp)
+
+			// Check response
+			assert.Equal(t, tc.HTTPCode, resp.StatusCode) // compare actual vs expected response code
+			defer resp.Body.Close()                       // ensure you close the read on the next line
+			body, err := ioutil.ReadAll(resp.Body)        // check body of resp
+			require.NoError(t, err)
+			bodyString := string(body)                   // all this while we just had a stream of bytes. Now we get the text
+			assert.Equal(t, tc.expectedBody, bodyString) // check body - whether expected == actual
+		})
+	}
+}
+
+func TestDeletePuppy(t *testing.T) {
+	// prepare test data
+	testCases := []struct {
+		testName     string
+		url          string
+		HTTPCode     int
+		expectedBody string
+	}{
+		{
+			testName:     "Test DELETE puppy by ID",
+			url:          "/api/puppy/1",
+			HTTPCode:     http.StatusOK,
+			expectedBody: "\"Puppy successfully deleted\"\n"},
+		{
+			testName:     "Test DELETE puppy with non-existent id",
+			url:          "/api/puppy/300",
+			HTTPCode:     http.StatusNotFound,
+			expectedBody: "Not Found: Apologies, for the puppy you seek does not exist\n"},
+		{
+			testName:     "Test DELETE puppy with invalid id",
+			url:          "/api/puppy/invalid",
+			HTTPCode:     http.StatusBadRequest,
+			expectedBody: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
+	}
+
+	// setup test server, router and client + starts server
+	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	defer ts.Close()
+
+	// run tests by looping through test cases
+	for _, tc := range testCases {
+		tc := tc // prevents scopelint error
+		t.Run(tc.testName, func(t *testing.T) {
+			// setup request
+			req, err := http.NewRequest("DELETE", ts.URL+tc.url, nil)
+			require.NoError(t, err)
+
+			// Call endpoint
+			resp, err := client.Do(req) // ts.URL is the server's base URL
+			require.NoError(t, err)
+			require.NotNil(t, resp)
+
+			// Check response
+			assert.Equal(t, tc.HTTPCode, resp.StatusCode) // compare actual vs expected response code
+			defer resp.Body.Close()                       // ensure you close the read on the next line
+			body, err := ioutil.ReadAll(resp.Body)        // check body of resp
+			require.NoError(t, err)
+			bodyString := string(body)                   // all this while we just had a stream of bytes. Now we get the text
+			assert.Equal(t, tc.expectedBody, bodyString) // check body - whether expected == actual
 		})
 	}
 }

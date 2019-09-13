@@ -30,13 +30,13 @@ It aims to impart several key learnings such as but not limited to:
 -   Clone this project outside your `$GOPATH` to enable [Go Modules](https://github.com/golang/go/wiki/Modules)
 -   Install `golangci-lint` according to [instructions](https://github.com/golangci/golangci-lint#local-installation)
 
-## How to build this project?
+## Build
 
 To build the project, run the following command while you are in the root of the project folder:
 
-`go build ./...`
+`go build ./cmd/puppy-server`
 
-## How to run this project?
+## Run
 `go run ./cmd/puppy-server/main.go --data puppy-data/puppies.json --port 7777 --store map`
 
 Alternatively, simply run:
@@ -46,11 +46,11 @@ Which will simply revert to pre-specified default values.
 
 Note that there are three flags which work with main.go:
 
-1. **-d,--data:** if you wish to specify a .json file to load in seed data for the database, pass it as a value to this flag. Note that if no file is specified then a default file is used.
+1. **-d,--data:** if you wish to specify a .json file to load in seed data for the database, pass it as a value to this flag. Note that if no file is specified then you will get an empty Storer with no puppies inside.
 2. **-s, --store:** either _map_ or _sync_. Note that if not set then the value defaults to _map_
-3. **-p, --port:** if set then an **API** server is started on the user specified port. Must be a valid port number between 0 and 65535
+3. **-p, --port:** if set then an **API** server is started on the user specified port. Must be a valid port number between 0 and 65535. If port is not set it will default to port 7777.
 
-## How to test this project?
+## Test
 
 To test this project, follow the steps below:
 
@@ -60,9 +60,10 @@ To test this project, follow the steps below:
 
 ## API Spec
 
-### Create puppies
- Endpoint: {host:port}/api/puppy/
- Method: POST
+### POST /api/puppy
+
+Adds a new puppy to the store, returns the stored puppy with a generated id.
+
  Example:
 
     curl -X POST http://localhost:7777/api/puppy/ \
@@ -72,18 +73,20 @@ To test this project, follow the steps below:
         "value": 9500
       }'
 
-Note that a negative puppy value shall not be accepted.
+Note that a negative puppy value will not be accepted.
 
-### Retrieve puppies
- Endpoint: {host:port}/api/puppy/{id}
- Method: GET
+### GET /api/puppy/{id}
+
+Retrieves a puppy from the store. Returns a stored puppy.
+
  Example:
 
     curl -X GET http://localhost:7777/api/puppy/1
 
-### Modify existing puppies
- Endpoint: {host:port}/api/puppy/{id}
- Method: PUT
+### PUT /api/puppy/{id}
+
+Updates an existing puppy in the store, returns the newly updated puppy.
+
  Example:
 
     curl -X PUT http://localhost:7000/api/puppy/1 \
@@ -95,9 +98,13 @@ Note that a negative puppy value shall not be accepted.
 
 As with POST this will not accept a negative puppy value since we believe every dog has intrinsic value and is worth something!
 
-### Delete puppies
- Endpoint: {host:port}/api/puppy/{id}
- Method: DELETE
+### DELETE /api/puppy/{id}
+
+Deletes a puppy of a given id from the store, returns a sucess message.
+
  Example:
 
     curl -X DELETE http://localhost:7777/api/puppy/1
+
+
+  
