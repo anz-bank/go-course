@@ -26,6 +26,7 @@ func TestHandleStorerError(t *testing.T) {
 	require.Equal(t, 500, resp.StatusCode)
 
 	raw, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 	require.NoError(t, err)
 	require.Equal(t, "500: Internal Server Error\n", string(raw))
 }
