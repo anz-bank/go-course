@@ -231,8 +231,8 @@ func (s *restSuite) TestDeletePuppy() {
 
 func initialisePuppyStore(storer puppy.Storer, fileName string) error {
 	puppies := []puppy.Puppy{}
-	puppiesString := readJSON(fileName)
-	if err := json.Unmarshal([]byte(puppiesString), &puppies); err != nil {
+	puppiesBytes := readFile(fileName)
+	if err := json.Unmarshal(puppiesBytes, &puppies); err != nil {
 		panic(err)
 	}
 	for _, puppy := range puppies {
@@ -242,10 +242,11 @@ func initialisePuppyStore(storer puppy.Storer, fileName string) error {
 	}
 	return nil
 }
-func readJSON(filename string) string {
+
+func readFile(filename string) []byte {
 	buff, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
-	return string(buff)
+	return buff
 }
