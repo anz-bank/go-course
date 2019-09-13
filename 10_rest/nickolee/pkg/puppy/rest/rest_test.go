@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bytes"
+	"errors"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -17,6 +18,18 @@ import (
 	"github.com/go-chi/chi/middleware"
 )
 
+func TestHandleStorerError(t *testing.T) {
+	wr := httptest.NewRecorder()
+	err := errors.New("hello")
+	handleStorerError(wr, err)
+	resp := wr.Result() // can treat as if is the response from the handler
+	require.Equal(t, 500, resp.StatusCode)
+
+	raw, err := ioutil.ReadAll(resp.Body)
+	require.NoError(t, err)
+	require.Equal(t, "500: Internal Server Error\n", string(raw))
+}
+
 func createStore(n int) puppy.Storer {
 	switch n {
 	case 0:
@@ -27,7 +40,8 @@ func createStore(n int) puppy.Storer {
 }
 
 // a setup function that returns a preconfigured router that our test client can use
-func createTestRouter() *chi.Mux {
+// note that we passed it a *testing.T
+func createTestRouter(t *testing.T) *chi.Mux {
 	// randomly create a SyncStore or a MapStore for tests
 	storer := createStore(rand.Intn(2)) // generates random binary number 0 or 1
 
@@ -36,9 +50,8 @@ func createTestRouter() *chi.Mux {
 	seedPuppy := puppy.Puppy{Breed: "Extremely Rare Golden Retriever",
 		Colour: "An extremely rare shade of violet", Value: 1000000} // so you know it's going to cost you :)
 	_, err := phs.Storage.CreatePuppy(&seedPuppy)
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
+
 	// create chi test router
 	r := chi.NewRouter()
 	r.Use(middleware.URLFormat)
@@ -49,8 +62,8 @@ func createTestRouter() *chi.Mux {
 	return r
 }
 
-func setupTest() (*httptest.Server, *http.Client) {
-	r := createTestRouter()
+func setupTest(t *testing.T) (*httptest.Server, *http.Client) {
+	r := createTestRouter(t)
 	s := httptest.NewServer(r) // Wrapping your handler in a server struct
 	client := s.Client()       // Creating a client that can talk to that server
 	return s, client
@@ -74,18 +87,18 @@ func TestGetPuppy(t *testing.T) {
 			testName:     "Test GET Puppy on invalid endpoint",
 			url:          "/api/puppy/invalid",
 			HTTPCode:     http.StatusBadRequest,
-			expectedBody: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
+			expectedBody: "Bad Request: Invalid input, ensure ID is valid\n"},
 		{
 			testName:     "Test GET Puppy on nonexistent Puppy",
 			url:          "/api/puppy/300",
 			HTTPCode:     http.StatusNotFound,
-			expectedBody: "Not Found: Apologies, for the puppy you seek does not exist\n"},
+			expectedBody: "PuppyStoreError 404: Sorry puppy with ID 300 does not exist\n"},
 	}
 
 	// setup test server, router and client + starts server
 	// This guy basically is like a one-use server that we stand up then tear down for each test case
 	// It only exists for executing one test case
-	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	ts, client := setupTest(t) // somehow this doesn't look like it but setupTest() actually also starts the server
 	defer ts.Close()
 
 	// run tests by looping through test cases
@@ -127,18 +140,18 @@ func TestPostPuppy(t *testing.T) {
 			testName:     "Test POST with negative value",
 			url:          "/api/puppy/",
 			payload:      []byte(`{"Breed": "Arcanine", "Colour": "Brown", "Value": -7000}`),
-			HTTPCode:     http.StatusUnprocessableEntity,
+			HTTPCode:     http.StatusBadRequest,
 			expectedBody: "PuppyStoreError 400: Sorry puppy value cannot be negative. The dog has to be worth something :)\n"},
 		{
 			testName:     "Test POST with JSON decode error",
 			url:          "/api/puppy/",
 			payload:      []byte(`{"What: "I don't know", "When": "Now", "Where": "Somewhere"}`),
 			HTTPCode:     http.StatusBadRequest,
-			expectedBody: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
+			expectedBody: "Bad Request: Invalid input, ensure JSON is valid\n"},
 	}
 
 	// setup test server, router and client + starts server
-	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	ts, client := setupTest(t) // somehow this doesn't look like it but setupTest() actually also starts the server
 	defer ts.Close()
 
 	// run tests by looping through test cases
@@ -182,35 +195,35 @@ func TestPutPuppy(t *testing.T) {
 			url:          "/api/puppy/1",
 			payload:      []byte(`{INVALID JSON}`),
 			HTTPCode:     http.StatusUnprocessableEntity,
-			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+			expectedBody: "Unprocessable Entity: Invalid input, ensure JSON is valid\n"},
 		{
 			testName:     "Test PUT puppy with out of range id",
 			url:          "/api/puppy/300",
 			payload:      []byte(`{"id": 300, "Breed": "Pikachu", "Colour": "Yellow", "Value": 2100}`),
 			HTTPCode:     http.StatusNotFound,
-			expectedBody: "Not Found: Apologies, for the puppy you seek does not exist\n"},
+			expectedBody: "PuppyStoreError 404: Sorry puppy with ID 300 does not exist\n"},
 		{
 			testName:     "Test PUT with invalid id",
 			url:          "/api/puppy/foo",
 			payload:      []byte(`{"Breed": "Liverbird", "Color": "Red", "Value": 20000}`),
 			HTTPCode:     http.StatusBadRequest,
-			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+			expectedBody: "Unprocessable Entity: Invalid input, ensure ID is valid\n"},
 		{
 			testName:     "Test PUT with non-int puppy value",
 			url:          "/api/puppy/1",
 			payload:      []byte(`{"Breed": "T-Rex", "Colour": "Green-ish", "Value": "blah"}`),
 			HTTPCode:     http.StatusUnprocessableEntity,
-			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+			expectedBody: "Unprocessable Entity: Invalid input, ensure JSON is valid\n"},
 		{
 			testName:     "Test PUT with negative puppy value",
 			url:          "/api/puppy/1",
 			payload:      []byte(`{"Breed": "Sphinx", "Color": "Golden", "Value": -500000}`),
-			HTTPCode:     http.StatusUnprocessableEntity,
-			expectedBody: "Unprocessable Entity: Invalid input, ensure ID and JSON are valid\n"},
+			HTTPCode:     http.StatusBadRequest,
+			expectedBody: "PuppyStoreError 400: Sorry puppy value cannot be negative. The dog has to be worth something :)\n"},
 	}
 
 	// setup test server, router and client + starts server
-	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	ts, client := setupTest(t) // somehow this doesn't look like it but setupTest() actually also starts the server
 	defer ts.Close()
 
 	// run tests by looping through test cases
@@ -254,16 +267,16 @@ func TestDeletePuppy(t *testing.T) {
 			testName:     "Test DELETE puppy with non-existent id",
 			url:          "/api/puppy/300",
 			HTTPCode:     http.StatusNotFound,
-			expectedBody: "Not Found: Apologies, for the puppy you seek does not exist\n"},
+			expectedBody: "PuppyStoreError 404: Sorry puppy with ID 300 does not exist\n"},
 		{
 			testName:     "Test DELETE puppy with invalid id",
 			url:          "/api/puppy/invalid",
 			HTTPCode:     http.StatusBadRequest,
-			expectedBody: "Bad Request: Invalid input, ensure ID and JSON are valid\n"},
+			expectedBody: "Bad Request: Invalid input, ensure ID is valid\n"},
 	}
 
 	// setup test server, router and client + starts server
-	ts, client := setupTest() // somehow this doesn't look like it but setupTest() actually also starts the server
+	ts, client := setupTest(t) // somehow this doesn't look like it but setupTest() actually also starts the server
 	defer ts.Close()
 
 	// run tests by looping through test cases

@@ -11,15 +11,14 @@ import (
 )
 
 const (
-	invalidInputMsg = "Invalid input, ensure ID and JSON are valid"
-	notFoundMsg     = "Not Found: Apologies, for the puppy you seek does not exist"
+	invalidIDMsg   = "Invalid input, ensure ID is valid"
+	invalidJSONMsg = "Invalid input, ensure JSON is valid"
 )
 
 // PuppyHandlerAndStorer is a special guy who wraps around Storer types and gives them extra abilities
 // to now handle API requests thus enhancing their storing abilities significantly!
 type PuppyHandlerAndStorer struct {
 	Storage puppy.Storer // Using the thread safe sync.map implementation of Storer interface
-	// ask Dan what the significance would be if I used storage store.SyncStore vs just store.SyncStore
 }
 
 // This guy gives u a nicely initialised brand new *PuppyHandlerAndStorer
@@ -27,36 +26,51 @@ func NewPuppyHandlerAndStorer(s puppy.Storer) *PuppyHandlerAndStorer {
 	return &PuppyHandlerAndStorer{Storage: s}
 }
 
-// Implementing 1/4 methods in PuppyHandler interface: puppy handler for GET /api/puppy/{id}
+func handleStorerError(w http.ResponseWriter, err error) {
+	// switch on error type (type switch as opposed to value switch) - unique to Go
+	// So it checks type of error and based on that determines what to do
+	switch e := err.(type) { // e is the type-casted error
+	case *puppy.Error:
+		// use puppy error to define the response status and body
+		http.Error(w, e.Error(), e.Code)
+		return
+	default:
+		// handle otherwise (500)
+		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+// Implementing 1/4 methods of PuppyHandler: puppy handler for GET /api/puppy/{id}
 func (phs *PuppyHandlerAndStorer) handleGet(w http.ResponseWriter, r *http.Request) {
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
 	if err != nil {
 		// if err != nil means user didn't provide proper id hence 404
-		http.Error(w, "Bad Request: "+invalidInputMsg, http.StatusBadRequest)
+		http.Error(w, "Bad Request: "+invalidIDMsg, http.StatusBadRequest)
 		return
 	}
 	pup, err := phs.Storage.ReadPuppy(id)
 	if err != nil {
-		http.Error(w, notFoundMsg, http.StatusNotFound)
+		handleStorerError(w, err)
 		return
 	}
 	render.JSON(w, r, pup) // if retrieved from storage can now send it back out after json serialisation
 }
 
-// Implementing 2/4 methods in PuppyHandler interface: puppy handler for  POST /api/puppy/
+// Implementing 2/4 methods of PuppyHandler: puppy handler for  POST /api/puppy/
 func (phs *PuppyHandlerAndStorer) handlePost(w http.ResponseWriter, r *http.Request) {
 	var pup puppy.Puppy
 	// the following block is saying if I take the incoming body of the request and if I can successfully unmarshal
 	// into the Go Puppy object this means the requestor has sent me valid puppy JSON so I can work with that
 	if err := render.DecodeJSON(r.Body, &pup); err != nil {
-		http.Error(w, "Bad Request: "+invalidInputMsg, http.StatusBadRequest)
+		http.Error(w, "Bad Request: "+invalidJSONMsg, http.StatusBadRequest)
 		return
 	}
 	// Actually create a new Puppy in store
 	id, err := phs.Storage.CreatePuppy(&pup)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnprocessableEntity) // if err return a 422
+		handleStorerError(w, err)
 		return
 	}
 	// else if all is well tell the client the puppy has been successfully created
@@ -65,19 +79,19 @@ func (phs *PuppyHandlerAndStorer) handlePost(w http.ResponseWriter, r *http.Requ
 	render.JSON(w, r, pup) // confirm this is what has been created on backend
 }
 
-// Implementing 3/4 methods in PuppyHandler interface: puppy handler for  PUT /api/puppy/{id}
+// Implementing 3/4 methods of PuppyHandler: puppy handler for  PUT /api/puppy/{id}
 func (phs *PuppyHandlerAndStorer) handlePut(w http.ResponseWriter, r *http.Request) {
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
 	if err != nil {
-		http.Error(w, "Unprocessable Entity: "+invalidInputMsg, http.StatusBadRequest)
+		http.Error(w, "Unprocessable Entity: "+invalidIDMsg, http.StatusBadRequest)
 		return
 	}
 
 	// check if puppy with given id exists in storage
 	_, err = phs.Storage.ReadPuppy(id)
 	if err != nil {
-		http.Error(w, notFoundMsg, http.StatusNotFound)
+		handleStorerError(w, err)
 		return
 	}
 
@@ -85,13 +99,13 @@ func (phs *PuppyHandlerAndStorer) handlePut(w http.ResponseWriter, r *http.Reque
 	var pup puppy.Puppy
 	// decode json and unmarshal into var pup
 	if err := render.DecodeJSON(r.Body, &pup); err != nil {
-		http.Error(w, "Unprocessable Entity: "+invalidInputMsg, http.StatusUnprocessableEntity)
+		http.Error(w, "Unprocessable Entity: "+invalidJSONMsg, http.StatusUnprocessableEntity)
 		return
 	}
 	// Actually update corresponding Puppy in store
 	err = phs.Storage.UpdatePuppy(id, &pup)
 	if err != nil {
-		http.Error(w, "Unprocessable Entity: "+invalidInputMsg, http.StatusUnprocessableEntity) // if err return a 422
+		handleStorerError(w, err)
 		return
 	}
 	// else if all is well tell the client the puppy has been successfully updated
@@ -99,20 +113,20 @@ func (phs *PuppyHandlerAndStorer) handlePut(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, pup) // confirm this is what has been created on backend
 }
 
-// Implementing 4/4 methods in PuppyHandler interface: puppy handler for DELETE /api/puppy/{id}
+// Implementing 4/4 methods of PuppyHandler: puppy handler for DELETE /api/puppy/{id}
 func (phs *PuppyHandlerAndStorer) handleDelete(w http.ResponseWriter, r *http.Request) {
 	// parse incoming request url param
 	id, err := strconv.Atoi(chi.URLParam(r, "id")) // strip off the {id} part of the endpoint and convert to int
 	if err != nil {
 		// if err != nil means user didn't provide proper id hence 400
-		http.Error(w, "Bad Request: "+invalidInputMsg, http.StatusBadRequest)
+		http.Error(w, "Bad Request: "+invalidIDMsg, http.StatusBadRequest)
 		return
 	}
 
 	// actually perform delete operation
 	err = phs.Storage.DeletePuppy(id)
 	if err != nil {
-		http.Error(w, notFoundMsg, http.StatusNotFound)
+		handleStorerError(w, err)
 		return
 	}
 
@@ -130,19 +144,3 @@ func SetupRoutes(r chi.Router, phs PuppyHandlerAndStorer) {
 		r.Delete("/{id}", phs.handleDelete)
 	})
 }
-
-// func (r *Rest) Handle(w http.ResponseWriter, r *http.Request) {
-// 	var p Puppy
-
-// 	// unmarshaling error or Rest layer error
-// 	if err := json.Unmarshal(r.Body, &p); err != nil {
-// 		handleErr(w, r, &Error{Code: http.StatusBadRequest, Message: "Invalid JSON Body"})
-// 	}
-
-// 	// error coming up from storer level
-// 	i, err := r.Storer.DoThing()
-// 	if err != nil {
-// 		handleErr(w, r, err)
-// 		return
-// 	}
-// }

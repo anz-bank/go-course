@@ -46,12 +46,6 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// read JSON from file + parse/unmarshal the json and we now have []puppy (Go objects)
-	puppies, err := readFileAndUnmarshalPuppies(cliConfig.file)
-	if err != nil {
-		panic(err)
-	}
-
 	// instantiate new PuppyHandlerAndStorer based on user specified value of storer
 	// create puppy.Storer
 	newStorer, _ := createStore(cliConfig.storer) // no need to check err as it defaults to "map"
@@ -59,8 +53,11 @@ func main() {
 	// create PuppyHandlerAndStorer - the Rest API wrapper around puppy.Storer
 	phs := rest.NewPuppyHandlerAndStorer(newStorer)
 
-	// get the user specified port
-	addr := ":" + strconv.Itoa(cliConfig.port)
+	// read JSON from file + parse/unmarshal the json and we now have []puppy (Go objects)
+	puppies, err := readFileAndUnmarshalPuppies(cliConfig.file)
+	if err != nil {
+		panic(err)
+	}
 
 	// create some puppies loaded in from json file and store in store (no pun intended lol)
 	for _, pup := range puppies {
@@ -76,7 +73,10 @@ func main() {
 
 	rest.SetupRoutes(r, *phs)
 
-	fmt.Printf("Starting server on port %s. Try:\n", addr)
+	// get the user specified port
+	addr := ":" + strconv.Itoa(cliConfig.port)
+
+	fmt.Printf("Starting server on port %s.\n", addr)
 	log.Print(http.ListenAndServe(addr, r))
 }
 
