@@ -21,7 +21,7 @@ func (m MapStore) CreatePuppy(puppy *Puppy) int {
 // UpdatePuppy overrides an existing puppy in the store,
 // returns an error if id is not found or does not match the puppy ID
 func (m MapStore) UpdatePuppy(p *Puppy) error {
-	if _, exists := m[p.ID]; !exists {
+	if _, ok := m[p.ID]; !ok {
 		return fmt.Errorf("puppy ID %d to update does not exist in the map", p.ID)
 	}
 	m[p.ID] = *p
@@ -30,7 +30,7 @@ func (m MapStore) UpdatePuppy(p *Puppy) error {
 
 // DeletePuppy deletes an existing puppy from the store
 func (m MapStore) DeletePuppy(id int) error {
-	if _, exists := m[id]; exists {
+	if _, ok := m[id]; ok {
 		delete(m, id)
 		return nil
 	}
@@ -39,7 +39,7 @@ func (m MapStore) DeletePuppy(id int) error {
 
 // ReadPuppy reads an existing puppy from the store
 func (m MapStore) ReadPuppy(id int) (*Puppy, error) {
-	if puppy, exists := m[id]; exists {
+	if puppy, ok := m[id]; ok {
 		return &puppy, nil
 	}
 	return nil, fmt.Errorf("puppy ID %d does not exist in the map", id)

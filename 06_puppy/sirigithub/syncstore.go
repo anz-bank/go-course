@@ -31,7 +31,7 @@ func (m *SyncStore) CreatePuppy(puppy *Puppy) int {
 func (m *SyncStore) UpdatePuppy(p *Puppy) error {
 	m.Lock()
 	defer m.Unlock()
-	if _, exists := m.Load(p.ID); !exists {
+	if _, ok := m.Load(p.ID); !ok {
 		return fmt.Errorf("puppy ID %d to update does not exist in the map", p.ID)
 	}
 	m.Store(p.ID, p)
@@ -42,7 +42,7 @@ func (m *SyncStore) UpdatePuppy(p *Puppy) error {
 func (m *SyncStore) DeletePuppy(id int) error {
 	m.Lock()
 	defer m.Unlock()
-	if _, exists := m.Load(id); exists {
+	if _, ok := m.Load(id); ok {
 		m.Delete(id)
 		return nil
 	}
@@ -51,7 +51,7 @@ func (m *SyncStore) DeletePuppy(id int) error {
 
 // ReadPuppy reads an existing puppy from the store
 func (m *SyncStore) ReadPuppy(id int) (*Puppy, error) {
-	if puppyData, exists := m.Load(id); exists {
+	if puppyData, ok := m.Load(id); ok {
 		puppy, _ := puppyData.(Puppy)
 		return &puppy, nil
 	}
