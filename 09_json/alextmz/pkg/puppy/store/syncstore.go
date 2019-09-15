@@ -3,10 +3,11 @@ package store
 import (
 	"sync"
 
-	pp "github.com/anz-bank/go-course/08_project/alextmz/pkg/puppy"
+	"github.com/anz-bank/go-course/09_json/alextmz/pkg/puppy"
 )
 
 type SyncStore struct {
+	nextID int
 	sync.Map
 	sync.Mutex
 }
@@ -16,48 +17,66 @@ func NewSyncStore() *SyncStore {
 	return &a
 }
 
-func (m *SyncStore) CreatePuppy(p *pp.Puppy) error {
+func (m *SyncStore) CreatePuppy(p *puppy.Puppy) error {
+	if p == nil {
+		return puppy.Error{Code: puppy.ErrNilPuppyPointer}
+	}
+
+	if p.Value < 0 {
+		return puppy.Errorp(puppy.ErrNegativePuppyValueOnCreate, p.Value)
+	}
+
+	if p.ID != 0 {
+		return puppy.Errorp(puppy.ErrPuppyAlreadyIdentified, p.ID)
+	}
+
+	m.Lock()
+	defer m.Unlock()
+	p.ID = m.nextID + 1
+	m.nextID++
+	m.Store(p.ID, *p)
+
+	return nil
+}
+
+func (m *SyncStore) ReadPuppy(id int) (puppy.Puppy, error) {
+	v, ok := m.Load(id)
+	if !ok {
+		return puppy.Puppy{}, puppy.Errorp(puppy.ErrPuppyNotFoundOnRead, id)
+	}
+
+	m.Lock()
+	defer m.Unlock()
+
+	return v.(puppy.Puppy), nil
+}
+
+func (m *SyncStore) UpdatePuppy(p puppy.Puppy) error {
+	m.Lock()
+	defer m.Unlock()
+
 	if _, ok := m.Load(p.ID); !ok {
-		if p.Value < 0 {
-			return pp.NewError(pp.ErrValueLessThanZero)
-		}
-		m.Lock()
-		m.Store(p.ID, *p)
-		m.Unlock()
-		return nil
+		return puppy.Errorp(puppy.ErrPuppyNotFoundOnUpdate, p.ID)
 	}
-	return pp.NewError(pp.ErrIDBeingCreatedAlreadyExists)
+
+	if p.Value < 0 {
+		return puppy.Errorp(puppy.ErrNegativePuppyValueOnUpdate, p.Value)
+	}
+
+	m.Store(p.ID, p)
+
+	return nil
 }
 
-func (m *SyncStore) ReadPuppy(id pp.Pid) (*pp.Puppy, error) {
-	r, ok := m.Load(id)
-	if ok {
-		puppy := r.(pp.Puppy)
-		return &puppy, nil
-	}
-	return nil, pp.NewError(pp.ErrIDBeingReadDoesNotExist)
-}
+func (m *SyncStore) DeletePuppy(id int) error {
+	m.Lock()
+	defer m.Unlock()
 
-func (m *SyncStore) UpdatePuppy(id pp.Pid, p *pp.Puppy) error {
-	if _, ok := m.Load(id); ok {
-		if p.Value < 0 {
-			return pp.NewError(pp.ErrValueLessThanZero)
-		}
-		m.Lock()
-		m.Store(id, *p)
-		m.Unlock()
-		return nil
+	if _, ok := m.Load(id); !ok {
+		return puppy.Errorp(puppy.ErrPuppyNotFoundOnDelete, id)
 	}
-	return pp.NewError(pp.ErrIDBeingUpdatedDoesNotExist)
-}
 
-func (m *SyncStore) DeletePuppy(id pp.Pid) error {
-	_, ok := m.Load(id)
-	if ok {
-		m.Lock()
-		m.Delete(id)
-		m.Unlock()
-		return nil
-	}
-	return pp.NewError(pp.ErrIDBeingDeletedDoesNotExist)
+	m.Delete(id)
+
+	return nil
 }

@@ -3,100 +3,182 @@ package store
 import (
 	"testing"
 
-	. "github.com/anz-bank/go-course/08_project/alextmz/pkg/puppy"
+	"github.com/anz-bank/go-course/09_json/alextmz/pkg/puppy"
 	"github.com/stretchr/testify/suite"
 )
 
 type storerSuite struct {
 	suite.Suite
-	p  []Puppy
-	st Storer
+	st puppy.Storer
 }
 
-func (su *storerSuite) SetupTest() {
-	su.p = nil
-	var p = []Puppy{
-		{ID: 256, Breed: "Dogo", Colour: "White", Value: 500},
-		{ID: 512, Breed: "Mastiff", Colour: "Brindle", Value: 700},
-		{ID: 768, Breed: "Fila", Colour: "Golden", Value: 900},
-		{ID: 1024, Breed: "Wolfhound", Colour: "Gray", Value: -50},
-	}
-	su.p = append(su.p, p...)
-	err := su.st.CreatePuppy(&su.p[0])
-	su.Nil(err)
-}
-
-// TearDownTest cleans everything after each test runs.
-// It impacts test performance as things get re-populated soon afterwards,
-// but we're looking for reliable here not fast
-func (su *storerSuite) TearDownTest() {
-	for _, v := range su.p {
-		if _, err := su.st.ReadPuppy(v.ID); err == nil {
-			err := su.st.DeletePuppy(v.ID)
-			if err != nil {
-				su.T().Fatalf("internal error when deleting, this should never happen: %#v\n", err)
-			}
-		}
-	}
-	su.p = nil
-}
-
-// TestCreatePuppy tests:
-// - If we can create without error
-// - If we error when creating something that already exists
-// - If we can create and what we read back matches what we expect
 func (su *storerSuite) TestCreatePuppy() {
-	err := su.st.CreatePuppy(&su.p[1])
-	su.Nil(err)
-	err = su.st.CreatePuppy(&su.p[1])
-	su.NotNil(err)
-	err = su.st.CreatePuppy(&su.p[3])
-	su.NotNil(err)
-	pa, _ := su.st.ReadPuppy(su.p[1].ID)
-	su.Equalf(su.p[1], *pa, "expected = %#v, actual = %#v\n", su.p[1], pa)
+	// can we create without error?
+	p1 := puppy.Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+	expected := p1
+	err := su.st.CreatePuppy(&p1)
+	su.NoError(err)
+
+	// do we increase the ID correctly?
+	su.Run("PuppyIDIncreases", func() {
+		p2 := puppy.Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+		err = su.st.CreatePuppy(&p2)
+		su.Equal(p1.ID+1, p2.ID)
+	})
+
+	// do we error when creating something that already exists?
+	su.Run("NoErrorOnCreate", func() {
+		err = su.st.CreatePuppy(&p1)
+		su.Error(err)
+	})
+
+	// what we create and what we read back match?
+	su.Run("MatchCreatedAndRead", func() {
+		actual, _ := su.st.ReadPuppy(p1.ID)
+		actual.ID = 0
+		su.Equal(expected, actual)
+	})
+
+	// do we error when trying to create a puppy from a nil pointer?
+	su.Run("ErrorNilPuppy", func() {
+		var p4 *puppy.Puppy
+		err = su.st.CreatePuppy(p4)
+		su.Error(err)
+	})
+
+	// do we error when trying to create an already identified Puppy?
+	su.Run("ErrorAlreadyIdentifiedPuppy", func() {
+		p2 := puppy.Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
+		p2.ID = 99999
+		err = su.st.CreatePuppy(&p2)
+		su.Error(err)
+	})
+
+	// do we error when trying to create a puppy with Value < 0?
+	su.Run("ErrorNegativeValue", func() {
+		p3 := puppy.Puppy{Breed: "Fila", Colour: "Golden", Value: -900}
+		err = su.st.CreatePuppy(&p3)
+		su.Error(err)
+		su.Require().IsType(puppy.Error{}, err)
+	})
+
+	// cleanup
+	err = su.st.DeletePuppy(p1.ID)
+	su.NoError(err)
 }
 
-// TestReadPuppy tests:
-// - If we can read without error
-// - If we error when reading what doesn't exist
-// - If contents of something read match what we expect
 func (su *storerSuite) TestReadPuppy() {
-	_, err := su.st.ReadPuppy(su.p[0].ID)
-	su.Nil(err)
-	_, err = su.st.ReadPuppy(su.p[1].ID)
-	su.NotNil(err)
+	// setup
+	p1 := puppy.Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+	expected := p1
+	err := su.st.CreatePuppy(&p1)
+	su.NoError(err)
+
+	// can we read without error?
+	su.Run("NoErrorRead", func() {
+		_, err = su.st.ReadPuppy(p1.ID)
+		su.NoError(err)
+	})
+
+	// do we error when reading what doesn't exist?
+	su.Run("ErrorPuppyDoesNotExist", func() {
+		_, err = su.st.ReadPuppy(99999)
+		su.Error(err)
+	})
+
+	// do the read contents match what we expect?
+	su.Run("NoErrorReadPuppyMatches", func() {
+		actual, err := su.st.ReadPuppy(p1.ID)
+		su.NoError(err)
+		actual.ID = 0
+		su.Equal(expected, actual)
+	})
+
+	// cleanup
+	err = su.st.DeletePuppy(p1.ID)
+	su.NoError(err)
 }
 
-// TestUpdatePuppy tests:
-// - If we can update without error
-// - If we error when trying to update what doesn't exist
-// - If the updated content matches what we expect
 func (su *storerSuite) TestUpdatePuppy() {
-	err := su.st.UpdatePuppy(su.p[0].ID, &su.p[1])
-	su.Nil(err)
-	err = su.st.UpdatePuppy(su.p[2].ID, &su.p[2])
-	su.NotNil(err)
-	err = su.st.UpdatePuppy(su.p[0].ID, &su.p[3])
-	su.NotNil(err)
-	pa, _ := su.st.ReadPuppy(su.p[0].ID)
-	su.Equalf(su.p[1], *pa, "expected = %#v, actual = %#v\n", su.p[1], pa)
+	// setup
+	p1 := puppy.Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+	expected := p1
+	err := su.st.CreatePuppy(&p1)
+	su.NoError(err)
+
+	p2 := puppy.Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
+	err = su.st.CreatePuppy(&p2)
+	su.NoError(err)
+
+	// we can update without error?
+	su.Run("NoErrorOnUpdate", func() {
+		p1.Colour = "Black"
+		err = su.st.UpdatePuppy(p1)
+		su.NoError(err)
+	})
+
+	// updated content matches what we expect?
+	su.Run("MatchUpdatedPuppy", func() {
+		actual, err := su.st.ReadPuppy(p1.ID)
+		su.NoError(err)
+		expected.Colour = "Black"
+		actual.ID = 0
+		su.Equal(expected, actual)
+	})
+
+	// do we error when trying to update a puppy with Value < 0?
+	su.Run("ErrorUpdateNegativeValue", func() {
+		p2.Value = -10
+		err = su.st.UpdatePuppy(p2)
+		su.Error(err)
+		su.Require().IsType(puppy.Error{}, err)
+	})
+
+	// do we error when trying to update what doesn't exist?
+	su.Run("ErrorUpdateNonexistentPuppy", func() {
+		p3 := puppy.Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
+		p3.ID = 99999
+		err = su.st.UpdatePuppy(p3)
+		su.Error(err)
+	})
+
+	//cleanup
+	err = su.st.DeletePuppy(p1.ID)
+	su.NoError(err)
 }
 
-// TestDeletePuppy tests:
-// - If we can delete without error
-// - If we error when trying to delete what doesn't exist
-// - If after we delete, we cannot read back the data
 func (su *storerSuite) TestDeletePuppy() {
-	err := su.st.DeletePuppy(su.p[0].ID)
-	su.Nil(err)
-	err = su.st.DeletePuppy(su.p[1].ID)
-	su.NotNil(err)
-	pa, err := su.st.ReadPuppy(su.p[0].ID)
-	su.Nilf(pa, "expected = %#v, actual = %#v\n", nil, pa)
-	su.NotNil(err)
-}
+	// setup
+	p1 := puppy.Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+	err := su.st.CreatePuppy(&p1)
+	su.NoError(err)
+
+	// can we delete without error?
+	su.Run("DeleteWithNoError", func() {
+		err = su.st.DeletePuppy(p1.ID)
+		su.NoError(err)
+	})
+
+	// after we delete, can we read the data back?
+	su.Run("ErrorReadDeletedPuppy", func() {
+		p, err := su.st.ReadPuppy(p1.ID)
+		su.Error(err)
+		su.Equal(p, puppy.Puppy{ID: 0, Breed: "", Colour: "", Value: 0})
+	})
+
+	// do we err when trying to delete what doesn't exist?
+	su.Run("ErrorDeleteNonexistentPuppy", func() {
+		err = su.st.DeletePuppy(99999)
+		su.Error(err)
+	})
+} // no cleanup needed: all data taken care of already.
 
 func Test_Suite(t *testing.T) {
-	suite.Run(t, &storerSuite{st: NewSyncStore()})
-	suite.Run(t, &storerSuite{st: NewmapStore()})
+	t.Run("SyncStore", func(t *testing.T) {
+		suite.Run(t, &storerSuite{st: NewSyncStore()})
+	})
+
+	t.Run("MapStore", func(t *testing.T) {
+		suite.Run(t, &storerSuite{st: NewMapStore()})
+	})
 }

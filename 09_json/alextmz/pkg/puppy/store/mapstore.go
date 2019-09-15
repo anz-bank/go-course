@@ -1,50 +1,67 @@
 package store
 
 import (
-	pp "github.com/anz-bank/go-course/08_project/alextmz/pkg/puppy"
+	"github.com/anz-bank/go-course/09_json/alextmz/pkg/puppy"
 )
 
-type MapStore map[pp.Pid]*pp.Puppy
+type MapStore struct {
+	pmap   map[int]puppy.Puppy
+	nextID int
+}
 
-func NewmapStore() *MapStore {
-	a := MapStore{}
+func NewMapStore() *MapStore {
+	a := MapStore{pmap: make(map[int]puppy.Puppy)}
 	return &a
 }
 
-func (m *MapStore) CreatePuppy(p *pp.Puppy) error {
-	if _, ok := (*m)[p.ID]; !ok {
-		if p.Value < 0 {
-			return pp.NewError(pp.ErrValueLessThanZero)
-		}
-		(*m)[p.ID] = p
-		return nil
+func (m *MapStore) CreatePuppy(p *puppy.Puppy) error {
+	if p == nil {
+		return puppy.Error{Code: puppy.ErrNilPuppyPointer}
 	}
-	return pp.NewError(pp.ErrIDBeingCreatedAlreadyExists)
+
+	if p.Value < 0 {
+		return puppy.Errorp(puppy.ErrNegativePuppyValueOnCreate, p.Value)
+	}
+
+	if p.ID != 0 {
+		return puppy.Errorp(puppy.ErrPuppyAlreadyIdentified, p.ID)
+	}
+	m.nextID++
+	p.ID = m.nextID
+	m.pmap[p.ID] = *p
+
+	return nil
 }
 
-func (m *MapStore) ReadPuppy(id pp.Pid) (*pp.Puppy, error) {
-	if v, ok := (*m)[id]; ok {
-		return v, nil
+func (m *MapStore) ReadPuppy(id int) (puppy.Puppy, error) {
+	v, ok := m.pmap[id]
+	if !ok {
+		return puppy.Puppy{}, puppy.Errorp(puppy.ErrPuppyNotFoundOnRead, id)
 	}
-	return nil, pp.NewError(pp.ErrIDBeingReadDoesNotExist)
+
+	return v, nil
 }
 
-func (m *MapStore) UpdatePuppy(id pp.Pid, p *pp.Puppy) error {
-	if _, ok := (*m)[id]; ok {
-		if p.Value < 0 {
-			return pp.NewError(pp.ErrValueLessThanZero)
-		}
-		(*m)[id] = p
-		return nil
+func (m *MapStore) UpdatePuppy(p puppy.Puppy) error {
+	if _, ok := m.pmap[p.ID]; !ok {
+		return puppy.Errorp(puppy.ErrPuppyNotFoundOnUpdate, p.ID)
 	}
-	return pp.NewError(pp.ErrIDBeingUpdatedDoesNotExist)
 
+	if p.Value < 0 {
+		return puppy.Errorp(puppy.ErrNegativePuppyValueOnUpdate, p.Value)
+	}
+
+	m.pmap[p.ID] = p
+
+	return nil
 }
 
-func (m *MapStore) DeletePuppy(id pp.Pid) error {
-	if _, ok := (*m)[id]; ok {
-		delete(*m, id)
-		return nil
+func (m *MapStore) DeletePuppy(id int) error {
+	if _, ok := m.pmap[id]; !ok {
+		return puppy.Errorp(puppy.ErrPuppyNotFoundOnDelete, id)
 	}
-	return pp.NewError(pp.ErrIDBeingDeletedDoesNotExist)
+
+	delete(m.pmap, id)
+
+	return nil
 }
