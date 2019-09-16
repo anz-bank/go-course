@@ -23,14 +23,14 @@ func (suite *storesSuite) SetupTest() {
 	}
 
 }
-func (suite *storesSuite) TestCreatePuppySuccesful() {
+func (suite *storesSuite) TestCreatePuppySuccessful() {
 	//given
 	assert := assert.New(suite.T())
 	newPuppy := Puppy{Breed: "Dobberman", Color: "Black", Value: 800}
 	//when
 	id, err := suite.store.CreatePuppy(&newPuppy)
 	//then
-	assert.NoError(err, "Puppy creation should be succesful")
+	assert.NoError(err, "Puppy creation should be successful")
 	assert.True(newPuppy.ID == suite.puppy1.ID+1, "Puppy Id increments sequentially")
 	puppy, err := suite.store.ReadPuppy(id)
 	if assert.NoError(err, "Read of created puppy should be successful") {
@@ -46,7 +46,7 @@ func (suite *storesSuite) TestCreatePuppyForNonZeroValue() {
 	//then
 	assert.Error(err, "Negative Value should throw an error")
 }
-func (suite *storesSuite) TestReadPuppySuccesful() {
+func (suite *storesSuite) TestReadPuppySuccessful() {
 	//given
 	assert := assert.New(suite.T())
 	//when
@@ -61,7 +61,7 @@ func (suite *storesSuite) TestReadPuppyDoesNotExist() {
 	_, err := suite.store.ReadPuppy(100)
 	assert.Error(err, "Read of non existing puppy Id should throw an error")
 }
-func (suite *storesSuite) TestUpdatePuppySuccesful() {
+func (suite *storesSuite) TestUpdatePuppySuccessful() {
 	//given
 	assert := assert.New(suite.T())
 	existingPuppy := suite.puppy1
@@ -81,7 +81,7 @@ func (suite *storesSuite) TestUpdatePuppyIdDoesNotExist() {
 	err := suite.store.UpdatePuppy(&puppy)
 	assert.Error(err, "Update of non existing puppy Id should throw an error")
 }
-func (suite *storesSuite) TestDeletePuppySuccesful() {
+func (suite *storesSuite) TestDeletePuppySuccessful() {
 	assert := assert.New(suite.T())
 	//when
 	err := suite.store.DeletePuppy(suite.puppy1.ID)
