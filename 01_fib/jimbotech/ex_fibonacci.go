@@ -31,7 +31,6 @@ func fibSeries(n int) []int {
 		counter = -n
 	}
 	var fibSerial []int
-
 	f := fibonacci()
 	for i := 0; i < counter; i++ {
 		factor := 1
