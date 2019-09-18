@@ -1,12 +1,12 @@
 package main
 
 import (
-	"bytes"
+	"context"
 	"encoding/json"
 	"testing"
 
 	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy"
-	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy/store"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,23 +14,18 @@ const (
 	defaultPuppy     = "./../../pkg/puppy/store/testdata/default-puppy.json"
 	invalidPuppyJSON = "./../../pkg/puppy/store/testdata/invalid-puppy.json"
 	duplicatePuppies = "./../../pkg/puppy/store/testdata/duplicate-puppies.json"
+	manyPuppies      = "./../../pkg/puppy/store/testdata/many-puppies.json"
 )
-
-func TestMain(t *testing.T) {
-	assert := assert.New(t)
-	var buf bytes.Buffer
-	out = &buf
-	args = []string{"--data", "./../../pkg/puppy/store/testdata/many-puppies.json"}
-	main()
-	expected := "{1 dog white 2}\n{1 dog white 2}\n"
-	actual := buf.String()
-	assert.Equal(expected, actual)
-}
 
 func TestMainError(t *testing.T) {
 	assert := assert.New(t)
 	args = []string{"-d", duplicatePuppies}
 	assert.Panics(main)
+
+	args = []string{"-d", manyPuppies}
+	go assert.Panics(main)
+	srv := <-srvCh
+	_ = srv.Shutdown(context.Background())
 }
 
 func TestReadFile(t *testing.T) {
@@ -55,22 +50,21 @@ func TestUnmarshallingError(t *testing.T) {
 	assert.Panics(main)
 }
 
+func TestInitialisePuppyStoreWithFile(t *testing.T) {
+	assert := assert.New(t)
+	s, err := initialisePuppyStoreWithFile("map", manyPuppies)
+	actual, _ := s.ReadPuppy(1)
+	assert.NoError(err)
+	assert.Equal("white", actual.Colour)
+}
 func TestInitialisePuppyMapStoreError(t *testing.T) {
 	assert := assert.New(t)
-	puppy := puppy.Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "1"}
-	mapStore := store.MapStore{}
-	syncStore := store.SyncStore{}
-	_ = mapStore.CreatePuppy(puppy)
-	err := initialisePuppyStore(&mapStore, &syncStore, duplicatePuppies)
+	_, err := initialisePuppyStoreWithFile("map", duplicatePuppies)
 	assert.Error(err)
 }
 
 func TestInitialisePuppySyncStoreError(t *testing.T) {
 	assert := assert.New(t)
-	puppy := puppy.Puppy{ID: 1, Breed: "dog", Colour: "white", Value: "1"}
-	mapStore := store.MapStore{}
-	syncStore := store.SyncStore{}
-	_ = syncStore.CreatePuppy(puppy)
-	err := initialisePuppyStore(&mapStore, &syncStore, duplicatePuppies)
+	_, err := initialisePuppyStoreWithFile("sync", duplicatePuppies)
 	assert.Error(err)
 }
