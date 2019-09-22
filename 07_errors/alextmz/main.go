@@ -9,9 +9,27 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	ps := NewmapStore()
-	p1 := &Puppy{ID: 1, Breed: "Dogo", Colour: "white", Value: 50.0}
-	_ = ps.CreatePuppy(p1)
-	p2, _ := ps.ReadPuppy(p1.ID)
-	fmt.Fprintf(out, "Read Puppy by ID: %v\n", p2)
+	s1 := NewMapStore()
+	s1p1 := Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+	fmt.Printf("Creating puppy on Mapstore : ")
+	fmt.Printf("%#v (ID should start at 0 and be populated after creation)\n", s1p1)
+	_ = s1.CreatePuppy(&s1p1)
+
+	fmt.Fprintf(out, "Created puppy              : %#v\n", s1p1)
+	fmt.Printf("Reading puppy back         : ")
+	s1p2, _ := s1.ReadPuppy(s1p1.ID)
+
+	fmt.Printf("%#v\n", s1p2)
+
+	s2 := NewMapStore()
+	s2p1 := Puppy{Breed: "Fila", Colour: "Golden", Value: 900}
+	fmt.Printf("Creating puppy on SyncStore: ")
+	fmt.Printf("%#v (ID should start at 0 and be populated after creation)\n", s2p1)
+	_ = s2.CreatePuppy(&s2p1)
+
+	fmt.Fprintf(out, "Created puppy              : %#v \n", s2p1)
+	fmt.Printf("Reading puppy back         : ")
+	s2p2, _ := s2.ReadPuppy(s2p1.ID)
+
+	fmt.Printf("%#v\n", s2p2)
 }

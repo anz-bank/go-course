@@ -5,6 +5,7 @@ import (
 )
 
 type SyncStore struct {
+	nextID int
 	sync.Map
 	sync.Mutex
 }
@@ -15,47 +16,54 @@ func NewSyncStore() *SyncStore {
 }
 
 func (m *SyncStore) CreatePuppy(p *Puppy) error {
-	if _, ok := m.Load(p.ID); !ok {
-		if p.Value < 0 {
-			return NewError(ErrValueLessThanZero)
-		}
-		m.Lock()
-		m.Store(p.ID, *p)
-		m.Unlock()
-		return nil
+	if p == nil {
+		return NewError(ErrInvalidRequest, "puppy pointer is nil")
 	}
-	return NewError(ErrIDBeingCreatedAlreadyExists)
+	if p.Value < 0 {
+		return NewErrorf(ErrNegativeValue, "puppy value (%f) is < 0", p.Value)
+	}
+	if p.ID != 0 {
+		return NewErrorf(ErrInvalidRequest, "trying to create a puppy already initialized with ID %d", p.ID)
+	}
+	m.Lock()
+	defer m.Unlock()
+	p.ID = m.nextID + 1
+	m.nextID++
+	m.Store(p.ID, *p)
+	return nil
 }
 
-func (m *SyncStore) ReadPuppy(id PuppyID) (*Puppy, error) {
-	r, ok := m.Load(id)
-	if ok {
-		puppy := r.(Puppy)
-		return &puppy, nil
+func (m *SyncStore) ReadPuppy(id int) (Puppy, error) {
+	v, ok := m.Load(id)
+	if !ok {
+		return Puppy{}, NewErrorf(ErrNotFound, "puppy ID %d being read does not exist", id)
 	}
-	return nil, NewError(ErrIDBeingReadDoesNotExist)
+	m.Lock()
+	defer m.Unlock()
+	return v.(Puppy), nil
 }
 
-func (m *SyncStore) UpdatePuppy(id PuppyID, p *Puppy) error {
-	if _, ok := m.Load(id); ok {
-		if p.Value < 0 {
-			return NewError(ErrValueLessThanZero)
-		}
-		m.Lock()
-		m.Store(id, *p)
-		m.Unlock()
-		return nil
+func (m *SyncStore) UpdatePuppy(p Puppy) error {
+	m.Lock()
+	defer m.Unlock()
+	_, ok := m.Load(p.ID)
+	if !ok {
+		return NewErrorf(ErrNotFound, "puppy ID %d being updated does not exist", p.ID)
 	}
-	return NewError(ErrIDBeingUpdatedDoesNotExist)
+	if p.Value < 0 {
+		return NewErrorf(ErrNegativeValue, "puppy value (%f) is < 0", p.Value)
+	}
+	m.Store(p.ID, p)
+	return nil
 }
 
-func (m *SyncStore) DeletePuppy(id PuppyID) error {
+func (m *SyncStore) DeletePuppy(id int) error {
+	m.Lock()
+	defer m.Unlock()
 	_, ok := m.Load(id)
-	if ok {
-		m.Lock()
-		m.Delete(id)
-		m.Unlock()
-		return nil
+	if !ok {
+		return NewErrorf(ErrNotFound, "puppy ID %d being deleted does not exist", id)
 	}
-	return NewError(ErrIDBeingDeletedDoesNotExist)
+	m.Delete(id)
+	return nil
 }

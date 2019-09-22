@@ -6,24 +6,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	StrErrGeneric = "error, generic"
-)
+func TestKnownError(t *testing.T) {
+	e := NewError(ErrInvalidRequest, "test invalid request")
+	assert.Equal(t, "invalid request error: test invalid request", e.Error())
 
-func TestError_Error(t *testing.T) {
-	assert.Condition(t, func() bool {
-		return NewError(0).Message == StrErrGeneric
-	})
-	assert.Condition(t, func() bool {
-		return NewError(1).Message == StrErrGeneric
-	})
-	assert.Condition(t, func() bool {
-		return NewError(ErrGeneric).Message == StrErrGeneric
-	})
-	assert.Condition(t, func() bool {
-		return NewError(8).Message == "error, ID being deleted does not exist"
-	})
-	assert.Condition(t, func() bool {
-		return NewError(ErrIDBeingDeletedDoesNotExist).Message == "error, ID being deleted does not exist"
-	})
+	e = NewError(ErrNotFound, "test not found")
+	assert.Equal(t, "not found error: test not found", e.Error())
+
+	e = NewError(ErrNegativeValue, "test negative value")
+	assert.Equal(t, "negative value error: test negative value", e.Error())
+
+	e = Error{}
+	assert.PanicsWithValue(t,
+		"internal error: got no error code at ErrorCodeDescription",
+		func() { e.errorCodeDescription() })
+	e = NewError(999, "test error 999")
+	assert.Equal(t, "error 999: test error 999", e.Error())
+}
+
+func TestNewError(t *testing.T) {
+	e1 := NewError(999, "error 999")
+	var e2 Error
+	e2.Code = 999
+	e2.Message = "error 999"
+	assert.Equal(t, e2, e1)
+}
+
+func TestNewErrorf(t *testing.T) {
+	e1 := NewErrorf(999, "error %d", 999)
+	var e2 Error
+	e2.Code = 999
+	e2.Message = "error 999"
+	assert.Equal(t, e2, e1)
 }

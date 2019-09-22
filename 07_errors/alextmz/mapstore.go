@@ -1,46 +1,54 @@
 package main
 
-type MapStore map[PuppyID]*Puppy
-
-func NewmapStore() *MapStore {
-	a := MapStore{}
-	return &a
+type MapStore struct {
+	pmap   map[int]Puppy
+	nextID int
 }
 
-func (m *MapStore) CreatePuppy(p *Puppy) error {
-	if _, ok := (*m)[p.ID]; !ok {
-		if p.Value < 0 {
-			return NewError(ErrValueLessThanZero)
-		}
-		(*m)[p.ID] = p
-		return nil
-	}
-	return NewError(ErrIDBeingCreatedAlreadyExists)
+func NewMapStore() MapStore {
+	a := MapStore{pmap: make(map[int]Puppy)}
+	return a
 }
 
-func (m *MapStore) ReadPuppy(id PuppyID) (*Puppy, error) {
-	if v, ok := (*m)[id]; ok {
-		return v, nil
+func (m MapStore) CreatePuppy(p *Puppy) error {
+	if p == nil {
+		return NewError(ErrInvalidRequest, "puppy pointer is nil")
 	}
-	return nil, NewError(ErrIDBeingReadDoesNotExist)
+	if p.Value < 0 {
+		return NewErrorf(ErrNegativeValue, "puppy value (%f) is < 0", p.Value)
+	}
+	if p.ID != 0 {
+		return NewErrorf(ErrInvalidRequest, "trying to create a puppy already initialized with ID %d", p.ID)
+	}
+	m.nextID++
+	p.ID = m.nextID
+	m.pmap[p.ID] = *p
+	return nil
 }
 
-func (m *MapStore) UpdatePuppy(id PuppyID, p *Puppy) error {
-	if _, ok := (*m)[id]; ok {
-		if p.Value < 0 {
-			return NewError(ErrValueLessThanZero)
-		}
-		(*m)[id] = p
-		return nil
+func (m MapStore) ReadPuppy(id int) (Puppy, error) {
+	v, ok := m.pmap[id]
+	if !ok {
+		return Puppy{}, NewErrorf(ErrNotFound, "puppy ID %d being read does not exist", id)
 	}
-	return NewError(ErrIDBeingUpdatedDoesNotExist)
-
+	return v, nil
 }
 
-func (m *MapStore) DeletePuppy(id PuppyID) error {
-	if _, ok := (*m)[id]; ok {
-		delete(*m, id)
-		return nil
+func (m MapStore) UpdatePuppy(p Puppy) error {
+	if _, ok := m.pmap[p.ID]; !ok {
+		return NewErrorf(ErrNotFound, "puppy ID %d being updated does not exist", p.ID)
 	}
-	return NewError(ErrIDBeingDeletedDoesNotExist)
+	if p.Value < 0 {
+		return NewErrorf(ErrNegativeValue, "puppy value (%f) is < 0", p.Value)
+	}
+	m.pmap[p.ID] = p
+	return nil
+}
+
+func (m MapStore) DeletePuppy(id int) error {
+	if _, ok := m.pmap[id]; !ok {
+		return NewErrorf(ErrNotFound, "puppy ID %d being deleted does not exist", id)
+	}
+	delete(m.pmap, id)
+	return nil
 }
