@@ -12,18 +12,25 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	ps := store.NewmapStore()
-	p1 := &puppy.Puppy{ID: 1, Breed: "Dogo", Colour: "white", Value: 50.0}
+	s1 := store.NewMapStore()
+	s1p1 := puppy.Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+	fmt.Fprintf(out, "%-27s : ", "Creating puppy on Mapstore")
+	_ = s1.CreatePuppy(&s1p1)
 
-	fmt.Printf("Trying to create first puppy on store - ID %d {Breed: %s, Colour: %s, Value %d}.\n",
-		p1.ID, p1.Breed, p1.Colour, p1.Value)
+	fmt.Fprintf(out, "%s : %#v\n", "Created puppy", s1p1)
+	fmt.Fprintf(out, "%-27s : ", "Reading puppy back")
+	s1p2, _ := s1.ReadPuppy(s1p1.ID)
 
-	_ = ps.CreatePuppy(p1)
-	fmt.Printf("Puppy ID %d created on store.\n", p1.ID)
+	fmt.Fprintf(out, "%#v\n", s1p2)
 
-	fmt.Printf("Trying to read puppy values back from the store...\n")
-	p2, _ := ps.ReadPuppy(p1.ID)
+	s2 := store.NewMapStore()
+	s2p1 := puppy.Puppy{Breed: "Fila", Colour: "Golden", Value: 900}
+	fmt.Fprintf(out, "%-27s : ", "Creating puppy on SyncStore")
+	_ = s2.CreatePuppy(&s2p1)
 
-	fmt.Fprintf(out, "Read Puppy by ID: %d {Breed: %s, Colour: %s, Value %d}.\n",
-		p2.ID, p2.Breed, p2.Colour, p2.Value)
+	fmt.Fprintf(out, "%s : %#v \n", "Created puppy", s2p1)
+	fmt.Fprintf(out, "%-27s : ", "Reading puppy back")
+	s2p2, _ := s2.ReadPuppy(s2p1.ID)
+
+	fmt.Fprintf(out, "%#v\n", s2p2)
 }

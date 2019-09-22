@@ -1,19 +1,16 @@
 package puppy
 
-type Pid uint64
-type Pval int32
-
 type Puppy struct {
-	ID     Pid    //`json:"id"`
-	Breed  string //`json:"breed"`
-	Colour string //`json:"colour"`
-	Value  Pval   //`json:"value"`
+	ID     int
+	Breed  string
+	Colour string
+	Value  float64
 }
 
 // Storer defines standard CRUD operations for Puppies
 type Storer interface {
 	CreatePuppy(*Puppy) error
-	ReadPuppy(ID Pid) (*Puppy, error)
-	UpdatePuppy(ID Pid, p *Puppy) error
-	DeletePuppy(ID Pid) error
+	ReadPuppy(int) (Puppy, error)
+	UpdatePuppy(Puppy) error
+	DeletePuppy(int) error
 }
