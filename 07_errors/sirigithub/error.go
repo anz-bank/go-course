@@ -8,8 +8,14 @@ type Error struct {
 }
 
 const (
-	ErrInvalidValue = 400
-	ErrIDNotFound   = 404
+	ErrInvalidValue   = 400
+	ErrIDNotFound     = 404
+	ErrMarshallData   = 400
+	ErrUrmarshallData = 400
+	ErrDatabaseConn   = 500
+	ErrDatabaseWrite  = 500
+	ErrDatabaseRead   = 500
+	ErrDatabseDelete  = 500
 )
 
 func (e *Error) Error() string {

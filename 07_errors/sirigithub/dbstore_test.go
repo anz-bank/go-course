@@ -7,14 +7,14 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type storesSuite struct {
+type dbstoresSuite struct {
 	suite.Suite
 	store     Storer
 	newStorer func() Storer
 	puppy1    Puppy
 }
 
-func (suite *storesSuite) SetupTest() {
+func (suite *dbstoresSuite) SetupTest() {
 	suite.store = suite.newStorer()
 	suite.puppy1 = Puppy{Breed: "cavalier", Color: "White", Value: 1700}
 	_, err := suite.store.CreatePuppy(&suite.puppy1)
@@ -23,7 +23,7 @@ func (suite *storesSuite) SetupTest() {
 	}
 
 }
-func (suite *storesSuite) TestCreatePuppySuccessful() {
+func (suite *dbstoresSuite) TestCreatePuppySuccess() {
 	//given
 	assert := assert.New(suite.T())
 	newPuppy := Puppy{Breed: "Dobberman", Color: "Black", Value: 800}
@@ -38,7 +38,7 @@ func (suite *storesSuite) TestCreatePuppySuccessful() {
 	}
 }
 
-func (suite *storesSuite) TestCreatePuppyForNonZeroValue() {
+func (suite *dbstoresSuite) TestCreatePuppyNegativeValue() {
 	//given
 	assert := assert.New(suite.T())
 	newPuppy := Puppy{Breed: "New", Color: "Black", Value: -1}
@@ -47,7 +47,7 @@ func (suite *storesSuite) TestCreatePuppyForNonZeroValue() {
 	//then
 	assert.Error(err, "Negative Value should throw an error")
 }
-func (suite *storesSuite) TestReadPuppySuccessful() {
+func (suite *dbstoresSuite) TestReadPuppySuccess() {
 	//given
 	assert := assert.New(suite.T())
 	//when
@@ -58,13 +58,13 @@ func (suite *storesSuite) TestReadPuppySuccessful() {
 	}
 }
 
-func (suite *storesSuite) TestReadPuppyDoesNotExist() {
+func (suite *dbstoresSuite) TestReadNonExistingPuppy() {
 	assert := assert.New(suite.T())
 	_, err := suite.store.ReadPuppy(100)
 	assert.Error(err, "Read of non existing puppy Id should throw an error")
 }
 
-func (suite *storesSuite) TestUpdatePuppySuccessful() {
+func (suite *dbstoresSuite) TestUpdatePuppySuccess() {
 	//given
 	assert := assert.New(suite.T())
 	existingPuppy := suite.puppy1
@@ -79,13 +79,13 @@ func (suite *storesSuite) TestUpdatePuppySuccessful() {
 	assert.NotEqual(updatedPuppy, &suite.puppy1, "Puppy values are updated")
 }
 
-func (suite *storesSuite) TestUpdatePuppyIdDoesNotExist() {
+func (suite *dbstoresSuite) TestUpdateNonExistingPuppy() {
 	assert := assert.New(suite.T())
 	puppy := Puppy{ID: 100, Breed: "cavalier", Color: "White", Value: 1700}
 	err := suite.store.UpdatePuppy(&puppy)
 	assert.Error(err, "Update of non existing puppy Id should throw an error")
 }
-func (suite *storesSuite) TestDeletePuppySuccessful() {
+func (suite *dbstoresSuite) TestDeletePuppySuccess() {
 	assert := assert.New(suite.T())
 	//when
 	err := suite.store.DeletePuppy(suite.puppy1.ID)
@@ -94,12 +94,11 @@ func (suite *storesSuite) TestDeletePuppySuccessful() {
 	_, err = suite.store.ReadPuppy(suite.puppy1.ID)
 	assert.Error(err, "Read of non existing puppy Id should throw an error")
 }
-func (suite *storesSuite) TestDeletePuppyFailure() {
+func (suite *dbstoresSuite) TestDeleteNonExistingPuppy() {
 	assert := assert.New(suite.T())
 	err := suite.store.DeletePuppy(12)
-	assert.Error(err, "Delete of non existing puppy Id should throw an error ")
+	assert.NoError(err, "Delete non existing puppy does not throw error")
 }
-func TestSuite(t *testing.T) {
-	suite.Run(t, &storesSuite{newStorer: func() Storer { return NewMapStore() }})
-	suite.Run(t, &storesSuite{newStorer: func() Storer { return NewSyncStore() }})
+func TestDBSuite(t *testing.T) {
+	suite.Run(t, &dbstoresSuite{newStorer: func() Storer { return NewdbStore("/tmp/test25.db") }})
 }
