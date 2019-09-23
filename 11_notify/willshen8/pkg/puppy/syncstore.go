@@ -1,7 +1,6 @@
 package puppy
 
 import (
-	"strconv"
 	"sync"
 )
 
@@ -11,24 +10,20 @@ type SyncStore struct {
 	mu        sync.Mutex
 }
 
-// NewMapStore initialise a new SyncStore
+// NewMapStore() initialise a new SyncStore
 func NewSyncStore() *SyncStore {
-	return &SyncStore{syncStore: sync.Map{}}
+	return &SyncStore{syncStore: sync.Map{}, nextID: 1}
 }
 
 // CreatePuppy create a new puppy and store in mapStore.
 func (s *SyncStore) CreatePuppy(p *Puppy) (uint32, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	i, err := strconv.Atoi(p.Value)
-	if err != nil {
-		return 0, Errorf(ErrInvalidInput, "Puppy value can't be negative")
+	if err := p.Validate(); err != nil {
+		return 0, err
 	}
-	if i < 0 {
-		return 0, Errorf(ErrInvalidInput, "Unrecognised input")
-	}
-	s.nextID++
 	p.ID = s.nextID
+	s.nextID++
 	s.syncStore.Store(p.ID, *p)
 	return p.ID, nil
 }
@@ -49,11 +44,8 @@ func (s *SyncStore) ReadPuppy(id uint32) (*Puppy, error) {
 func (s *SyncStore) UpdatePuppy(id uint32, p *Puppy) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	i, err := strconv.Atoi(p.Value)
-	if err != nil {
-		return Errorf(ErrInvalidInput, "Puppy value is not recognised")
-	} else if i < 0 {
-		return Errorf(ErrInvalidInput, "Puppy value can't be negative")
+	if err := p.Validate(); err != nil {
+		return err
 	}
 	if _, ok := s.syncStore.Load(id); ok {
 		p.ID = id

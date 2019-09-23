@@ -36,22 +36,22 @@ func TestShortFlag(t *testing.T) {
 	assert.Equal(t, "map", returnedArgs.storer)
 }
 
-// Unit test (positive test) for parsePortFlag()
+// Unit test (positive test) for validatePortFlag()
 func TestParseCorrectPort(t *testing.T) {
 	// setup the test server with arguments
 	args = []string{"--data", "/dev/null", "--port", "1234"}
 	parsedArgs, _ := parseCmdArgs(args)
-	flagReturned, _ := parsePortFlag(parsedArgs)
+	flagReturned, _ := validatePortFlag(parsedArgs)
 	var expectedFlag = "1234"
 	assert.Equal(t, expectedFlag, flagReturned)
 }
 
-// Unit test (negative test) for parsePortFlag()
+// Unit test (negative test) for validatePortFlag()
 func TestParseWrongPort(t *testing.T) {
 	// setup the test server with arguments
 	args = []string{"--data", "/dev/null", "--port", "123456789"}
 	parsedArgs, _ := parseCmdArgs(args)
-	flagReturned, flagError := parsePortFlag(parsedArgs)
+	flagReturned, flagError := validatePortFlag(parsedArgs)
 	var expectedFlag = "0"
 	var expectedError = "invalid port number entered"
 	assert.Equal(t, expectedFlag, flagReturned)
@@ -103,7 +103,7 @@ func TestSavePuppiesToStore(t *testing.T) {
 	storer := puppy.NewMapStore()
 	returnedPuppyStorer, _ := createPuppies(storer, puppies)
 
-	expected := "&{map[1:{1 Jack Russell Terrier White and Brown 1500}] 1}\n"
+	expected := "&{map[1:{1 Jack Russell Terrier White and Brown 1500}] 2 {0 0}}\n"
 	fmt.Fprintln(out, returnedPuppyStorer)
 	actual := buf.String()
 	assert.Equal(t, expected, actual)

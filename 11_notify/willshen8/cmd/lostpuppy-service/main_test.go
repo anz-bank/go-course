@@ -7,6 +7,6 @@ import (
 
 // main() only starts the server, therefore test case only ensure it runs smoothly
 func TestMain(m *testing.M) {
-	runMain()
+	os.Args = []string{""}
 	os.Exit(m.Run())
 }

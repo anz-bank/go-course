@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,26 +14,30 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
+const lostPuppyServer = "http://localhost:8888/api/lostpuppy/"
+
 var out io.Writer = os.Stdout
 
 var (
-	args     = os.Args[1:]
-	fileName = kingpin.Flag("data", "Puppy Json File Name").Short('d').File()
-	port     = kingpin.Flag("port", "Port of the server").Short('p').Default("9999").Int()
-	storer   = kingpin.Flag("store", "Map/Sync Store").Short('s').Default("map").Enum("map", "sync")
+	args      = os.Args[1:]
+	fileName  = kingpin.Flag("data", "Puppy Json File Name").Short('d').File()
+	port      = kingpin.Flag("port", "Port of the server").Short('p').Default("9999").Int()
+	storer    = kingpin.Flag("store", "Map/Sync Store").Short('s').Default("map").Enum("map", "sync")
+	lostPuppy = kingpin.Flag("lostPuppy", "server addr").Short('l').Default(lostPuppyServer).String()
 )
 
 // Config contains arguments parsed from commandline flags.
 type Config struct {
-	file   *os.File
-	port   int
-	storer string
+	file      *os.File
+	port      int
+	storer    string
+	lostPuppy string
 }
 
 func main() {
 	cmdConfigs, err := parseCmdArgs(args)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	newStorer, storerErr := createStorer(cmdConfigs.storer)
 	if storerErr != nil {
@@ -44,18 +47,16 @@ func main() {
 	if parseErr != nil {
 		panic(parseErr)
 	}
-	portFlag, portErr := parsePortFlag(cmdConfigs)
+	portFlag, portErr := validatePortFlag(cmdConfigs)
 	if portErr != nil {
-		fmt.Println(portErr)
+		panic(portErr)
 	}
-	port := ":" + portFlag
 
 	puppyStorer, _ := createPuppies(newStorer, decodedPuppies)
-	fmt.Fprintln(out, puppyStorer)
-	puppyHandler := puppy.NewRestHandler(puppyStorer)
+	puppyHandler := puppy.NewRestHandler(puppyStorer, cmdConfigs.lostPuppy)
 	router := puppy.SetupRouter()
-	puppy.SetupRoutes(router, *puppyHandler)
-	log.Fatal(http.ListenAndServe(port, router))
+	puppyHandler.SetupRoutes(router)
+	log.Fatal(http.ListenAndServe(":"+portFlag, router))
 }
 
 // creatStorer will take the commandline arg and create the appropriate store
@@ -74,10 +75,10 @@ func parseCmdArgs(args []string) (Config, error) {
 	if _, parseError := kingpin.CommandLine.Parse(args); parseError != nil {
 		return parsedConig, parseError
 	}
-	return Config{file: *fileName, port: *port, storer: *storer}, nil
+	return Config{file: *fileName, port: *port, storer: *storer, lostPuppy: *lostPuppy}, nil
 }
 
-// parseJSONPuppies read from io input and unmarshal them into puyppy JSONS
+// parseJSONPuppies read from io input and unmarshal them into puppy JSONs
 func parseJSONPuppies(r io.Reader) ([]puppy.Puppy, error) {
 	var puppies []puppy.Puppy
 	jsonData, _ := ioutil.ReadAll(r) // error already handled by kingpin
@@ -87,8 +88,8 @@ func parseJSONPuppies(r io.Reader) ([]puppy.Puppy, error) {
 	return puppies, nil
 }
 
-// parsePortFlag check for valid port number entered from commandLine
-func parsePortFlag(c Config) (string, error) {
+// validatePortFlag check for valid port number entered from commandLine
+func validatePortFlag(c Config) (string, error) {
 	if c.port < 0 || c.port > 65535 {
 		return "0", errors.New("invalid port number entered")
 	}
@@ -98,7 +99,8 @@ func parsePortFlag(c Config) (string, error) {
 // createPuppies takes an array of puppies and saves it to a puppy storer
 func createPuppies(s puppy.Storer, puppies []puppy.Puppy) (puppy.Storer, error) {
 	for _, jsonPuppy := range puppies {
-		jsonPuppy := jsonPuppy // fixes linter issue
+		// silence the linter here: Using a reference for the variable on range scope' `jsonPuppy`(scopelint)
+		// nolint:<linter>
 		if _, saveErr := s.CreatePuppy(&jsonPuppy); saveErr != nil {
 			return nil, saveErr
 		}

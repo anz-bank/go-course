@@ -22,11 +22,11 @@ func establishTestRouter() *chi.Mux {
 	}
 
 	// create rest handler
-	puppyHandler := NewRestHandler(storer)
+	puppyHandler := NewRestHandler(storer, lostPuppyServer)
 	r := chi.NewRouter()
 	r.Use(middleware.URLFormat)
 	// Setup routes
-	SetupRoutes(r, *puppyHandler)
+	puppyHandler.SetupRoutes(r)
 
 	return r
 }
@@ -208,9 +208,8 @@ func serverMock(status int) *httptest.Server {
 
 func TestNotifyLostPuppyWith201Response(t *testing.T) {
 	storer := NewMapStore()
-	ph := NewRestHandler(storer)
 	server := serverMock(http.StatusCreated)
-	ph.client = server.URL
+	ph := NewRestHandler(storer, server.URL)
 	defer server.Close()
 	client := server.Client()
 	http.DefaultClient = client
@@ -219,8 +218,7 @@ func TestNotifyLostPuppyWith201Response(t *testing.T) {
 
 func TestNotifyLostPuppyWith500Response(t *testing.T) {
 	storer := NewMapStore()
-	ph := NewRestHandler(storer)
-	ph.client = lostPuppyServer
+	ph := NewRestHandler(storer, lostPuppyServer)
 	http.DefaultClient = badResponseClient()
 	ph.notifyLostPuppy(111)
 }

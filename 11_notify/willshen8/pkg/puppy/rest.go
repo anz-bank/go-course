@@ -21,22 +21,26 @@ type RestHandler struct {
 }
 
 // NewRestHandler is a factory method that makes new storer
-func NewRestHandler(storer Storer) *RestHandler {
-	return &RestHandler{store: storer}
+func NewRestHandler(storer Storer, lostpuppyServer string) *RestHandler {
+	return &RestHandler{store: storer, client: lostpuppyServer}
+}
+
+// httpError is a helper function that output http status and error messages
+func httpError(w http.ResponseWriter, httpStatus int, err ErrCode) {
+	w.WriteHeader(httpStatus)
+	http.Error(w, fmt.Sprintf("%s: %s", http.StatusText(httpStatus), err), httpStatus)
 }
 
 // HandleGet gets the puppy by id and displays the results.
 func (rh *RestHandler) HandleGet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, http.StatusText(http.StatusBadRequest)+": "+ErrInvalidInput.String(), http.StatusBadRequest)
+		httpError(w, http.StatusBadRequest, ErrInvalidInput)
 		return
 	}
-	puppy, readErr := rh.store.ReadPuppy(uint32(id))
-	if readErr != nil {
-		w.WriteHeader(http.StatusNotFound)
-		http.Error(w, http.StatusText(http.StatusNotFound)+": "+ErrNotFound.String(), http.StatusNotFound)
+	puppy, err := rh.store.ReadPuppy(uint32(id))
+	if err != nil {
+		httpError(w, http.StatusNotFound, ErrNotFound)
 		return
 	}
 	render.JSON(w, r, puppy)
@@ -45,14 +49,13 @@ func (rh *RestHandler) HandleGet(w http.ResponseWriter, r *http.Request) {
 // HandlePost post a new puppy and then display the results.
 func (rh *RestHandler) HandlePost(w http.ResponseWriter, r *http.Request) {
 	var p Puppy
-	if decodeErr := render.DecodeJSON(r.Body, &p); decodeErr != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, http.StatusText(http.StatusBadRequest)+": "+ErrInvalidInput.String(), http.StatusBadRequest)
+	if err := render.DecodeJSON(r.Body, &p); err != nil {
+		httpError(w, http.StatusBadRequest, ErrInvalidInput)
 		return
 	}
-	_, createErr := rh.store.CreatePuppy(&p)
-	if createErr != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest)+": "+ErrInvalidInput.String(), http.StatusBadRequest)
+	_, err := rh.store.CreatePuppy(&p)
+	if err != nil {
+		httpError(w, http.StatusBadRequest, ErrInvalidInput)
 		return
 	}
 	render.Status(r, http.StatusCreated)
@@ -63,32 +66,23 @@ func (rh *RestHandler) HandlePost(w http.ResponseWriter, r *http.Request) {
 func (rh *RestHandler) HandlePut(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, http.StatusText(http.StatusBadRequest)+": "+ErrInvalidInput.String(), http.StatusBadRequest)
+		httpError(w, http.StatusBadRequest, ErrInvalidInput)
 		return
 	}
 	var p Puppy
-	if decodeErr := render.DecodeJSON(r.Body, &p); decodeErr != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		http.Error(w, http.StatusText(http.StatusUnprocessableEntity)+": "+ErrInvalidInput.String(),
-			http.StatusUnprocessableEntity)
+	if err := render.DecodeJSON(r.Body, &p); err != nil {
+		httpError(w, http.StatusUnprocessableEntity, ErrInvalidInput)
 		return
 	}
 
-	updateErr := rh.store.UpdatePuppy(uint32(id), &p)
-	if updateErr != nil {
-		// if updateError is due to invalid id
-		if updateErr.(*Error).Code == ErrNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			http.Error(w, http.StatusText(http.StatusNotFound)+": "+ErrNotFound.String(),
-				http.StatusNotFound)
+	err = rh.store.UpdatePuppy(uint32(id), &p)
+	if err != nil {
+		if err.(*Error).Code == ErrNotFound {
+			httpError(w, http.StatusNotFound, ErrNotFound)
 			return
 		}
-		// if updateError is due to invalid input
-		if updateErr.(*Error).Code == ErrInvalidInput {
-			w.WriteHeader(http.StatusBadRequest)
-			http.Error(w, http.StatusText(http.StatusBadRequest)+": "+ErrInvalidInput.String(),
-				http.StatusBadRequest)
+		if err.(*Error).Code == ErrInvalidInput {
+			httpError(w, http.StatusBadRequest, ErrInvalidInput)
 			return
 		}
 	}
@@ -100,14 +94,12 @@ func (rh *RestHandler) HandlePut(w http.ResponseWriter, r *http.Request) {
 func (rh *RestHandler) HandleDelete(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, http.StatusText(http.StatusBadRequest)+": "+ErrInvalidInput.String(), http.StatusBadRequest)
+		httpError(w, http.StatusBadRequest, ErrInvalidInput)
 		return
 	}
-	deleteErr := rh.store.DeletePuppy(uint32(id))
-	if deleteErr != nil {
-		w.WriteHeader(http.StatusNotFound)
-		http.Error(w, http.StatusText(http.StatusNotFound)+": "+ErrInvalidInput.String(), http.StatusNotFound)
+	err = rh.store.DeletePuppy(uint32(id))
+	if err != nil {
+		httpError(w, http.StatusNotFound, ErrInvalidInput)
 		return
 	}
 	go rh.notifyLostPuppy(id)
@@ -127,7 +119,7 @@ func (rh *RestHandler) notifyLostPuppy(id int) {
 }
 
 // SetupRoutes provides the routes for this REST API.
-func SetupRoutes(r chi.Router, rh RestHandler) {
+func (rh *RestHandler) SetupRoutes(r chi.Router) {
 	r.Get("/api/puppy/{id}", rh.HandleGet)
 	r.Post("/api/puppy/", rh.HandlePost)
 	r.Put("/api/puppy/{id}", rh.HandlePut)

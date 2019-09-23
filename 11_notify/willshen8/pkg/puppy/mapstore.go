@@ -1,38 +1,36 @@
 package puppy
 
-import (
-	"strconv"
-)
+import "sync"
 
 type MapStore struct {
 	ms     map[uint32]Puppy
 	nextID uint32
+	mu     sync.Mutex
 }
 
-// NewMapStore initialise a new MapStore
+// NewMapStore initialise a new MapStore, ID starts at 1
 func NewMapStore() *MapStore {
-	return &MapStore{ms: map[uint32]Puppy{}}
+	return &MapStore{ms: map[uint32]Puppy{}, nextID: 1}
 }
 
 // CreatePuppy create a new puppy and store in mapStore.
 func (m *MapStore) CreatePuppy(p *Puppy) (uint32, error) {
-	i, err := strconv.Atoi(p.Value)
-	if err != nil {
-		return 0, Errorf(ErrInvalidInput, ErrInvalidInput.String())
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if err := p.Validate(); err != nil {
+		return 0, err
 	}
-	if i < 0 {
-		return 0, Errorf(ErrInvalidInput, ErrInvalidInput.String())
-	}
-
-	m.nextID++
 	p.ID = m.nextID
+	m.nextID++
 	m.ms[p.ID] = *p
 	return p.ID, nil
 }
 
 // ReadPuppy read a puppy given its id.
 // It returns the pointer to that puppy.
-func (m MapStore) ReadPuppy(id uint32) (*Puppy, error) {
+func (m *MapStore) ReadPuppy(id uint32) (*Puppy, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	if p, ok := m.ms[id]; ok {
 		return &p, nil
 	}
@@ -40,15 +38,14 @@ func (m MapStore) ReadPuppy(id uint32) (*Puppy, error) {
 }
 
 // UpdatePuppy updates the store with key of id with the new puppy.
-func (m MapStore) UpdatePuppy(id uint32, p *Puppy) error {
+func (m *MapStore) UpdatePuppy(id uint32, p *Puppy) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	if _, ok := m.ms[id]; !ok {
 		return Errorf(ErrNotFound, "Puppy ID can't be found, update operation failed")
 	}
-	i, err := strconv.Atoi(p.Value)
-	if err != nil {
-		return Errorf(ErrInvalidInput, "Puppy value is not recognised")
-	} else if i < 0 {
-		return Errorf(ErrInvalidInput, "Puppy value can't be negative")
+	if err := p.Validate(); err != nil {
+		return err
 	}
 	p.ID = id
 	m.ms[id] = *p
@@ -56,7 +53,9 @@ func (m MapStore) UpdatePuppy(id uint32, p *Puppy) error {
 }
 
 // DeletePuppy delete the puppy given the id.
-func (m MapStore) DeletePuppy(id uint32) error {
+func (m *MapStore) DeletePuppy(id uint32) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	if _, ok := m.ms[id]; ok {
 		delete(m.ms, id)
 		return nil

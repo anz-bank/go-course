@@ -11,3 +11,9 @@ func TestUnknownError(t *testing.T) {
 	randomErrorCodeString := randomErrorCode.String()
 	assert.Equal(t, "Unknown error", randomErrorCodeString)
 }
+
+func TestInternalError(t *testing.T) {
+	internalErr := ErrCode(2)
+	internalErrString := internalErr.String()
+	assert.Equal(t, "Internal Error", internalErrString)
+}

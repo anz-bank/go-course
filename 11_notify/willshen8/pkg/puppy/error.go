@@ -10,8 +10,7 @@ type Error struct {
 type ErrCode uint32
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("Error code %d: %s",
-		e.Code, e.Message)
+	return fmt.Sprintf("Error code %d: %s", e.Code, e.Message)
 }
 
 // Errorf creates a new Error with formatting
@@ -27,6 +26,8 @@ const (
 	ErrInvalidInput ErrCode = iota
 	// ErrNotFound is used for puppy ID does not exist
 	ErrNotFound
+	// ErrInternalError is used for any internal error
+	ErrInternalError
 )
 
 func (e ErrCode) String() string {
@@ -35,6 +36,8 @@ func (e ErrCode) String() string {
 		return "Invalid input, ensure ID and JSON are valid"
 	case ErrNotFound:
 		return "The puppy ID does not exist"
+	case ErrInternalError:
+		return "Internal Error"
 	}
 	return "Unknown error"
 }
