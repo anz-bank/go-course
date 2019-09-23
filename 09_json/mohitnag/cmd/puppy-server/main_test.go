@@ -14,13 +14,14 @@ const (
 	defaultPuppy     = "./../../pkg/puppy/store/testdata/default-puppy.json"
 	invalidPuppyJSON = "./../../pkg/puppy/store/testdata/invalid-puppy.json"
 	duplicatePuppies = "./../../pkg/puppy/store/testdata/duplicate-puppies.json"
+	manyPuppies      = "./../../pkg/puppy/store/testdata/many-puppies.json"
 )
 
 func TestMain(t *testing.T) {
 	assert := assert.New(t)
 	var buf bytes.Buffer
 	out = &buf
-	args = []string{"--data", "./../../pkg/puppy/store/testdata/many-puppies.json"}
+	args = []string{"--data", manyPuppies}
 	main()
 	expected := "{1 dog white 2}\n{1 dog white 2}\n"
 	actual := buf.String()
@@ -41,7 +42,6 @@ func TestReadFile(t *testing.T) {
 	err := json.Unmarshal(buff, &actual)
 	assert.NoError(err)
 	assert.Equal(expect, actual)
-
 }
 
 func TestReadFileBadPath(t *testing.T) {

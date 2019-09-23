@@ -19,10 +19,10 @@ var (
 )
 
 func main() {
-	mapStore := store.MapStore{}
-	syncStore := store.SyncStore{}
 	fileName := app.Flag("data", "file path").Short('d').ExistingFile()
 	kingpin.MustParse(app.Parse(args))
+	mapStore := store.MapStore{}
+	syncStore := store.SyncStore{}
 	if err := initialisePuppyStore(&mapStore, &syncStore, *fileName); err != nil {
 		panic(err)
 	}
