@@ -39,194 +39,193 @@ func TestStorers(t *testing.T) {
 }
 
 func (s *restSuite) TestHandleGetPuppy() {
-	s.T().Run("Get an existing Puppy", func(t *testing.T) {
-		assert := assert.New(t)
-		puppyServer := httptest.NewServer(s.handler)
-		expectedPuppy := puppy.Puppy{
-			ID:     1,
-			Breed:  "dog",
-			Colour: "white",
-			Value:  "2",
-		}
-		resp, err := http.Get(puppyServer.URL + "/api/puppy/1")
-		assert.NoError(err)
-		defer resp.Body.Close()
-		actual, err := ioutil.ReadAll(resp.Body)
-		assert.NoError(err)
-		actualPuppy := puppy.Puppy{}
-		err = json.Unmarshal(actual, &actualPuppy)
-		assert.NoError(err)
-		assert.Equal(200, resp.StatusCode)
-		assert.Equal(expectedPuppy, actualPuppy)
-	})
-	s.T().Run("Get a non-existing Puppy", func(t *testing.T) {
-		assert := assert.New(t)
-		puppyServer := httptest.NewServer(s.handler)
-		expectedPuppy := puppy.Puppy{}
-		resp, err := http.Get(puppyServer.URL + "/api/puppy/non-existing")
-		assert.NoError(err)
-		defer resp.Body.Close()
-		actual, err := ioutil.ReadAll(resp.Body)
-		assert.NoError(err)
-		actualPuppy := puppy.Puppy{}
-		err = json.Unmarshal(actual, &actualPuppy)
-		assert.NoError(err)
-		assert.Equal(404, resp.StatusCode)
-		assert.Equal(expectedPuppy, actualPuppy)
-	})
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	expectedPuppy := puppy.Puppy{
+		ID:     1,
+		Breed:  "dog",
+		Colour: "white",
+		Value:  "2",
+	}
+	resp, err := http.Get(puppyServer.URL + "/api/puppy/1")
+	assert.NoError(err)
+	defer resp.Body.Close()
+	actual, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(err)
+	actualPuppy := puppy.Puppy{}
+	err = json.Unmarshal(actual, &actualPuppy)
+	assert.NoError(err)
+	assert.Equal(200, resp.StatusCode)
+	assert.Equal(expectedPuppy, actualPuppy)
+
+}
+
+func (s *restSuite) TestHandleGetMissingPuppy() {
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	expectedPuppy := puppy.Puppy{}
+	resp, err := http.Get(puppyServer.URL + "/api/puppy/non-existing")
+	assert.NoError(err)
+	defer resp.Body.Close()
+	actual, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(err)
+	actualPuppy := puppy.Puppy{}
+	err = json.Unmarshal(actual, &actualPuppy)
+	assert.NoError(err)
+	assert.Equal(404, resp.StatusCode)
+	assert.Equal(expectedPuppy, actualPuppy)
 }
 
 func (s *restSuite) TestHandleCreatePuppy() {
-	s.T().Run("Create a Puppy/201", func(t *testing.T) {
-		assert := assert.New(s.T())
-		puppyServer := httptest.NewServer(s.handler)
-		newPuppy := puppy.Puppy{
-			ID:     100,
-			Breed:  "dog",
-			Colour: "red",
-			Value:  "20",
-		}
-		b := new(bytes.Buffer)
-		err := json.NewEncoder(b).Encode(newPuppy)
-		assert.NoError(err)
-		resp, err := http.Post(puppyServer.URL+"/api/puppy", "application/json; charset=utf-8", b)
-		assert.NoError(err)
-		assert.Equal(http.StatusCreated, resp.StatusCode)
-		defer resp.Body.Close()
-	})
-	s.T().Run("Invalid Puppy/400", func(t *testing.T) {
-		assert := assert.New(s.T())
-		puppyServer := httptest.NewServer(s.handler)
-		newPuppy := puppy.Puppy{
-			ID:     100,
-			Breed:  "dog",
-			Colour: "red",
-			Value:  "-2",
-		}
-		b := new(bytes.Buffer)
-		err := json.NewEncoder(b).Encode(newPuppy)
-		assert.NoError(err)
-		resp, err := http.Post(puppyServer.URL+"/api/puppy", "application/json; charset=utf-8", b)
-		assert.NoError(err)
-		defer resp.Body.Close()
-		assert.Equal(http.StatusBadRequest, resp.StatusCode)
-	})
-	s.T().Run("Bad json/400", func(t *testing.T) {
-		assert := assert.New(s.T())
-		puppyServer := httptest.NewServer(s.handler)
-		b := new(bytes.Buffer)
-		err := json.NewEncoder(b).Encode(`{bad json}`)
-		assert.NoError(err)
-		resp, err := http.Post(puppyServer.URL+"/api/puppy", "application/json; charset=utf-8", b)
-		assert.NoError(err)
-		defer resp.Body.Close()
-		assert.Equal(http.StatusBadRequest, resp.StatusCode)
-	})
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	newPuppy := puppy.Puppy{
+		ID:     100,
+		Breed:  "dog",
+		Colour: "red",
+		Value:  "20",
+	}
+	b := new(bytes.Buffer)
+	err := json.NewEncoder(b).Encode(newPuppy)
+	assert.NoError(err)
+	resp, err := http.Post(puppyServer.URL+"/api/puppy", "application/json; charset=utf-8", b)
+	assert.NoError(err)
+	assert.Equal(http.StatusCreated, resp.StatusCode)
+	defer resp.Body.Close()
+}
+
+func (s *restSuite) TestHandleCreateInvalidPuppy() {
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	newPuppy := puppy.Puppy{
+		ID:     100,
+		Breed:  "dog",
+		Colour: "red",
+		Value:  "-2",
+	}
+	b := new(bytes.Buffer)
+	err := json.NewEncoder(b).Encode(newPuppy)
+	assert.NoError(err)
+	resp, err := http.Post(puppyServer.URL+"/api/puppy", "application/json; charset=utf-8", b)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	assert.Equal(http.StatusBadRequest, resp.StatusCode)
+}
+
+func (s *restSuite) TestHandleCreateBadPuppy() {
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	b := new(bytes.Buffer)
+	err := json.NewEncoder(b).Encode(`{bad json}`)
+	assert.NoError(err)
+	resp, err := http.Post(puppyServer.URL+"/api/puppy", "application/json; charset=utf-8", b)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	assert.Equal(http.StatusBadRequest, resp.StatusCode)
 }
 
 func (s *restSuite) TestHandleUpdatePuppy() {
-	s.T().Run("Update an existing Puppy", func(t *testing.T) {
-		puppyServer := httptest.NewServer(s.handler)
-		assert := assert.New(s.T())
-		update := puppy.Puppy{
-			ID:     1,
-			Breed:  "dog",
-			Colour: "red",
-			Value:  "20",
-		}
-		b, err := json.Marshal(update)
-		assert.NoError(err)
-		req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/1", bytes.NewBuffer(b))
-		assert.NoError(err)
-		req.Header.Set("Content-Type", "application/json; charset=utf-8")
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		assert.NoError(err)
-		defer resp.Body.Close()
-		actual, err := ioutil.ReadAll(resp.Body)
-		assert.NoError(err)
-		updatedPuppy := puppy.Puppy{}
-		err = json.Unmarshal(actual, &updatedPuppy)
-		assert.NoError(err)
-		assert.Equal("red", updatedPuppy.Colour)
-	})
-	s.T().Run("Update a non-existing puppy", func(t *testing.T) {
-		assert := assert.New(s.T())
-		puppyServer := httptest.NewServer(s.handler)
-		updatePuppy := puppy.Puppy{
-			ID:     100,
-			Breed:  "dog",
-			Colour: "red",
-			Value:  "2",
-		}
-		b, err := json.Marshal(updatePuppy)
-		assert.NoError(err)
-		req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/non-existing", bytes.NewBuffer(b))
-		assert.NoError(err)
-		req.Header.Set("Content-Type", "application/json; charset=utf-8")
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		assert.NoError(err)
-		defer resp.Body.Close()
-		actual, err := ioutil.ReadAll(resp.Body)
-		assert.NoError(err)
-		updatedPuppy := puppy.Puppy{}
-		err = json.Unmarshal(actual, &updatedPuppy)
-		assert.NoError(err)
-		assert.Equal(404, resp.StatusCode)
-		assert.Equal(puppy.Puppy{}, updatedPuppy)
-	})
-	s.T().Run("400- bad request", func(t *testing.T) {
-		assert := assert.New(s.T())
-		puppyServer := httptest.NewServer(s.handler)
-		b, err := json.Marshal(`{bad json}`)
-		assert.NoError(err)
-		req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/1", bytes.NewBuffer(b))
-		assert.NoError(err)
-		req.Header.Set("Content-Type", "application/json; charset=utf-8")
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		assert.NoError(err)
-		defer resp.Body.Close()
-		actual, err := ioutil.ReadAll(resp.Body)
-		assert.NoError(err)
-		updatedPuppy := puppy.Puppy{}
-		err = json.Unmarshal(actual, &updatedPuppy)
-		assert.NoError(err)
-		assert.Equal(400, resp.StatusCode)
-		assert.Equal(puppy.Puppy{}, updatedPuppy)
-	})
+	puppyServer := httptest.NewServer(s.handler)
+	assert := assert.New(s.T())
+	update := puppy.Puppy{
+		ID:     1,
+		Breed:  "dog",
+		Colour: "red",
+		Value:  "20",
+	}
+	b, err := json.Marshal(update)
+	assert.NoError(err)
+	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/1", bytes.NewBuffer(b))
+	assert.NoError(err)
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	actual, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(err)
+	updatedPuppy := puppy.Puppy{}
+	err = json.Unmarshal(actual, &updatedPuppy)
+	assert.NoError(err)
+	assert.Equal("red", updatedPuppy.Colour)
+}
+
+func (s *restSuite) TestHandleUpdateMissingPuppy() {
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	updatePuppy := puppy.Puppy{
+		ID:     100,
+		Breed:  "dog",
+		Colour: "red",
+		Value:  "2",
+	}
+	b, err := json.Marshal(updatePuppy)
+	assert.NoError(err)
+	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/non-existing", bytes.NewBuffer(b))
+	assert.NoError(err)
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	actual, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(err)
+	updatedPuppy := puppy.Puppy{}
+	err = json.Unmarshal(actual, &updatedPuppy)
+	assert.NoError(err)
+	assert.Equal(404, resp.StatusCode)
+	assert.Equal(puppy.Puppy{}, updatedPuppy)
+}
+
+func (s *restSuite) TestHandleUpdateBadPuppy() {
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	b, err := json.Marshal(`{bad json}`)
+	assert.NoError(err)
+	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/1", bytes.NewBuffer(b))
+	assert.NoError(err)
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	actual, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(err)
+	updatedPuppy := puppy.Puppy{}
+	err = json.Unmarshal(actual, &updatedPuppy)
+	assert.NoError(err)
+	assert.Equal(400, resp.StatusCode)
+	assert.Equal(puppy.Puppy{}, updatedPuppy)
 }
 
 func (s *restSuite) TestDeletePuppy() {
-	s.T().Run("Delete a puppy - Happy Path", func(t *testing.T) {
-		assert := assert.New(s.T())
-		puppyServer := httptest.NewServer(s.handler)
-		req, err := http.NewRequest(http.MethodDelete, puppyServer.URL+"/api/puppy/1", nil)
-		assert.NoError(err)
-		req.Header.Set("Content-Type", "application/json; charset=utf-8")
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		assert.NoError(err)
-		defer resp.Body.Close()
-		assert.Equal(http.StatusOK, resp.StatusCode)
-		resp, err = http.Get(puppyServer.URL + "/api/puppy/1")
-		assert.NoError(err)
-		defer resp.Body.Close()
-		assert.Equal(404, resp.StatusCode)
-	})
-	s.T().Run("Delete a non-existing puppy", func(t *testing.T) {
-		assert := assert.New(s.T())
-		puppyServer := httptest.NewServer(s.handler)
-		req, err := http.NewRequest(http.MethodDelete, puppyServer.URL+"/api/puppy/non-existing", nil)
-		assert.NoError(err)
-		req.Header.Set("Content-Type", "application/json; charset=utf-8")
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		assert.NoError(err)
-		defer resp.Body.Close()
-		assert.Equal(404, resp.StatusCode)
-	})
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	req, err := http.NewRequest(http.MethodDelete, puppyServer.URL+"/api/puppy/1", nil)
+	assert.NoError(err)
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	assert.Equal(http.StatusOK, resp.StatusCode)
+	resp, err = http.Get(puppyServer.URL + "/api/puppy/1")
+	assert.NoError(err)
+	defer resp.Body.Close()
+	assert.Equal(404, resp.StatusCode)
+}
+
+func (s *restSuite) TestHandleDeleteMissingPuppy() {
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	req, err := http.NewRequest(http.MethodDelete, puppyServer.URL+"/api/puppy/non-existing", nil)
+	assert.NoError(err)
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	assert.Equal(404, resp.StatusCode)
 }
 
 func initialisePuppyStore(storer puppy.Storer, fileName string) error {

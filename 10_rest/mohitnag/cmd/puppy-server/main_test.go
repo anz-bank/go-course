@@ -36,7 +36,6 @@ func TestReadFile(t *testing.T) {
 	err := json.Unmarshal(buff, &actual)
 	assert.NoError(err)
 	assert.Equal(expect, actual)
-
 }
 
 func TestReadFileBadPath(t *testing.T) {
@@ -52,19 +51,22 @@ func TestUnmarshallingError(t *testing.T) {
 
 func TestInitialisePuppyStoreWithFile(t *testing.T) {
 	assert := assert.New(t)
-	s, err := initialisePuppyStoreWithFile("map", manyPuppies)
+	s := createStore("map")
+	err := initialisePuppyStoreWithFile(s, manyPuppies)
 	actual, _ := s.ReadPuppy(1)
 	assert.NoError(err)
 	assert.Equal("white", actual.Colour)
 }
 func TestInitialisePuppyMapStoreError(t *testing.T) {
 	assert := assert.New(t)
-	_, err := initialisePuppyStoreWithFile("map", duplicatePuppies)
+	s := createStore("map")
+	err := initialisePuppyStoreWithFile(s, duplicatePuppies)
 	assert.Error(err)
 }
 
 func TestInitialisePuppySyncStoreError(t *testing.T) {
 	assert := assert.New(t)
-	_, err := initialisePuppyStoreWithFile("sync", duplicatePuppies)
+	s := createStore("sync")
+	err := initialisePuppyStoreWithFile(s, duplicatePuppies)
 	assert.Error(err)
 }

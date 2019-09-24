@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -25,7 +26,8 @@ func main() {
 	app.Flag("store", "store type").Short('s').Default("sync").EnumVar(&storeType, "map", "sync")
 	kingpin.MustParse(app.Parse(args))
 
-	s, err := initialisePuppyStoreWithFile(storeType, *fileName)
+	s := createStore(storeType)
+	err := initialisePuppyStoreWithFile(s, *fileName)
 	if err != nil {
 		panic(err)
 	}
@@ -40,19 +42,19 @@ func main() {
 	}
 }
 
-func initialisePuppyStoreWithFile(storeType string, fileName string) (puppy.Storer, error) {
-	store := createStore(storeType)
+func initialisePuppyStoreWithFile(store puppy.Storer, fileName string) error {
+
 	puppies := []puppy.Puppy{}
 	puppiesBytes := readFile(fileName)
 	if err := json.Unmarshal(puppiesBytes, &puppies); err != nil {
-		panic(err)
+		return fmt.Errorf("could not unmarshal json: %v", err)
 	}
 	for _, puppy := range puppies {
 		if err := store.CreatePuppy(puppy); err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return store, nil
+	return nil
 }
 
 func readFile(filename string) []byte {

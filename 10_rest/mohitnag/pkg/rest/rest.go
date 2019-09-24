@@ -96,6 +96,7 @@ func (rh *Handler) handleDeletePuppy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
 func renderErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
 	status := http.StatusInternalServerError
 	body := map[string]interface{}{"error": err.Error()}
