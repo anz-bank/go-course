@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -49,7 +48,6 @@ func TestLoad(t *testing.T) {
 	if expected != actual {
 		t.Errorf("Unexpected output in main()")
 	}
-
 }
 
 func TestLoadInvalidValuePuppy(t *testing.T) {
@@ -60,79 +58,41 @@ func TestLoadInvalidValuePuppy(t *testing.T) {
 
 	expected := puppy.Error{Code: 0x1, Message: "puppy has invalid value (-1.300000)"}
 	assert.Equal(t, &expected, err, "Not invalid error")
-
 }
 
 func TestNewStoreInvalidStorage(t *testing.T) {
-	_, err := newStore("blah")
-	expected := fmt.Errorf("invalid storage")
-
-	assert.Equal(t, expected, err, "Not invalid storage error")
+	s := newStore("blah")
+	assert.Equal(t, nil, s, "Not invalid storage error")
 }
 
 func TestNewStoreSyncStorage(t *testing.T) {
-	s, _ := newStore("sync")
+	s := newStore("sync")
 	expected := store.NewSyncStore()
-
 	assert.Equal(t, expected, s, "Not a sync storage")
 }
 
 func TestMainOutputNoValueForFlag(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
 	args = []string{"-d", " "}
-	main()
-
-	actual := buf.String()
-	expected := "Command line could not be parsed, error: path ' ' does not exist"
-	t.Logf("expected:%s", expected)
-	t.Logf("actual:%s", actual)
-	if expected != actual {
-		t.Errorf("Unexpected output in main()")
-	}
+	assert.Panics(t, func() { main() }, "Main with no value for flag did not panic")
 }
 
 func TestMainOutputInvalidData(t *testing.T) {
 	args = []string{"--data", "../../puppydata/invalid-data.json"}
-
 	assert.Panics(t, func() { main() }, "Main with invalid data did not panic")
 }
 
 func TestMainInvalidStorage(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
 	args = []string{"-s", "bad", "--data", "../../puppydata/data.json"}
-
-	main()
-
-	actual := buf.String()
-	expected := "Could not setup database, error: invalid storage"
-	t.Logf("expected:%s", expected)
-	t.Logf("actual:%s", actual)
-	if expected != actual {
-		t.Errorf("Unexpected output in main()")
-	}
+	assert.Panics(t, func() { main() }, "Main with invalid storage did not panic")
 }
 
 func TestMainInvalidStorageLoad(t *testing.T) {
-	var buf bytes.Buffer
-	out = &buf
 	args = []string{"--data", "../../puppydata/invalid-puppies-negative-value.json"}
-
-	main()
-
-	actual := buf.String()
-	expected := "Could not load database, error: 1: puppy has invalid value (-2732.810059)"
-	t.Logf("expected:%s", expected)
-	t.Logf("actual:%s", actual)
-	if expected != actual {
-		t.Errorf("Unexpected output in main()")
-	}
+	assert.Panics(t, func() { main() }, "Main with invalid storage did not panic")
 }
 
 func TestMainOutputInvalidPuppy(t *testing.T) {
 	args = []string{"--data", "../../puppydata/invalid-puppies.json"}
-
 	assert.Panics(t, func() { main() }, "Main with invalid data did not panic")
 }
 
@@ -140,7 +100,7 @@ func TestInvalidPort(t *testing.T) {
 	var buf bytes.Buffer
 	out = &buf
 	args = []string{"--data", "../../puppydata/data.json", "-s", "map",
-		"-p", "w"}
+		"-p", "165535"}
 
 	main()
 	readable := strconv.Quote(`Store of puppies:
@@ -152,7 +112,7 @@ func TestInvalidPort(t *testing.T) {
 	6:{SPLINX brown 6 2467.04} 
 	7:{POWERNET blue 7 3970.65}] 8}
 	Could not start puppy server: listen tcp: 
-	address tcp/w: unknown port`)
+	address 165535: invalid port`)
 	expected := strings.ReplaceAll(readable, "\\n\\t", "")
 	actual := strconv.Quote(buf.String())
 	t.Logf("expected:%s", expected)

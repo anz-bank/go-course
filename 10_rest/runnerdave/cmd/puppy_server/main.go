@@ -11,23 +11,22 @@ import (
 	puppy "github.com/anz-bank/go-course/10_rest/runnerdave/pkg/puppy"
 	store "github.com/anz-bank/go-course/10_rest/runnerdave/pkg/puppy/store"
 
-	"github.com/go-chi/chi"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
 	args           = os.Args[1:]
 	data           = kingpin.Flag("data", "data file").Short('d').Default("puppydata/data.json").ExistingFile()
-	port           = kingpin.Flag("port", "PORT").Short('p').Default("8080").String()
-	db             = kingpin.Flag("store", "STORE").Short('s').Default("sync").String()
+	port           = kingpin.Flag("port", "PORT").Short('p').Default("8080").Int()
+	db             = kingpin.Flag("store", "STORE").Short('s').Default("sync").Enum("sync", "map")
 	out  io.Writer = os.Stdout
+	rs   puppy.RestServer
 )
 
 func main() {
 	_, err := kingpin.CommandLine.Parse(args)
 	if err != nil {
-		fmt.Fprintf(out, "Command line could not be parsed, error: %v", err)
-		return
+		panic(err)
 	}
 
 	d, _ := ioutil.ReadFile(*data)
@@ -36,29 +35,18 @@ func main() {
 		panic(err)
 	}
 
-	store, err := newStore(*db)
+	s := newStore(*db)
+	err = load(s, puppies)
 	if err != nil {
-		fmt.Fprintf(out, "Could not setup database, error: %v", err)
-		return
-	}
-	err = load(store, puppies)
-	if err != nil {
-		fmt.Fprintf(out, "Could not load database, error: %v", err)
-		return
+		panic(err)
 	}
 
-	fmt.Fprintf(out, "Store of puppies:%v", store)
+	fmt.Fprintf(out, "Store of puppies:%v", s)
 
-	r := chi.NewRouter()
-
-	rs := puppy.RestStorer{Db: store}
-	r.Get(rs.GetPuppyRoute(), rs.GetPuppy)
-	r.Post(rs.PostPuppyRoute(), rs.CreatePuppy)
-	r.Put(rs.PutPuppyRoute(), rs.UpdatePuppy)
-	r.Delete(rs.DeletePuppyRoute(), rs.DeletePuppy)
+	handler := rs.SetupRoutes(s)
 
 	portValue := fmt.Sprintf(":%v", *port)
-	serv := http.Server{Addr: portValue, Handler: r}
+	serv := http.Server{Addr: portValue, Handler: handler}
 	serr := serv.ListenAndServe()
 	if serr != http.ErrServerClosed {
 		fmt.Fprintf(out, "Could not start puppy server: %v", serr)
@@ -75,14 +63,14 @@ func load(s puppy.Storer, puppies []puppy.Puppy) error {
 	return nil
 }
 
-func newStore(db string) (puppy.Storer, error) {
+func newStore(db string) puppy.Storer {
 	switch db {
 	case "map":
-		return store.NewMapStore(), nil
+		return store.NewMapStore()
 	case "sync":
-		return store.NewSyncStore(), nil
+		return store.NewSyncStore()
 	}
-	return nil, fmt.Errorf("invalid storage")
+	return nil
 }
 
 func unmarshalPuppies(d []byte) ([]puppy.Puppy, error) {

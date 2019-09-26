@@ -8,40 +8,29 @@ import (
 	chi "github.com/go-chi/chi"
 )
 
-// RestStorer store for puppies
-type RestStorer struct {
+// RestServer store for puppies
+type RestServer struct {
 	Db Storer
 }
 
-const (
-	getPuppyRoute    = "/api/puppy/{id}"
-	postPuppyRoute   = "/api/puppy/"
-	putPuppyRoute    = "/api/puppy/{id}"
-	deletePuppyRoute = "/api/puppy/{id}"
-)
+// SetupRoutes setups the routes for the server
+func (rs *RestServer) SetupRoutes(db Storer) *chi.Mux {
+	r := chi.NewRouter()
+	rs.Db = db
 
-// GetPuppyRoute Route for the GET method
-func (rs *RestStorer) GetPuppyRoute() string {
-	return getPuppyRoute
+	r.Route("/api/puppy", func(r chi.Router) {
+		r.Post("/", rs.createPuppy)
+		r.Route("/{id}", func(r chi.Router) {
+			r.Put("/", rs.updatePuppy)
+			r.Delete("/", rs.deletePuppy)
+			r.Get("/", rs.getPuppy)
+		})
+	})
+
+	return r
 }
 
-// PostPuppyRoute Route for the POST method
-func (rs *RestStorer) PostPuppyRoute() string {
-	return postPuppyRoute
-}
-
-// PutPuppyRoute Route for the PUT method
-func (rs *RestStorer) PutPuppyRoute() string {
-	return putPuppyRoute
-}
-
-// DeletePuppyRoute Route for the PUT method
-func (rs *RestStorer) DeletePuppyRoute() string {
-	return deletePuppyRoute
-}
-
-// GetPuppy HandlerFunction
-func (rs *RestStorer) GetPuppy(w http.ResponseWriter, r *http.Request) {
+func (rs *RestServer) getPuppy(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err == nil {
 		p, rerr := rs.Db.ReadPuppy(int16(id))
@@ -55,8 +44,7 @@ func (rs *RestStorer) GetPuppy(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// CreatePuppy Handler function to create puppies
-func (rs *RestStorer) CreatePuppy(w http.ResponseWriter, r *http.Request) {
+func (rs *RestServer) createPuppy(w http.ResponseWriter, r *http.Request) {
 	post := Puppy{}
 	derr := json.NewDecoder(r.Body).Decode(&post)
 	if derr != nil {
@@ -68,8 +56,7 @@ func (rs *RestStorer) CreatePuppy(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// UpdatePuppy Updates an existing Puppy
-func (rs *RestStorer) UpdatePuppy(w http.ResponseWriter, r *http.Request) {
+func (rs *RestServer) updatePuppy(w http.ResponseWriter, r *http.Request) {
 	p := Puppy{}
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err == nil {
@@ -84,8 +71,7 @@ func (rs *RestStorer) UpdatePuppy(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// DeletePuppy Deletes an existing Puppy from the database
-func (rs *RestStorer) DeletePuppy(w http.ResponseWriter, r *http.Request) {
+func (rs *RestServer) deletePuppy(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err == nil {
 		derr := rs.Db.DeletePuppy(int16(id))

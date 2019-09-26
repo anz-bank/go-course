@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	chi "github.com/go-chi/chi"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -16,28 +15,8 @@ import (
 )
 
 var (
-	rs puppy.RestStorer
+	rs puppy.RestServer
 )
-
-func startAPIHandler() *chi.Mux {
-	r := chi.NewRouter()
-	rs = puppy.RestStorer{store.NewSyncStore()}
-	newPuppy := puppy.Puppy{
-		Breed:  "ULTRASURE",
-		Colour: "green",
-		Value:  2732.81,
-	}
-	if err := rs.Db.CreatePuppy(newPuppy); err != nil {
-		panic(err)
-	}
-
-	r.Get(rs.GetPuppyRoute(), rs.GetPuppy)
-	r.Post(rs.PostPuppyRoute(), rs.CreatePuppy)
-	r.Put(rs.PutPuppyRoute(), rs.UpdatePuppy)
-	r.Delete(rs.DeletePuppyRoute(), rs.DeletePuppy)
-
-	return r
-}
 
 func TestGetPuppy(t *testing.T) {
 	req, err := http.NewRequest("GET", "/api/puppy/1", nil)
@@ -46,7 +25,16 @@ func TestGetPuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	newPuppy := puppy.Puppy{
+		Breed:  "ULTRASURE",
+		Colour: "green",
+		Value:  2732.81,
+	}
+	db := store.NewSyncStore()
+	if err := db.CreatePuppy(newPuppy); err != nil {
+		panic(err)
+	}
+	handler := rs.SetupRoutes(db)
 
 	handler.ServeHTTP(rr, req)
 
@@ -73,7 +61,7 @@ func TestGetPuppyNotFound(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	handler := rs.SetupRoutes(store.NewSyncStore())
 
 	handler.ServeHTTP(rr, req)
 
@@ -94,7 +82,7 @@ func TestGetPuppyNotFound(t *testing.T) {
 
 func TestPostPuppy(t *testing.T) {
 	newPuppy := puppy.Puppy{
-		ID:     2,
+		ID:     1,
 		Breed:  "EPLODE",
 		Colour: "brown",
 		Value:  3889.92,
@@ -106,10 +94,10 @@ func TestPostPuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	handler := rs.SetupRoutes(store.NewSyncStore())
 	handler.ServeHTTP(rr, req)
 
-	savedPuppy, _ := rs.Db.ReadPuppy(2)
+	savedPuppy, _ := rs.Db.ReadPuppy(1)
 	assert.Equal(t, newPuppy, savedPuppy)
 }
 
@@ -127,7 +115,7 @@ func TestPostInvalidPuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	handler := rs.SetupRoutes(store.NewSyncStore())
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusBadRequest {
@@ -150,7 +138,16 @@ func TestPutPuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	newPuppy := puppy.Puppy{
+		Breed:  "ULTRASURE",
+		Colour: "green",
+		Value:  2732.81,
+	}
+	db := store.NewSyncStore()
+	if err := db.CreatePuppy(newPuppy); err != nil {
+		panic(err)
+	}
+	handler := rs.SetupRoutes(db)
 	handler.ServeHTTP(rr, req)
 
 	savedPuppy, _ := rs.Db.ReadPuppy(1)
@@ -171,7 +168,7 @@ func TestPutInvalidPuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	handler := rs.SetupRoutes(store.NewSyncStore())
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusBadRequest {
@@ -187,7 +184,7 @@ func TestDeletePuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	handler := rs.SetupRoutes(store.NewSyncStore())
 	handler.ServeHTTP(rr, req)
 
 	savedPuppy, _ := rs.Db.ReadPuppy(2)
@@ -201,7 +198,7 @@ func TestDeleteNotExistingPuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	handler := rs.SetupRoutes(store.NewSyncStore())
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusInternalServerError {
@@ -217,7 +214,7 @@ func TestDeleteInvalidIdPuppy(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := startAPIHandler()
+	handler := rs.SetupRoutes(store.NewSyncStore())
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusBadRequest {
