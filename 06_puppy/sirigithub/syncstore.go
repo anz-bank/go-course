@@ -16,18 +16,19 @@ func NewSyncStore() *SyncStore {
 }
 
 // CreatePuppy takes a user provided puppy and creates a new Puppy in the store
+// puppy ID is updated with the next ID
 // returns the ID of the new Puppy.
 func (m *SyncStore) CreatePuppy(puppy *Puppy) int {
 	m.Lock()
 	defer m.Unlock()
-	puppy.ID = m.currID
 	m.currID++
-	m.Store(puppy.ID, *puppy)
+	puppy.ID = m.currID
+	m.Store(m.currID, *puppy)
 	return puppy.ID
 }
 
 // UpdatePuppy overrides an existing puppy in the store,
-// returns an error if id is not found or does not match the puppy ID
+// returns an error if id is not found or does not match the puppy ID.
 func (m *SyncStore) UpdatePuppy(p *Puppy) error {
 	m.Lock()
 	defer m.Unlock()
@@ -38,22 +39,23 @@ func (m *SyncStore) UpdatePuppy(p *Puppy) error {
 	return nil
 }
 
-// DeletePuppy deletes an existing puppy from the store
+// DeletePuppy deletes an existing puppy from the store.
 func (m *SyncStore) DeletePuppy(id int) error {
 	m.Lock()
 	defer m.Unlock()
-	if _, ok := m.Load(id); ok {
-		m.Delete(id)
-		return nil
+	if _, ok := m.Load(id); !ok {
+		return fmt.Errorf("puppy ID %d does not exist in the map", id)
 	}
-	return fmt.Errorf("puppy ID %d does not exist in the map", id)
+	m.Delete(id)
+	return nil
 }
 
-// ReadPuppy reads an existing puppy from the store
+// ReadPuppy reads an existing puppy from the store.
 func (m *SyncStore) ReadPuppy(id int) (*Puppy, error) {
-	if puppyData, ok := m.Load(id); ok {
-		puppy, _ := puppyData.(Puppy)
-		return &puppy, nil
+	puppyData, ok := m.Load(id)
+	if !ok {
+		return nil, fmt.Errorf("puppy ID %d does not exist in the map", id)
 	}
-	return nil, fmt.Errorf("puppy ID %d does not exist in the map", id)
+	puppy, _ := puppyData.(Puppy)
+	return &puppy, nil
 }
