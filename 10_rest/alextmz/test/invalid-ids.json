@@ -1,0 +1,18 @@
+[
+    {
+        "id": -10,
+        "breed": "Dogo",
+        "colour": "White",
+        "value": 500
+    },
+    {
+        "breed": "Mastiff",
+        "colour": "Brindle",
+        "value": 700
+    },
+    {
+        "breed": "Fila",
+        "colour": "Golden",
+        "value": 900
+    }
+]
