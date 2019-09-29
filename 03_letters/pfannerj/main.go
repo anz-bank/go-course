@@ -13,7 +13,7 @@ var mainout io.Writer = os.Stdout
 
 func main() {
 
-	fmt.Fprintf(mainout, strings.Join(sortLetters(letters("aba")), "\n"))
+	fmt.Fprint(mainout, strings.Join(sortLetters(letters("aba")), "\n"))
 
 }
 
