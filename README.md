@@ -8,7 +8,7 @@
 
 ## Prerequisites
 
--   Install `go 1.12` according to [official installation instruction](https://golang.org/doc/install)
+-   Install `go 1.13` according to [official installation instruction](https://golang.org/doc/install)
 -   Clone this project outside your `$GOPATH` to enable [Go Modules](https://github.com/golang/go/wiki/Modules)
 -   Install `golangci-lint` according to [instructions](https://github.com/golangci/golangci-lint#local-installation)
 
