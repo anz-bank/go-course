@@ -1,50 +1,99 @@
 package puppy
 
+import (
+	"fmt"
+)
+
 type Error struct {
-	Message  string
-	Code     int
-	CausedBy string
+	Message string
+	Code    int
 }
 
-// Not being able to do map consts really trips me.
-// There must be a better way.
 const (
-	Err400BadRequest     = 400
-	Err404NotFound       = 404
-	Err409Conflict       = 409
-	Err500InternalError  = 500
-	Err501NotImplemented = 501
+	ErrNilPuppyPointer = iota
+	ErrNegativePuppyValueOnCreate
+	ErrNegativePuppyValueOnUpdate
+	ErrPuppyAlreadyIdentified
+	ErrPuppyNotFoundOnRead
+	ErrPuppyNotFoundOnUpdate
+	ErrPuppyNotFoundOnDelete
+	ErrNilPuppyPointerStr            = "puppy pointer is nil%s"
+	ErrNegativePuppyValueOnCreateStr = "trying to create a puppy with a negative value%s"
+	ErrNegativePuppyValueOnUpdateStr = "trying to update a puppy with a negative value%s"
+	ErrPuppyAlreadyIdentifiedStr     = "puppy already initialized%s"
+	ErrPuppyNotFoundOnReadStr        = "puppy%s being read does not exist"
+	ErrPuppyNotFoundOnUpdateStr      = "puppy%s being updated does not exist"
+	ErrPuppyNotFoundOnDeleteStr      = "puppy%s being deleted does not exist"
 )
 
-const (
-	Err400BadRequestS     = "400 Bad Request"
-	Err404NotFoundS       = "404 Not Found"
-	Err409ConflictS       = "409 Conflict"
-	Err500InternalErrorS  = "500 Internal Server Error"
-	Err501NotImplementedS = "501 Not Implemented"
-)
+// errorCodeDescription returns the verbose error description corresponding
+// to a known/static error Code, allowing for an optional parameter to be passed
+// for a more verbose error'ing.
+// Passing an empty string makes it return the default error string only.
+func (e Error) errorCodeDescription(param string) string {
+	errormap := map[int]struct {
+		errmsg, paramprefix, paramsuffix string
+	}{
+		ErrNilPuppyPointer:            {ErrNilPuppyPointerStr, "", ""},
+		ErrNegativePuppyValueOnCreate: {ErrNegativePuppyValueOnCreateStr, " (", ")"},
+		ErrNegativePuppyValueOnUpdate: {ErrNegativePuppyValueOnUpdateStr, " (", ")"},
+		ErrPuppyAlreadyIdentified:     {ErrPuppyAlreadyIdentifiedStr, " with ID ", ""},
+		ErrPuppyNotFoundOnRead:        {ErrPuppyNotFoundOnReadStr, " with ID ", ""},
+		ErrPuppyNotFoundOnUpdate:      {ErrPuppyNotFoundOnUpdateStr, " with ID ", ""},
+		ErrPuppyNotFoundOnDelete:      {ErrPuppyNotFoundOnDeleteStr, " with ID ", ""},
+	}
+
+	v, ok := errormap[e.Code]
+	if !ok {
+		return "undefined error"
+	}
+
+	if param != "" {
+		return fmt.Sprintf(v.errmsg, v.paramprefix+param+v.paramsuffix)
+	}
+
+	return fmt.Sprintf(v.errmsg, "")
+}
 
 func (e Error) Error() string {
-	switch e.Code {
-	case Err400BadRequest:
-		e.Message = Err400BadRequestS
-	case Err404NotFound:
-		e.Message = Err404NotFoundS
-	case Err409Conflict:
-		e.Message = Err409ConflictS
-	case Err500InternalError:
-		e.Message = Err500InternalErrorS
-	default:
-		e.Code = Err501NotImplemented
-		e.Message = Err501NotImplementedS
+	if e.Message != "" {
+		return e.Message
 	}
-	return e.Message
+
+	return fmt.Sprint(e.errorCodeDescription(""))
 }
 
-func NewError(i int) error {
+// Errorp returns the known parametrized (verbose) error string for
+// a given error code.
+func Errorp(err int, param interface{}) Error {
+	e := Error{Code: err}
+
+	switch v := param.(type) {
+	case string:
+		e.Message = e.errorCodeDescription(v)
+	case int:
+		e.Message = e.errorCodeDescription(fmt.Sprintf("%d", param))
+	case float64:
+		e.Message = e.errorCodeDescription(fmt.Sprintf("%.2f", param))
+	default:
+		panic("not implemented: param type is not either string, int or float")
+	}
+
+	return e
+}
+
+func NewError(err int, m string) Error {
 	var e Error
-	e.Code = i
-	e.CausedBy = ""
-	e.Message = e.Error()
+	e.Code = err
+	e.Message = m
+
+	return e
+}
+
+func NewErrorf(err int, f string, m ...interface{}) Error {
+	var e Error
+	e.Code = err
+	e.Message = fmt.Sprintf(f, m...)
+
 	return e
 }

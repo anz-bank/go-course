@@ -7,7 +7,7 @@ import (
 )
 
 type SyncStore struct {
-	size int
+	nextID int
 	sync.Map
 	sync.Mutex
 }
@@ -17,63 +17,66 @@ func NewSyncStore() *SyncStore {
 	return &a
 }
 
-// func CreatePuppy takes
 func (m *SyncStore) CreatePuppy(p *puppy.Puppy) error {
-	switch {
-	case p == nil:
-		return puppy.NewError(puppy.Err400BadRequest)
-	case p.ID == 0:
-		m.Lock()
-		defer m.Unlock()
-		p.ID = m.size + 1
-		m.size++
-		m.Store(p.ID, *p)
-		return nil
+	if p == nil {
+		return puppy.Error{Code: puppy.ErrNilPuppyPointer}
 	}
-	return puppy.NewError(puppy.Err400BadRequest)
+
+	if p.Value < 0 {
+		return puppy.Errorp(puppy.ErrNegativePuppyValueOnCreate, p.Value)
+	}
+
+	if p.ID != 0 {
+		return puppy.Errorp(puppy.ErrPuppyAlreadyIdentified, p.ID)
+	}
+
+	m.Lock()
+	defer m.Unlock()
+	p.ID = m.nextID + 1
+	m.nextID++
+	m.Store(p.ID, *p)
+
+	return nil
 }
 
 func (m *SyncStore) ReadPuppy(id int) (puppy.Puppy, error) {
-	switch {
-	case id < 0:
-		return puppy.Puppy{}, puppy.NewError(puppy.Err400BadRequest)
-	default:
-		m.Lock()
-		defer m.Unlock()
-		if r, ok := m.Load(id); ok {
-			puppy := r.(puppy.Puppy)
-			return puppy, nil
-		}
-		return puppy.Puppy{}, puppy.NewError(puppy.Err404NotFound)
+	v, ok := m.Load(id)
+	if !ok {
+		return puppy.Puppy{}, puppy.Errorp(puppy.ErrPuppyNotFoundOnRead, id)
 	}
+
+	m.Lock()
+	defer m.Unlock()
+
+	return v.(puppy.Puppy), nil
 }
 
 func (m *SyncStore) UpdatePuppy(p puppy.Puppy) error {
-	switch {
-	case p.ID < 0:
-		return puppy.NewError(puppy.Err400BadRequest)
-	default:
-		m.Lock()
-		defer m.Unlock()
-		if _, ok := m.Load(p.ID); ok {
-			m.Store(p.ID, p)
-			return nil
-		}
-		return puppy.NewError(puppy.Err404NotFound)
+	m.Lock()
+	defer m.Unlock()
+
+	if _, ok := m.Load(p.ID); !ok {
+		return puppy.Errorp(puppy.ErrPuppyNotFoundOnUpdate, p.ID)
 	}
+
+	if p.Value < 0 {
+		return puppy.Errorp(puppy.ErrNegativePuppyValueOnUpdate, p.Value)
+	}
+
+	m.Store(p.ID, p)
+
+	return nil
 }
 
 func (m *SyncStore) DeletePuppy(id int) error {
-	switch {
-	case id < 0:
-		return puppy.NewError(puppy.Err400BadRequest)
-	default:
-		m.Lock()
-		defer m.Unlock()
-		if _, ok := m.Load(id); ok {
-			m.Delete(id)
-			return nil
-		}
-		return puppy.NewError(puppy.Err404NotFound)
+	m.Lock()
+	defer m.Unlock()
+
+	if _, ok := m.Load(id); !ok {
+		return puppy.Errorp(puppy.ErrPuppyNotFoundOnDelete, id)
 	}
+
+	m.Delete(id)
+
+	return nil
 }
