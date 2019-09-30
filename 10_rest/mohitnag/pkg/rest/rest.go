@@ -64,8 +64,11 @@ func (rh *Handler) handlePostPuppy(w http.ResponseWriter, r *http.Request) {
 func (rh *Handler) handleGetPuppy(w http.ResponseWriter, r *http.Request) {
 	var puppy puppy.Puppy
 	ID := chi.URLParam(r, "id")
-	puppyID, _ := strconv.Atoi(ID)
-	puppy, err := rh.storer.ReadPuppy(uint32(puppyID))
+	puppyID, err := strconv.Atoi(ID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+	puppy, err = rh.storer.ReadPuppy(uint32(puppyID))
 	if err != nil {
 		renderErrorResponse(w, r, err)
 		return
@@ -89,12 +92,16 @@ func (rh *Handler) handleUpdatePuppy(w http.ResponseWriter, r *http.Request) {
 
 func (rh *Handler) handleDeletePuppy(w http.ResponseWriter, r *http.Request) {
 	ID := chi.URLParam(r, "id")
-	puppyID, _ := strconv.Atoi(ID)
-	err := rh.storer.DeletePuppy(uint32(puppyID))
+	puppyID, err := strconv.Atoi(ID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+	err = rh.storer.DeletePuppy(uint32(puppyID))
 	if err != nil {
 		renderErrorResponse(w, r, err)
 		return
 	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func renderErrorResponse(w http.ResponseWriter, r *http.Request, err error) {

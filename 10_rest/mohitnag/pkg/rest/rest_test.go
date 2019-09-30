@@ -64,7 +64,7 @@ func (s *restSuite) TestHandleGetMissingPuppy() {
 	assert := assert.New(s.T())
 	puppyServer := httptest.NewServer(s.handler)
 	expectedPuppy := puppy.Puppy{}
-	resp, err := http.Get(puppyServer.URL + "/api/puppy/non-existing")
+	resp, err := http.Get(puppyServer.URL + "/api/puppy/878")
 	assert.NoError(err)
 	defer resp.Body.Close()
 	actual, err := ioutil.ReadAll(resp.Body)
@@ -208,7 +208,7 @@ func (s *restSuite) TestDeletePuppy() {
 	resp, err := client.Do(req)
 	assert.NoError(err)
 	defer resp.Body.Close()
-	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.Equal(http.StatusNoContent, resp.StatusCode)
 	resp, err = http.Get(puppyServer.URL + "/api/puppy/1")
 	assert.NoError(err)
 	defer resp.Body.Close()
