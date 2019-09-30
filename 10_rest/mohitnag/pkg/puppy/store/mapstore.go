@@ -18,7 +18,7 @@ func NewMapStore() *MapStore {
 }
 
 // CreatePuppy creates a Puppy in mapstore
-func (m MapStore) CreatePuppy(p puppy.Puppy) error {
+func (m *MapStore) CreatePuppy(p puppy.Puppy) error {
 	if _, ok := m.m[p.ID]; ok {
 		return puppy.ErrorF(puppy.Duplicate, "puppy with Id %d already exists", p.ID)
 	}
@@ -33,7 +33,7 @@ func (m MapStore) CreatePuppy(p puppy.Puppy) error {
 }
 
 // ReadPuppy reads a Puppy from mapstore
-func (m MapStore) ReadPuppy(id uint32) (puppy.Puppy, error) {
+func (m *MapStore) ReadPuppy(id uint32) (puppy.Puppy, error) {
 	if _, ok := m.m[id]; !ok {
 		return puppy.Puppy{}, puppy.ErrorF(puppy.NotFound, "puppy with Id %d does not exists", id)
 	}
@@ -41,7 +41,7 @@ func (m MapStore) ReadPuppy(id uint32) (puppy.Puppy, error) {
 }
 
 // UpdatePuppy updates a Puppy in mapstore
-func (m MapStore) UpdatePuppy(p puppy.Puppy) error {
+func (m *MapStore) UpdatePuppy(p puppy.Puppy) error {
 	if _, ok := m.m[p.ID]; !ok {
 		return puppy.ErrorF(puppy.NotFound, "puppy with Id %d does not exists", p.ID)
 	}
@@ -52,7 +52,7 @@ func (m MapStore) UpdatePuppy(p puppy.Puppy) error {
 }
 
 // DeletePuppy deletes a Puppy from mapstore
-func (m MapStore) DeletePuppy(id uint32) error {
+func (m *MapStore) DeletePuppy(id uint32) error {
 	if _, ok := m.m[id]; !ok {
 		return puppy.ErrorF(puppy.NotFound, "puppy with Id %d does not exists", id)
 	}

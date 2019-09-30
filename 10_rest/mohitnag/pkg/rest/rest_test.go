@@ -64,7 +64,7 @@ func (s *restSuite) TestHandleGetMissingPuppy() {
 	assert := assert.New(s.T())
 	puppyServer := httptest.NewServer(s.handler)
 	expectedPuppy := puppy.Puppy{}
-	resp, err := http.Get(puppyServer.URL + "/api/puppy/878")
+	resp, err := http.Get(puppyServer.URL + "/api/puppy/non-existing")
 	assert.NoError(err)
 	defer resp.Body.Close()
 	actual, err := ioutil.ReadAll(resp.Body)
