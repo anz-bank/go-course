@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"testing"
 
 	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy"
@@ -19,9 +20,7 @@ const (
 
 func TestMainError(t *testing.T) {
 	assert := assert.New(t)
-	args = []string{"-d", duplicatePuppies}
-	assert.Panics(main)
-
+	srvCh = make(chan *http.Server)
 	args = []string{"-d", manyPuppies}
 	go assert.Panics(main)
 	srv := <-srvCh

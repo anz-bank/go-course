@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -16,7 +17,7 @@ import (
 var (
 	app   = kingpin.New("puppyStore", "Puppy Store")
 	args  = os.Args[1:]
-	srvCh = make(chan *http.Server)
+	srvCh chan *http.Server
 )
 
 func main() {
@@ -36,10 +37,10 @@ func main() {
 		Addr:    ":" + (*port),
 		Handler: handler,
 	}
-	srvCh <- srv
-	if err := srv.ListenAndServe(); err != nil {
-		panic(err)
+	if srvCh != nil {
+		srvCh <- srv
 	}
+	log.Panic(srv.ListenAndServe())
 }
 
 func initialisePuppyStoreWithFile(store puppy.Storer, fileName string) error {
