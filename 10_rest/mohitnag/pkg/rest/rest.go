@@ -6,13 +6,14 @@ import (
 	"strconv"
 
 	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy"
+	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy/store"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 )
 
 type Handler struct {
-	storer puppy.Storer
+	storer store.Storer
 	router chi.Router
 }
 
@@ -20,7 +21,7 @@ func (rh *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rh.router.ServeHTTP(w, r)
 }
 
-func NewRestHandler(s puppy.Storer) http.Handler {
+func NewRestHandler(s store.Storer) http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
@@ -39,10 +40,10 @@ func (rh *Handler) handleRequests() {
 	r.Route("/api/puppy", func(r chi.Router) {
 		r.Route("/", func(r chi.Router) {
 			r.Post("/", rh.handlePostPuppy)
+			r.Put("/", rh.handleUpdatePuppy)
 		})
 		r.Route("/{id}", func(r chi.Router) {
 			r.Get("/", rh.handleGetPuppy)
-			r.Put("/", rh.handleUpdatePuppy)
 			r.Delete("/", rh.handleDeletePuppy)
 		})
 	})

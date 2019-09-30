@@ -4,7 +4,6 @@ import (
 	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy"
 )
 
-// Puppy is an alias for puppy.Puppy
 type Puppy = puppy.Puppy
 
 // Storer defines the interface on Puppy

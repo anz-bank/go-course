@@ -17,7 +17,7 @@ import (
 type restSuite struct {
 	suite.Suite
 	handler    *Handler
-	makeStorer func() puppy.Storer
+	makeStorer func() store.Storer
 }
 
 func (s *restSuite) SetupTest() {
@@ -30,10 +30,10 @@ func (s *restSuite) SetupTest() {
 
 func TestStorers(t *testing.T) {
 	suite.Run(t, &restSuite{
-		makeStorer: func() puppy.Storer { return store.NewMapStore() },
+		makeStorer: func() store.Storer { return store.NewMapStore() },
 	})
 	suite.Run(t, &restSuite{
-		makeStorer: func() puppy.Storer { return store.NewSyncStore() },
+		makeStorer: func() store.Storer { return store.NewSyncStore() },
 	})
 
 }
@@ -135,7 +135,7 @@ func (s *restSuite) TestHandleUpdatePuppy() {
 	}
 	b, err := json.Marshal(update)
 	assert.NoError(err)
-	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/1", bytes.NewBuffer(b))
+	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy", bytes.NewBuffer(b))
 	assert.NoError(err)
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	client := &http.Client{}
@@ -161,7 +161,7 @@ func (s *restSuite) TestHandleUpdateMissingPuppy() {
 	}
 	b, err := json.Marshal(updatePuppy)
 	assert.NoError(err)
-	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/non-existing", bytes.NewBuffer(b))
+	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy", bytes.NewBuffer(b))
 	assert.NoError(err)
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	client := &http.Client{}
@@ -182,7 +182,7 @@ func (s *restSuite) TestHandleUpdateBadPuppy() {
 	puppyServer := httptest.NewServer(s.handler)
 	b, err := json.Marshal(`{bad json}`)
 	assert.NoError(err)
-	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy/1", bytes.NewBuffer(b))
+	req, err := http.NewRequest(http.MethodPut, puppyServer.URL+"/api/puppy", bytes.NewBuffer(b))
 	assert.NoError(err)
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	client := &http.Client{}
@@ -228,7 +228,7 @@ func (s *restSuite) TestHandleDeleteMissingPuppy() {
 	assert.Equal(404, resp.StatusCode)
 }
 
-func initialisePuppyStore(storer puppy.Storer, fileName string) error {
+func initialisePuppyStore(storer store.Storer, fileName string) error {
 	puppies := []puppy.Puppy{}
 	puppiesBytes := readFile(fileName)
 	if err := json.Unmarshal(puppiesBytes, &puppies); err != nil {

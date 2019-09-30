@@ -43,7 +43,7 @@ func main() {
 	log.Panic(srv.ListenAndServe())
 }
 
-func initialisePuppyStoreWithFile(store puppy.Storer, fileName string) error {
+func initialisePuppyStoreWithFile(store store.Storer, fileName string) error {
 
 	puppies := []puppy.Puppy{}
 	puppiesBytes := readFile(fileName)
@@ -66,7 +66,7 @@ func readFile(filename string) []byte {
 	return buff
 }
 
-func createStore(storeType string) puppy.Storer {
+func createStore(storeType string) store.Storer {
 	switch storeType {
 	case "map":
 		return store.NewMapStore()

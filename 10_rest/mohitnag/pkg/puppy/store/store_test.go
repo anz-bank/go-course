@@ -8,6 +8,7 @@ import (
 
 	"github.com/anz-bank/go-course/10_rest/mohitnag/pkg/puppy"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -22,9 +23,7 @@ func (s *storerSuite) SetupTest() {
 	s.store = s.makeStorer()
 	s.puppy = defaultPuppy(s.T())
 	err := s.store.CreatePuppy(s.puppy)
-	if err != nil {
-		s.FailNow("Error in Test Setup")
-	}
+	require.NoError(s.T(), err)
 }
 
 func (s *storerSuite) TestCreatePuppy() {
@@ -134,7 +133,7 @@ func defaultPuppy(t *testing.T) puppy.Puppy {
 	pup := puppy.Puppy{}
 	buff := readFile("testdata/default-puppy.json")
 	if err := json.Unmarshal(buff, &pup); err != nil {
-		t.Fatalf("Couldn't unmarshall")
+		t.Fatalf("Couldn't unmarshall default-puppy.json: %v", err)
 	}
 	return pup
 }
