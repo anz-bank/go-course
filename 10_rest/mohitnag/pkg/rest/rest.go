@@ -31,11 +31,11 @@ func NewRestHandler(s store.Storer) http.Handler {
 	rh := Handler{
 		storer: s,
 		router: r}
-	rh.handleRequests()
+	rh.handleRoutes()
 	return &rh
 }
 
-func (rh *Handler) handleRequests() {
+func (rh *Handler) handleRoutes() {
 	r := rh.router
 	r.Route("/api/puppy", func(r chi.Router) {
 		r.Route("/", func(r chi.Router) {
@@ -96,6 +96,7 @@ func (rh *Handler) handleDeletePuppy(w http.ResponseWriter, r *http.Request) {
 	puppyID, err := strconv.Atoi(ID)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 	err = rh.storer.DeletePuppy(uint32(puppyID))
 	if err != nil {

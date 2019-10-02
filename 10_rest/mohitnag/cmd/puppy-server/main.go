@@ -44,7 +44,6 @@ func main() {
 }
 
 func initialisePuppyStoreWithFile(store store.Storer, fileName string) error {
-
 	puppies := []puppy.Puppy{}
 	puppiesBytes := readFile(fileName)
 	if err := json.Unmarshal(puppiesBytes, &puppies); err != nil {

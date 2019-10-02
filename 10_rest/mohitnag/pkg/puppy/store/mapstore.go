@@ -19,21 +19,23 @@ func NewMapStore() *MapStore {
 
 // CreatePuppy creates a Puppy in mapstore
 func (m *MapStore) CreatePuppy(p puppy.Puppy) error {
-	if _, ok := m.m[p.ID]; ok {
-		return puppy.ErrorF(puppy.Duplicate, "puppy with Id %d already exists", p.ID)
-	}
 	val, _ := strconv.Atoi(p.Value)
 	if val < 0 {
 		return puppy.ErrorF(puppy.Invalid, "puppy with value less than 0 not allowed")
 	}
 	m.Lock()
 	defer m.Unlock()
+	if _, ok := m.m[p.ID]; ok {
+		return puppy.ErrorF(puppy.Duplicate, "puppy with Id %d already exists", p.ID)
+	}
 	m.m[p.ID] = p
 	return nil
 }
 
 // ReadPuppy reads a Puppy from mapstore
 func (m *MapStore) ReadPuppy(id uint32) (puppy.Puppy, error) {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.m[id]; !ok {
 		return puppy.Puppy{}, puppy.ErrorF(puppy.NotFound, "puppy with Id %d does not exists", id)
 	}
@@ -42,22 +44,22 @@ func (m *MapStore) ReadPuppy(id uint32) (puppy.Puppy, error) {
 
 // UpdatePuppy updates a Puppy in mapstore
 func (m *MapStore) UpdatePuppy(p puppy.Puppy) error {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.m[p.ID]; !ok {
 		return puppy.ErrorF(puppy.NotFound, "puppy with Id %d does not exists", p.ID)
 	}
-	m.Lock()
-	defer m.Unlock()
 	m.m[p.ID] = p
 	return nil
 }
 
 // DeletePuppy deletes a Puppy from mapstore
 func (m *MapStore) DeletePuppy(id uint32) error {
+	m.Lock()
+	defer m.Unlock()
 	if _, ok := m.m[id]; !ok {
 		return puppy.ErrorF(puppy.NotFound, "puppy with Id %d does not exists", id)
 	}
-	m.Lock()
-	defer m.Unlock()
 	delete(m.m, id)
 	return nil
 }

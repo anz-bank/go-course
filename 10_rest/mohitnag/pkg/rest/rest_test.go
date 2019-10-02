@@ -35,7 +35,6 @@ func TestStorers(t *testing.T) {
 	suite.Run(t, &restSuite{
 		makeStorer: func() store.Storer { return store.NewSyncStore() },
 	})
-
 }
 
 func (s *restSuite) TestHandleGetPuppy() {
@@ -57,7 +56,6 @@ func (s *restSuite) TestHandleGetPuppy() {
 	assert.NoError(err)
 	assert.Equal(200, resp.StatusCode)
 	assert.Equal(expectedPuppy, actualPuppy)
-
 }
 
 func (s *restSuite) TestHandleGetMissingPuppy() {
@@ -215,10 +213,23 @@ func (s *restSuite) TestDeletePuppy() {
 	assert.Equal(404, resp.StatusCode)
 }
 
-func (s *restSuite) TestHandleDeleteMissingPuppy() {
+func (s *restSuite) TestHandleDeleteBadPuppy() {
 	assert := assert.New(s.T())
 	puppyServer := httptest.NewServer(s.handler)
 	req, err := http.NewRequest(http.MethodDelete, puppyServer.URL+"/api/puppy/non-existing", nil)
+	assert.NoError(err)
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(err)
+	defer resp.Body.Close()
+	assert.Equal(404, resp.StatusCode)
+}
+
+func (s *restSuite) TestHandleDeleteMissingPuppy() {
+	assert := assert.New(s.T())
+	puppyServer := httptest.NewServer(s.handler)
+	req, err := http.NewRequest(http.MethodDelete, puppyServer.URL+"/api/puppy/78", nil)
 	assert.NoError(err)
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	client := &http.Client{}
