@@ -1,7 +1,8 @@
 service:
-  golangci-lint-version: 1.17.1
+  golangci-lint-version: 1.18.0
 linters:
   enable-all: true
   disable:
     - gochecknoglobals
     - dupl
+    - funlen
