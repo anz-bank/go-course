@@ -14,3 +14,5 @@ require (
 	golang.org/x/tools v0.0.0-20190809145639-6d4652c779c4 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
+
+go 1.13

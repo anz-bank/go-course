@@ -99,8 +99,7 @@ func validatePortFlag(c Config) (string, error) {
 // createPuppies takes an array of puppies and saves it to a puppy storer
 func createPuppies(s puppy.Storer, puppies []puppy.Puppy) (puppy.Storer, error) {
 	for _, jsonPuppy := range puppies {
-		// silence the linter here: Using a reference for the variable on range scope' `jsonPuppy`(scopelint)
-		// nolint:<linter>
+		jsonPuppy := jsonPuppy
 		if _, saveErr := s.CreatePuppy(&jsonPuppy); saveErr != nil {
 			return nil, saveErr
 		}

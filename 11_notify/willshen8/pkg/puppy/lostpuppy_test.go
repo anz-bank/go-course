@@ -8,12 +8,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func runTest(t *testing.T, payload []byte, expectedBody string, expectedHTTPCode int) {
 	req, err := http.NewRequest("POST", "/api/lostpuppy/", bytes.NewBuffer(payload))
 	if err != nil {
-		t.Fatal(err)
+		require.NoError(t, err)
 	}
 
 	// setup router
@@ -30,7 +31,8 @@ func runTest(t *testing.T, payload []byte, expectedBody string, expectedHTTPCode
 	// Get actual response
 	resp := rr.Result()
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	require.NoError(t, err)
 	bodyString := string(body)
 
 	// check for http status
@@ -50,17 +52,20 @@ func TestLostPuppyAPI(t *testing.T) {
 			testName:    "Test POST with nil payload",
 			payload:     nil,
 			HTTPCode:    http.StatusUnprocessableEntity,
-			expectedMsg: "Unprocessable Entity\n"},
+			expectedMsg: "Unprocessable Entity\n",
+		},
 		{
 			testName:    "Test POST with odd ID",
 			payload:     []byte(`{"id": 1}`),
 			HTTPCode:    http.StatusInternalServerError,
-			expectedMsg: ""},
+			expectedMsg: "",
+		},
 		{
 			testName:    "Test POST with even ID",
 			payload:     []byte(`{"ID": 2}`),
 			HTTPCode:    http.StatusCreated,
-			expectedMsg: ""},
+			expectedMsg: "",
+		},
 	}
 	for _, tc := range tests {
 		tc := tc
