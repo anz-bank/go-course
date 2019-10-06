@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"unicode/utf8"
 )
 
 var out io.Writer = os.Stdout
@@ -22,8 +23,12 @@ func numeronyms(vals ...string) []string {
 }
 
 func numeronym(s string) string {
-	if len(s) < 4 {
-		return (s)
+	numrunes := utf8.RuneCountInString(s)
+	if numrunes < 4 {
+		return s
 	}
-	return s[:1] + strconv.Itoa(len(s)-2) + s[len(s)-1:]
+	firstrune, _ := utf8.DecodeRuneInString(s)
+	lastrune, _ := utf8.DecodeLastRuneInString(s)
+
+	return string(firstrune) + strconv.Itoa(numrunes-2) + string(lastrune)
 }
