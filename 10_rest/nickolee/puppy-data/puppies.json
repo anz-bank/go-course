@@ -1,0 +1,20 @@
+[   
+    {
+        "id": 17,
+        "breed": "Vulpix",
+        "colour": "Red",
+        "value": 2900
+    },
+    {
+        "id": 27,
+        "breed": "Eevee",
+        "colour": "Light Brown",
+        "value": 1290
+    },
+    {
+        "id": 37,
+        "breed": "Vaporeon",
+        "colour": "Sea Blue",
+        "value": 3290
+    }
+]
