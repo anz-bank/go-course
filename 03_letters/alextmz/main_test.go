@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_letters(t *testing.T) {
+func TestLetters(t *testing.T) {
 
 	var tests = map[string]struct {
 		arg  string
@@ -39,7 +39,7 @@ func Test_letters(t *testing.T) {
 	}
 }
 
-func Test_sortLetters(t *testing.T) {
+func TestSortLetters(t *testing.T) {
 
 	var tests = map[string]struct {
 		arg  map[rune]int
@@ -68,10 +68,8 @@ func Test_sortLetters(t *testing.T) {
 	}
 }
 
-func Test_main(t *testing.T) {
-
+func TestMain(t *testing.T) {
 	want := "a:2\nb:1\n"
-
 	t.Run("main test", func(t *testing.T) {
 		var buf bytes.Buffer
 		out = &buf
