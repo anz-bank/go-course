@@ -7,14 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_main(t *testing.T) {
+func TestMain(t *testing.T) {
 	want := "Read Puppy by ID: {1 Dogo white 50}\n"
-
-	t.Run("main test", func(t *testing.T) {
-		var buf bytes.Buffer
-		out = &buf
-		main()
-		got := buf.String()
-		assert.Equal(t, want, got)
-	})
+	var buf bytes.Buffer
+	out = &buf
+	main()
+	got := buf.String()
+	assert.Equal(t, want, got)
 }

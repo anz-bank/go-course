@@ -6,8 +6,9 @@ import (
 )
 
 type SyncStore struct {
+	nextID int
 	sync.Map
-	size int
+	sync.Mutex
 }
 
 func NewSyncStore() *SyncStore {
@@ -16,39 +17,48 @@ func NewSyncStore() *SyncStore {
 }
 
 func (m *SyncStore) CreatePuppy(p *Puppy) error {
-	if p.ID == 0 {
-		p.ID = m.size + 1
-		m.size++
-		m.Store(p.ID, *p)
-		return nil
+	if p == nil {
+		return fmt.Errorf("puppy pointer is nil")
 	}
-	if _, ok := m.Load(p.ID); ok {
-		return fmt.Errorf("puppy ID %d being created already exists", p.ID)
+	if p.ID != 0 {
+		return fmt.Errorf("trying to create a puppy already initialized with ID %d", p.ID)
 	}
-	return fmt.Errorf("trying to create a puppy that already has an ID %d", p.ID)
+	m.Lock()
+	defer m.Unlock()
+	p.ID = m.nextID + 1
+	m.nextID++
+	m.Store(p.ID, *p)
+	return nil
 }
 
 func (m *SyncStore) ReadPuppy(id int) (Puppy, error) {
-	if r, ok := m.Load(id); ok {
-		puppy := r.(Puppy)
-		return puppy, nil
+	v, ok := m.Load(id)
+	if !ok {
+		return Puppy{}, fmt.Errorf("puppy ID %d being read does not exist", id)
 	}
-	return Puppy{}, fmt.Errorf("puppy ID %d being read does not exist", id)
+	m.Lock()
+	defer m.Unlock()
+	return v.(Puppy), nil
 }
 
 func (m *SyncStore) UpdatePuppy(p Puppy) error {
-	if _, ok := m.Load(p.ID); ok {
-		m.Store(p.ID, p)
-		return nil
+	m.Lock()
+	defer m.Unlock()
+	_, ok := m.Load(p.ID)
+	if !ok {
+		return fmt.Errorf("puppy ID %d being updated does not exist", p.ID)
 	}
-	return fmt.Errorf("puppy ID %d being updated does not exist", p.ID)
+	m.Store(p.ID, p)
+	return nil
 }
 
 func (m *SyncStore) DeletePuppy(id int) error {
-	if _, ok := m.Load(id); ok {
-		m.Delete(id)
-		m.size--
-		return nil
+	m.Lock()
+	defer m.Unlock()
+	_, ok := m.Load(id)
+	if !ok {
+		return fmt.Errorf("puppy ID %d being deleted does not exist", id)
 	}
-	return fmt.Errorf("puppy ID %d being deleted does not exist", id)
+	m.Delete(id)
+	return nil
 }

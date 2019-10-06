@@ -1,13 +1,12 @@
 package main
 
 type Puppy struct {
-	ID     int     //`json:"id"`
-	Breed  string  //`json:"breed"`
-	Colour string  //`json:"colour"`
-	Value  float32 //`json:"value"`
+	ID     int
+	Breed  string
+	Colour string
+	Value  float64
 }
 
-// Storer defines standard CRUD operations for Puppies
 type Storer interface {
 	CreatePuppy(*Puppy) error
 	ReadPuppy(int) (Puppy, error)

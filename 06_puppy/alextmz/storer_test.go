@@ -11,112 +11,151 @@ type storerSuite struct {
 	st Storer
 }
 
-const IDPuppyDoesNotExist = 99999
-
 func (su *storerSuite) TestCreatePuppy() {
-	p1 := Puppy{Breed: "Dogo", Colour: "White", Value: 500}
-	p2 := Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
-	expected := p1
-
 	// can we create without error?
+	p1 := Puppy{Breed: "Dogo", Colour: "White", Value: 500}
+	expected := p1
 	err := su.st.CreatePuppy(&p1)
-	su.Nil(err)
+	su.NoError(err)
 
 	// do we error when creating something that already exists?
-	err = su.st.CreatePuppy(&p1)
-	su.NotNil(err)
+	su.Run("NoErrorOnCreate", func() {
+		err = su.st.CreatePuppy(&p1)
+		su.Error(err)
+	})
 
 	// what we create and what we read back match?
-	actual, _ := su.st.ReadPuppy(p1.ID)
-	actual.ID = 0
-	su.Equal(expected, actual)
+	su.Run("MatchCreatedAndRead", func() {
+		actual, _ := su.st.ReadPuppy(p1.ID)
+		actual.ID = 0
+		su.Equal(expected, actual)
+	})
+
+	// do we error when trying to create a puppy from a nil pointer?
+	su.Run("ErrorNilPuppy", func() {
+		var p4 *Puppy
+		err = su.st.CreatePuppy(p4)
+		su.Error(err)
+	})
 
 	// do we error when trying to create an already identified Puppy?
-	p2.ID = IDPuppyDoesNotExist
-	err = su.st.CreatePuppy(&p2)
-	su.NotNil(err)
+	su.Run("ErrorAlreadyIdentifiedPuppy", func() {
+		p2 := Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
+		p2.ID = 99999
+		err = su.st.CreatePuppy(&p2)
+		su.Error(err)
+	})
 
 	// cleanup
 	err = su.st.DeletePuppy(p1.ID)
-	su.Nil(err)
+	su.NoError(err)
 }
 
 func (su *storerSuite) TestReadPuppy() {
+	// setup
 	p1 := Puppy{Breed: "Dogo", Colour: "White", Value: 500}
 	expected := p1
 	err := su.st.CreatePuppy(&p1)
-	su.Nil(err)
+	su.NoError(err)
 
 	// can we read without error?
-	_, err = su.st.ReadPuppy(p1.ID)
-	su.Nil(err)
-
+	su.Run("NoErrorRead", func() {
+		_, err = su.st.ReadPuppy(p1.ID)
+		su.NoError(err)
+	})
 	// do we error when reading what doesn't exist?
-	_, err = su.st.ReadPuppy(IDPuppyDoesNotExist)
-	su.NotNil(err)
+	su.Run("ErrorPuppyDoesNotExist", func() {
+		_, err = su.st.ReadPuppy(99999)
+		su.Error(err)
+	})
 
 	// do the read contents match what we expect?
-	actual, err := su.st.ReadPuppy(p1.ID)
-	su.Nil(err)
-	actual.ID = 0
-	su.Equal(expected, actual)
+	su.Run("NoErrorReadPuppyMatches", func() {
+		actual, err := su.st.ReadPuppy(p1.ID)
+		su.NoError(err)
+		actual.ID = 0
+		su.Equal(expected, actual)
+	})
 
 	// cleanup
 	err = su.st.DeletePuppy(p1.ID)
-	su.Nil(err)
+	su.NoError(err)
 }
 
 func (su *storerSuite) TestUpdatePuppy() {
+	// setup
 	p1 := Puppy{Breed: "Dogo", Colour: "White", Value: 500}
-	p2 := Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
 	expected := p1
 	err := su.st.CreatePuppy(&p1)
-	su.Nil(err)
+	su.NoError(err)
+	p2 := Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
+	err = su.st.CreatePuppy(&p2)
+	su.NoError(err)
 
 	// we can update without error?
-	expectColour := "Black"
-	p1.Colour = expectColour
-	err = su.st.UpdatePuppy(p1)
-	su.Nil(err)
+	su.Run("NoErrorOnUpdate", func() {
+		p1.Colour = "Black"
+		err = su.st.UpdatePuppy(p1)
+		su.NoError(err)
+	})
 
 	// updated content matches what we expect?
-	actual, err := su.st.ReadPuppy(p1.ID)
-	su.Nil(err)
-	expected.Colour = expectColour
-	actual.ID = 0
-	su.Equal(expected, actual)
+	su.Run("MatchUpdatedPuppy", func() {
+		actual, err := su.st.ReadPuppy(p1.ID)
+		su.NoError(err)
+		expected.Colour = "Black"
+		actual.ID = 0
+		su.Equal(expected, actual)
+	})
 
 	// do we error when trying to update what doesn't exist?
-	p2.ID = IDPuppyDoesNotExist
-	err = su.st.UpdatePuppy(p2)
-	su.NotNil(err)
+	su.Run("ErrorUpdateNonexistentPuppy", func() {
+		p3 := Puppy{Breed: "Mastiff", Colour: "Brindle", Value: 700}
+		p3.ID = 99999
+		err = su.st.UpdatePuppy(p3)
+		su.Error(err)
+	})
 
 	//cleanup
 	err = su.st.DeletePuppy(p1.ID)
-	su.Nil(err)
+	su.NoError(err)
 }
 
 func (su *storerSuite) TestDeletePuppy() {
 	// setup
 	p1 := Puppy{Breed: "Dogo", Colour: "White", Value: 500}
 	err := su.st.CreatePuppy(&p1)
-	su.Nil(err)
+	su.NoError(err)
 
 	// can we delete without error?
-	err = su.st.DeletePuppy(p1.ID)
-	su.Nil(err)
+	su.Run("DeleteWithNoError", func() {
+		err = su.st.DeletePuppy(p1.ID)
+		su.NoError(err)
+	})
 
 	// after we delete, can we read the data back?
-	p, err := su.st.ReadPuppy(p1.ID)
-	su.NotNil(err)
-	su.Equal(p, Puppy{ID: 0, Breed: "", Colour: "", Value: 0})
+	su.Run("ErrorReadDeletedPuppy", func() {
+		p, err := su.st.ReadPuppy(p1.ID)
+		su.Error(err)
+		su.Equal(p, Puppy{ID: 0, Breed: "", Colour: "", Value: 0})
+	})
 
 	// do we err when trying to delete what doesn't exist?
-	err = su.st.DeletePuppy(IDPuppyDoesNotExist)
-	su.NotNil(err)
+	su.Run("ErrorDeleteNonexistentPuppy", func() {
+		err = su.st.DeletePuppy(99999)
+		su.Error(err)
+	})
+
+	// no cleanup needed: all data taken care of already.
 }
 
 func Test_Suite(t *testing.T) {
-	suite.Run(t, &storerSuite{st: NewSyncStore()})
-	suite.Run(t, &storerSuite{st: NewmapStore()})
+
+	t.Run("SyncStore", func(t *testing.T) {
+		suite.Run(t, &storerSuite{st: NewSyncStore()})
+	})
+	// suite.Run(t, &storerSuite{st: NewSyncStore()})
+	t.Run("MapStore", func(t *testing.T) {
+		suite.Run(t, &storerSuite{st: NewMapStore()})
+	})
 }
