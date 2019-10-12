@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"sync"
 
 	"github.com/google/uuid"
 )
@@ -13,10 +12,10 @@ type Storer interface {
 	CreatePuppy(p *Puppy) (uint32, error)
 	ReadPuppy(ID uint32) (*Puppy, error)
 	UpdatePuppy(ID uint32, Puppy *Puppy) error
-	DeletePuppy(ID uint32)
+	DeletePuppy(ID uint32) error
 }
 
-// Puppy stores puppy details
+// Puppy stores puppy details.
 type Puppy struct {
 	ID     uint32
 	Breed  string
@@ -24,53 +23,38 @@ type Puppy struct {
 	Value  string
 }
 
-// MapStore stores puppies
+// MapStore stores puppies.
 type MapStore map[uint32]*Puppy
-
-// SyncMapStore stores puppies threadsafe
-type SyncMapStore struct {
-	sync.Map
-}
 
 type mapCheck interface {
 	length() int
 }
 
-// length used for testing
+// length used for testing.
 func (s MapStore) length() int {
 	return len(s)
 }
 
-func (s *SyncMapStore) length() int {
-	var length int
-	s.Range(func(key interface{}, value interface{}) bool {
-		length++
-		return true
-	})
-	return length
-}
+// ErrNotConstructed returned if the interface was called without
+// first constructing the underlaying structure.
+var ErrNotConstructed = errors.New("store not created")
 
 // CreatePuppy add a puppy to storage
+// but will modify the member ID.
 func (s MapStore) CreatePuppy(p *Puppy) (uint32, error) {
-	if err := checkCreation(s); err != nil {
-		return 0, err
+	if s == nil {
+		return 0, ErrNotConstructed
 	}
 	p.ID = uuid.New().ID()
-	s[p.ID] = p
+	sp := *p
+	s[p.ID] = &sp
 	return p.ID, nil
 }
 
-// CreatePuppy threadsafe adding a puppy to storage
-func (s *SyncMapStore) CreatePuppy(p *Puppy) (uint32, error) {
-	p.ID = uuid.New().ID()
-	s.Store(p.ID, p)
-	return p.ID, nil
-}
-
-// ReadPuppy retrieve your puppy
+// ReadPuppy retrieve your puppy.
 func (s MapStore) ReadPuppy(id uint32) (*Puppy, error) {
-	if err := checkCreation(s); err != nil {
-		return nil, err
+	if s == nil {
+		return nil, ErrNotConstructed
 	}
 	val, found := s[id]
 	if !found {
@@ -79,19 +63,10 @@ func (s MapStore) ReadPuppy(id uint32) (*Puppy, error) {
 	return val, nil
 }
 
-// ReadPuppy threadsafe retrieval of your puppy
-func (s *SyncMapStore) ReadPuppy(id uint32) (*Puppy, error) {
-	val, found := s.Load(id)
-	if !found {
-		return nil, fmt.Errorf("no puppy with ID %v found", id)
-	}
-	return val.(*Puppy), nil
-}
-
-// UpdatePuppy update your puppy store
+// UpdatePuppy update your puppy store.
 func (s MapStore) UpdatePuppy(id uint32, puppy *Puppy) error {
-	if err := checkCreation(s); err != nil {
-		return err
+	if s == nil {
+		return ErrNotConstructed
 	}
 	if res := s[id]; res == nil {
 		return fmt.Errorf("no puppy with ID %v found", id)
@@ -100,39 +75,16 @@ func (s MapStore) UpdatePuppy(id uint32, puppy *Puppy) error {
 	return nil
 }
 
-// UpdatePuppy threadsafe update your puppy store
-func (s *SyncMapStore) UpdatePuppy(id uint32, puppy *Puppy) error {
-	_, found := s.Load(id)
-	if found {
-		s.Store(id, puppy)
-		return nil
-	}
-	return fmt.Errorf("no puppy with ID %v found", id)
-}
-
-// DeletePuppy remove the puppy from store
-func (s MapStore) DeletePuppy(id uint32) {
-	if err := checkCreation(s); err != nil {
-		return
+// DeletePuppy remove the puppy from store.
+func (s MapStore) DeletePuppy(id uint32) error {
+	if s == nil {
+		return ErrNotConstructed
 	}
 	delete(s, id)
-}
-
-// DeletePuppy threadsafe removal of the puppy from store
-func (s *SyncMapStore) DeletePuppy(id uint32) {
-	s.Delete(id)
-}
-
-// NewPuppyStorer constructor creates the map
-func NewPuppyStorer() MapStore {
-	return MapStore{}
-}
-
-// checkCreation might not be required if it is not possible
-// to create a Mapstore without calling the above constructor
-func checkCreation(s MapStore) error {
-	if s == nil {
-		return errors.New("store not created, call initializing constructor first")
-	}
 	return nil
+}
+
+// NewMapStore constructor creates the map.
+func NewMapStore() MapStore {
+	return MapStore{}
 }

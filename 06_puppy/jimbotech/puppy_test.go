@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestMain2(t *testing.T) {
+func TestMain(t *testing.T) {
 	expected := "retrieved: kelpie brown indispensable\n"
 	var buf bytes.Buffer
 	out = &buf
