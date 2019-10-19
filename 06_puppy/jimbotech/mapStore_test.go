@@ -11,14 +11,14 @@ import (
 type storesSuite struct {
 	suite.Suite
 	store  Storer
-	mapper mapCheck
+	mapper mapTest
 }
 
 func TestSuite(t *testing.T) {
 	var ms Storer = NewMapStore()
 	var sms Storer = &SyncMapStore{}
-	suite.Run(t, &storesSuite{store: ms, mapper: ms.(mapCheck)})
-	suite.Run(t, &storesSuite{store: sms, mapper: sms.(mapCheck)})
+	suite.Run(t, &storesSuite{store: ms, mapper: ms.(mapTest)})
+	suite.Run(t, &storesSuite{store: sms, mapper: sms.(mapTest)})
 }
 
 //SetupTest creates the correct empty map for each test
@@ -31,7 +31,7 @@ func (s *storesSuite) SetupTest() {
 	default:
 		s.Fail("Unknown Storer implementation")
 	}
-	s.mapper = s.store.(mapCheck)
+	s.mapper = s.store.(mapTest)
 }
 
 // TestMapStoreWithoutContructor may not be required as it may not be
@@ -53,111 +53,104 @@ func TestMapStoreWithoutContructor(t *testing.T) {
 // TestCreateSuccess add to the store and verify
 // by reading that it is in the store
 func (s *storesSuite) TestCreateSuccess() {
-	asserter := assert.New(s.T())
 	success, pup := create(s)
-	if !asserter.True(success, "Create failed") {
+	if !s.True(success, "Create failed") {
 		return
 	}
 	// now check by reading the value back and compare
 	pup2, err2 := s.store.ReadPuppy(pup.ID)
-	if !asserter.Nil(err2, "Read store should work") {
+	if !s.Nil(err2, "Read store should work") {
 		return
 	}
-	asserter.Equal("kelpie", pup2.Breed)
-	asserter.Equal("brown", pup2.Colour)
-	asserter.Equal("indispensable", pup2.Value)
-	asserter.Equal(*pup, *pup2)
+	s.Equal("kelpie", pup2.Breed)
+	s.Equal("brown", pup2.Colour)
+	s.Equal("indispensable", pup2.Value)
+	s.Equal(*pup, *pup2)
 }
 
 func create(s *storesSuite) (bool, *Puppy) {
-	asserter := assert.New(s.T())
 	pup := Puppy{1, "kelpie", "brown", "indispensable"}
 	id, err := s.store.CreatePuppy(&pup)
-	if !asserter.Nil(err, "Create on the store should have worked") {
+	if !s.Nil(err, "Create on the store should have worked") {
 		return false, nil
 	}
-	asserter.NotEqual(pup.ID, uint32(1))
-	asserter.Equal(id, pup.ID, "Pup id must be set to actual id")
+	s.NotEqual(pup.ID, uint32(1))
+	s.Equal(id, pup.ID, "Pup id must be set to actual id")
 	return true, &pup
 }
 
 func (s *storesSuite) TestUpdateSuccess() {
-	asserter := assert.New(s.T())
 	success, pup := create(s)
 	if !success {
-		asserter.Fail("Update failed")
+		s.Fail("Update failed")
 		return
 	}
 	pup2 := Puppy{pup.ID, "kelpie", "black", "indispensable"}
 	err := s.store.UpdatePuppy(pup.ID, &pup2)
-	asserter.Nil(err)
+	s.Nil(err)
 	// now check by reading the updated value back and compare
 	pup3, err2 := s.store.ReadPuppy(pup.ID)
-	if asserter.Nil(err2, "Reading back updated value should work") {
-		asserter.Equal(pup2, *pup3)
+	if s.Nil(err2, "Reading back updated value should work") {
+		s.Equal(pup2, *pup3)
 	}
 }
 
 //TestUpdateFailure checks the error returned when updating with an invalid id
 func (s *storesSuite) TestUpdateFailure() {
-	asserter := assert.New(s.T())
 	success, _ := create(s)
 	if !success {
-		asserter.Fail("Creating first puppy failed")
+		s.Fail("Creating first puppy failed")
 		return
 	}
 	pup2 := Puppy{1, "kelpie", "black", "indispensable"}
 	err := s.store.UpdatePuppy(1, &pup2)
-	success = asserter.NotNil(err, "Update on id 1 should have failed")
+	success = s.NotNil(err, "Update on id 1 should have failed")
 	if !success {
 		return
 	}
 	st := fmt.Sprintf("no puppy with ID %v found", 1)
-	asserter.Equal(st, err.Error())
+	s.Equal(st, err.Error())
 }
 
 func (s *storesSuite) TestDeleteSuccess() {
-	asserter := assert.New(s.T())
 	success, pup := create(s)
 	if !success {
-		asserter.Fail("Creating puppy failed for delete test")
+		s.Fail("Creating puppy failed for delete test")
 		return
 	}
 	err := s.store.DeletePuppy(pup.ID)
-	if asserter.Nil(err, "Create puppy failed") {
+	if s.Nil(err, "Create puppy failed") {
 		return
 	}
 	_, err = s.store.ReadPuppy(pup.ID)
-	asserter.NotNil(err)
+	s.NotNil(err)
 }
 
 func (s *storesSuite) TestReadFailure() {
-	asserter := assert.New(s.T())
 	pup2, err := s.store.ReadPuppy(1)
-	asserter.Nil(pup2)
-	asserter.NotNil(err)
+	s.Nil(pup2)
+	s.NotNil(err)
 	st := fmt.Sprintf("no puppy with ID %v found", 1)
-	asserter.Equal(st, err.Error())
+	s.Equal(st, err.Error())
 }
 
 func (s *storesSuite) TestMapChanges() {
-	asserter := assert.New(s.T())
-	asserter.Equal(0, s.mapper.length())
+	s.Equal(0, s.mapper.length())
 	pup := Puppy{1, "kelpie", "brown", "high"}
 	id, err := s.store.CreatePuppy(&pup)
-	if !asserter.Nil(err, "Create puppy failed") {
+	if !s.Nil(err, "Create puppy failed") {
 		return
 	}
-	asserter.Equal(1, s.mapper.length())
+	s.Equal(1, s.mapper.length())
 	pup2 := Puppy{id, "kelpie", "black", "low"}
 	err = s.store.UpdatePuppy(id, &pup2)
-	if !asserter.Nil(err, "Update puppy failed") {
+	if !s.Nil(err, "Update puppy failed") {
 		return
 	}
-	asserter.Equal(1, s.mapper.length())
+	s.Equal(1, s.mapper.length())
 	err = s.store.DeletePuppy(id)
-	if !asserter.Nil(err, "Delete puppy failed") {
+	if !s.Nil(err, "Delete puppy failed") {
 		return
 	}
-	asserter.Equal(0, s.mapper.length())
+	s.Equal(0, s.mapper.length())
 }

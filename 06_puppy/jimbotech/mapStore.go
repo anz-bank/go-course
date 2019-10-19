@@ -26,7 +26,8 @@ type Puppy struct {
 // MapStore stores puppies.
 type MapStore map[uint32]*Puppy
 
-type mapCheck interface {
+// mapTest used during testing to verify underlaying map changes
+type mapTest interface {
 	length() int
 }
 
