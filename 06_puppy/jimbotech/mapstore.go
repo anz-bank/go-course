@@ -51,7 +51,9 @@ func (s MapStore) UpdatePuppy(id uint32, puppy *Puppy) error {
 	if res := s[id]; res == nil {
 		return fmt.Errorf("no puppy with ID %v found", id)
 	}
-	s[id] = puppy
+	puppy.ID = id
+	sp := *puppy
+	s[id] = &sp
 	return nil
 }
 

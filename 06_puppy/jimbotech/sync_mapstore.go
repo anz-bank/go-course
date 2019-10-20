@@ -12,6 +12,12 @@ type SyncMapStore struct {
 	sync.Map
 }
 
+// length is not concorrency safe. As the go doc says:
+// Range does not necessarily correspond to any consistent snapshot of the
+// Map's contents: no key will be visited more than once, but if the value
+// for any key is stored or deleted concurrently, Range may reflect any
+// mapping for that key from any point during the Range call.
+//
 func (s *SyncMapStore) length() int {
 	var length int
 	s.Range(func(key interface{}, value interface{}) bool {
@@ -43,7 +49,9 @@ func (s *SyncMapStore) ReadPuppy(id uint32) (*Puppy, error) {
 func (s *SyncMapStore) UpdatePuppy(id uint32, puppy *Puppy) error {
 	_, found := s.Load(id)
 	if found {
-		s.Store(id, puppy)
+		puppy.ID = id
+		sp := puppy
+		s.Store(id, sp)
 		return nil
 	}
 	return fmt.Errorf("no puppy with ID %v found", id)
