@@ -36,41 +36,30 @@ func (s *storesSuite) SetupTest() {
 // TestCreateSuccess add to the store and verify
 // by reading that it is in the store
 func (s *storesSuite) TestCreateSuccess() {
-	success, pup := create(s)
-	if !s.True(success, "Create failed") {
-		return
-	}
+	_, pup := create(s)
 	// now check by reading the value back and compare
 	pup2, err2 := s.store.ReadPuppy(pup.ID)
-	if !s.Nil(err2, "Read store should work") {
-		return
-	}
+	s.Require().NoError(err2)
 	s.Equal("kelpie", pup2.Breed)
 	s.Equal("brown", pup2.Colour)
 	s.Equal("indispensable", pup2.Value)
-	s.Equal(*pup, *pup2)
+	s.Equal(pup, pup2)
 }
 
 func create(s *storesSuite) (bool, *Puppy) {
-	pup := Puppy{1, "kelpie", "brown", "indispensable"}
+	pup := Puppy{Breed: "kelpie", Colour: "brown", Value: "indispensable"}
 	id, err := s.store.CreatePuppy(&pup)
-	if !s.Nil(err, "Create on the store should have worked") {
-		return false, nil
-	}
-	s.NotEqual(pup.ID, uint32(1))
-	s.Equal(id, pup.ID, "Pup id must be set to actual id")
+	s.Require().NoError(err)
+	s.Require().NotEqual(pup.ID, uint32(1))
+	s.Require().Equal(id, pup.ID, "Pup id must be set to actual id")
 	return true, &pup
 }
 
 func (s *storesSuite) TestUpdateSuccess() {
-	success, pup := create(s)
-	if !success {
-		s.Fail("Update failed")
-		return
-	}
-	pup2 := Puppy{pup.ID, "kelpie", "black", "indispensable"}
+	_, pup := create(s)
+	pup2 := Puppy{Breed: "kelpie", Colour: "black", Value: "indispensable"}
 	err := s.store.UpdatePuppy(pup.ID, &pup2)
-	s.Nil(err)
+	s.Require().NoError(err)
 	// now check by reading the updated value back and compare
 	pup3, err2 := s.store.ReadPuppy(pup.ID)
 	if s.Nil(err2, "Reading back updated value should work") {
@@ -80,14 +69,10 @@ func (s *storesSuite) TestUpdateSuccess() {
 
 //TestUpdateFailure checks the error returned when updating with an invalid id
 func (s *storesSuite) TestUpdateFailure() {
-	success, _ := create(s)
-	if !success {
-		s.Fail("Creating first puppy failed")
-		return
-	}
-	pup2 := Puppy{1, "kelpie", "black", "indispensable"}
+	create(s)
+	pup2 := Puppy{Breed: "kelpie", Colour: "black", Value: "indispensable"}
 	err := s.store.UpdatePuppy(1, &pup2)
-	success = s.NotNil(err, "Update on id 1 should have failed")
+	success := s.NotNil(err, "Update on id 1 should have failed")
 	if !success {
 		return
 	}
@@ -96,44 +81,32 @@ func (s *storesSuite) TestUpdateFailure() {
 }
 
 func (s *storesSuite) TestDeleteSuccess() {
-	success, pup := create(s)
-	if !success {
-		s.Fail("Creating puppy failed for delete test")
-		return
-	}
+	_, pup := create(s)
 	err := s.store.DeletePuppy(pup.ID)
-	if s.Nil(err, "Create puppy failed") {
-		return
-	}
+	s.Require().NoError(err)
 	_, err = s.store.ReadPuppy(pup.ID)
 	s.NotNil(err)
 }
 
 func (s *storesSuite) TestReadFailure() {
 	pup2, err := s.store.ReadPuppy(1)
-	s.Nil(pup2)
-	s.NotNil(err)
+	s.Require().Nil(pup2)
+	s.Require().Error(err)
 	st := fmt.Sprintf("no puppy with ID %v found", 1)
 	s.Equal(st, err.Error())
 }
 
 func (s *storesSuite) TestMapChanges() {
 	s.Equal(0, s.mapper.length())
-	pup := Puppy{1, "kelpie", "brown", "high"}
+	pup := Puppy{Breed: "kelpie", Colour: "brown", Value: "high"}
 	id, err := s.store.CreatePuppy(&pup)
-	if !s.Nil(err, "Create puppy failed") {
-		return
-	}
+	s.Require().Nil(err, "Create puppy failed")
 	s.Equal(1, s.mapper.length())
-	pup2 := Puppy{id, "kelpie", "black", "low"}
+	pup2 := Puppy{Breed: "kelpie", Colour: "black", Value: "low"}
 	err = s.store.UpdatePuppy(id, &pup2)
-	if !s.Nil(err, "Update puppy failed") {
-		return
-	}
+	s.Require().Nil(err, "Update puppy failed")
 	s.Equal(1, s.mapper.length())
 	err = s.store.DeletePuppy(id)
-	if !s.Nil(err, "Delete puppy failed") {
-		return
-	}
+	s.Require().Nil(err, "Delete puppy failed")
 	s.Equal(0, s.mapper.length())
 }
