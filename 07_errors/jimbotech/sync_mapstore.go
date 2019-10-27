@@ -8,6 +8,7 @@ import (
 
 // SyncMapStore stores puppies threadsafe.
 type SyncMapStore struct {
+	mux sync.Mutex
 	sync.Map
 }
 
@@ -19,6 +20,8 @@ type SyncMapStore struct {
 //
 func (s *SyncMapStore) length() int {
 	var length int
+	s.mux.Lock()
+	defer s.mux.Unlock()
 	s.Range(func(key interface{}, value interface{}) bool {
 		length++
 		return true
@@ -31,6 +34,8 @@ func (s *SyncMapStore) length() int {
 func (s *SyncMapStore) CreatePuppy(p *Puppy) (int32, error) {
 	p.ID = int32(uuid.New().ID()) & 0X00FF
 	sp := p
+	s.mux.Lock()
+	defer s.mux.Unlock()
 	s.Store(p.ID, sp)
 	return p.ID, nil
 }
@@ -40,6 +45,8 @@ func (s *SyncMapStore) ReadPuppy(id int32) (*Puppy, error) {
 	if id < 0 {
 		return nil, ErrValueBelowZero
 	}
+	s.mux.Lock()
+	defer s.mux.Unlock()
 	val, found := s.Load(id)
 	if !found {
 		return nil, ErrIDNotFound
@@ -53,6 +60,8 @@ func (s *SyncMapStore) UpdatePuppy(id int32, puppy *Puppy) error {
 	if err != nil {
 		return err
 	}
+	s.mux.Lock()
+	defer s.mux.Unlock()
 	puppy.ID = id
 	sp := puppy
 	s.Store(id, sp)
@@ -65,6 +74,8 @@ func (s *SyncMapStore) DeletePuppy(id int32) error {
 	if err != nil {
 		return err
 	}
+	s.mux.Lock()
+	defer s.mux.Unlock()
 	s.Delete(id)
 	return nil
 }

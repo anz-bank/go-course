@@ -22,7 +22,7 @@ func TestSuite(t *testing.T) {
 //SetupTest creates the correct empty map for each test
 func (s *storesSuite) SetupTest() {
 	switch s.store.(type) {
-	case MapStore:
+	case *MapStore:
 		s.store = NewMapStore()
 	case *SyncMapStore:
 		s.store = &SyncMapStore{}
