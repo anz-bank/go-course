@@ -66,28 +66,6 @@ func (s *storesSuite) TestUpdateSuccess() {
 	}
 }
 
-//TestUpdateFailure checks the error returned when updating with an invalid id
-func (s *storesSuite) TestUpdateFailure() {
-	create(s)
-	pup2 := Puppy{Breed: "kelpie", Colour: "black", Value: "indispensable"}
-	err := s.store.UpdatePuppy(1, &pup2)
-	s.Assert().NotNil(err)
-	//	success := s.NotNil(err, "Update on id 1 should have failed")
-	//	if !success {
-	//		return
-	//	}
-	s.Require().Error(err)
-	s.Assert().IsType(&Error{}, err)
-
-	s.Require().IsType(&Error{}, err)
-	actualErr, _ := err.(*Error) // Type cast, err now holds the actual error
-	s.Equal(-2, actualErr.Code)
-}
-
-//	st := fmt.Sprintf("no puppy with ID %v found", 1)
-//	s.Equal(st, err.Error())
-//}
-
 func (s *storesSuite) TestDeleteSuccess() {
 	_, pup := create(s)
 	err := s.store.DeletePuppy(pup.ID)
