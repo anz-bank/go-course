@@ -31,8 +31,8 @@ func (s *SyncMapStore) length() int {
 // but will modify the member ID.
 func (s *SyncMapStore) CreatePuppy(p *Puppy) (uint32, error) {
 	p.ID = uuid.New().ID()
-	sp := p
-	s.Store(p.ID, sp)
+	sp := *p
+	s.Store(p.ID, &sp)
 	return p.ID, nil
 }
 
@@ -50,8 +50,8 @@ func (s *SyncMapStore) UpdatePuppy(id uint32, puppy *Puppy) error {
 	_, found := s.Load(id)
 	if found {
 		puppy.ID = id
-		sp := puppy
-		s.Store(id, sp)
+		sp := *puppy
+		s.Store(id, &sp)
 		return nil
 	}
 	return fmt.Errorf("no puppy with ID %v found", id)
