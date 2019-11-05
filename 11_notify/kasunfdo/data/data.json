@@ -1,0 +1,27 @@
+[
+  {
+    "breed": "Labrador",
+    "colour": "White",
+    "value": 1200
+  },
+  {
+    "breed": "Boxer",
+    "colour": "Black",
+    "value": 2099.99
+  },
+  {
+    "breed": "Terrier",
+    "colour": "Brown",
+    "value": 1099.99
+  },
+  {
+    "breed": "Husky",
+    "colour": "Black & White",
+    "value": 1999.99
+  },
+  {
+    "breed": "Retriever",
+    "colour": "Gold",
+    "value": 3099.99
+  }
+]
