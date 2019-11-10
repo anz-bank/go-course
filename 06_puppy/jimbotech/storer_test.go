@@ -15,12 +15,11 @@ type storesSuite struct {
 
 const brown = "brown"
 const black = "black"
+const grey = "grey"
 
 func TestSuite(t *testing.T) {
-	var ms Storer = NewMapStore()
-	var sms Storer = &SyncMapStore{}
-	suite.Run(t, &storesSuite{store: ms, mapper: ms.(mapTest)})
-	suite.Run(t, &storesSuite{store: sms, mapper: sms.(mapTest)})
+	suite.Run(t, &storesSuite{store: NewMapStore()})
+	suite.Run(t, &storesSuite{store: &SyncMapStore{}})
 }
 
 //SetupTest creates the correct empty map for each test
@@ -34,6 +33,21 @@ func (s *storesSuite) SetupTest() {
 		s.Fail("Unknown Storer implementation")
 	}
 	s.mapper = s.store.(mapTest)
+}
+
+func (s *storesSuite) TestReadSuccess() {
+	pup := create(s)
+	// now check by reading the value back and compare
+	pup2, err2 := s.store.ReadPuppy(pup.ID)
+	s.Require().NoError(err2)
+	s.Equal(brown, pup2.Colour)
+	// modify the retured value to make sure the
+	// value in the store does not change
+	pup2.Colour = grey
+	pup3, err2 := s.store.ReadPuppy(pup.ID)
+	s.Require().NoError(err2)
+	s.Equal(brown, pup3.Colour)
+	s.NotEqual(pup2, pup3)
 }
 
 // TestCreateSuccess add to the store and verify

@@ -42,7 +42,8 @@ func (s *SyncMapStore) ReadPuppy(id uint32) (*Puppy, error) {
 	if !found {
 		return nil, fmt.Errorf("no puppy with ID %v found", id)
 	}
-	return val.(*Puppy), nil
+	retPup := *val.(*Puppy)
+	return &retPup, nil
 }
 
 // UpdatePuppy threadsafe update your puppy store.

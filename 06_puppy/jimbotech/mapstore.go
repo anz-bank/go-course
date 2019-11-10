@@ -40,7 +40,8 @@ func (s MapStore) ReadPuppy(id uint32) (*Puppy, error) {
 	if !found {
 		return nil, fmt.Errorf("no puppy with ID %v found", id)
 	}
-	return val, nil
+	retVal := *val
+	return &retVal, nil
 }
 
 // UpdatePuppy update your puppy store.
