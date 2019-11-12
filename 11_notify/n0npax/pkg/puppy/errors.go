@@ -12,7 +12,7 @@ const (
 	ErrCodeInternal     = http.StatusInternalServerError
 )
 
-// Error wrapps errors with code, message and error itself
+// Error wraps errors with code, message and error itself
 type Error struct {
 	Message string
 	Code    int
