@@ -82,7 +82,7 @@ func readPuppies(r io.Reader) ([]puppy.Puppy, error) {
 	}
 	var puppies []puppy.Puppy
 	if err = json.Unmarshal(b, &puppies); err != nil {
-		return nil, errors.New(string(b))
+		return nil, err
 	}
 	return puppies, nil
 }
