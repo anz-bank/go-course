@@ -49,7 +49,7 @@ func (s MapStore) UpdatePuppy(id uint32, puppy *Puppy) error {
 	if s == nil {
 		return ErrNotConstructed
 	}
-	if res := s[id]; res == nil {
+	if _, ok := s[id]; !ok {
 		return fmt.Errorf("no puppy with ID %v found", id)
 	}
 	puppy.ID = id
