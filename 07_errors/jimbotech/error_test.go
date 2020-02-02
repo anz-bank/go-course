@@ -1,12 +1,10 @@
 package main
 
-import "fmt"
-
 func (s *storesSuite) TestReadFailure() {
 	pup2, err := s.store.ReadPuppy(1)
 	s.Require().Nil(pup2)
 	s.Require().Equal(ErrIDNotFound, err)
-	s.Assert().Equal(fmt.Sprintf("id not found Error Code: %d", ErrNotFound), err.Error())
+	s.Require().NotEmpty(err.Error())
 }
 
 func (s *storesSuite) TestNegReadFailure() {

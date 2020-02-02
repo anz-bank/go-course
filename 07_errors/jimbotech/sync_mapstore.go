@@ -1,9 +1,8 @@
 package main
 
 import (
+	"math/rand"
 	"sync"
-
-	"github.com/google/uuid"
 )
 
 // SyncMapStore stores puppies threadsafe.
@@ -32,11 +31,11 @@ func (s *SyncMapStore) length() int {
 // CreatePuppy threadsafe adding a puppy to storage
 // but will modify the member ID.
 func (s *SyncMapStore) CreatePuppy(p *Puppy) (int32, error) {
-	p.ID = int32(uuid.New().ID()) & 0X00FF
-	sp := p
 	s.mux.Lock()
 	defer s.mux.Unlock()
-	s.Store(p.ID, sp)
+	p.ID = rand.Int31()
+	sp := *p
+	s.Store(p.ID, &sp)
 	return p.ID, nil
 }
 
@@ -51,7 +50,8 @@ func (s *SyncMapStore) ReadPuppy(id int32) (*Puppy, error) {
 	if !found {
 		return nil, ErrIDNotFound
 	}
-	return val.(*Puppy), nil
+	retPup := *val.(*Puppy)
+	return &retPup, nil
 }
 
 // UpdatePuppy threadsafe update your puppy store.
@@ -63,8 +63,8 @@ func (s *SyncMapStore) UpdatePuppy(id int32, puppy *Puppy) error {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 	puppy.ID = id
-	sp := puppy
-	s.Store(id, sp)
+	sp := *puppy
+	s.Store(id, &sp)
 	return nil
 }
 

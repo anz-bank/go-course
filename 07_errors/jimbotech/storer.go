@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"strconv"
 )
 
@@ -50,3 +51,7 @@ var ErrValueBelowZero = &Error{Message: "id below 0", Code: ErrNegativeID}
 
 // ErrIDNotFound error if the requested ID is not in the store
 var ErrIDNotFound = &Error{Message: "id not found", Code: ErrNotFound}
+
+// ErrNotConstructed returned if the interface was called without
+// first constructing the underlaying structure.
+var ErrNotConstructed = errors.New("store not created")
