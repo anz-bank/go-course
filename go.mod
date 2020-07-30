@@ -7,9 +7,8 @@ require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-chi/render v1.0.1
-	github.com/sirupsen/logrus v1.4.2
-	github.com/stretchr/testify v1.3.0
 	github.com/joel00wood/test-helpers v0.0.0-20190625115747-3a6e67586543
+	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
 	github.com/syndtr/goleveldb v1.0.0
 	github.com/tylerb/graceful v1.2.15
