@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"strconv"
 )
 
@@ -40,18 +39,20 @@ func (e *Error) Error() string {
 }
 
 const (
-	// ErrNegativeID error number if id is negative
-	ErrNegativeID = -1
-	// ErrNotFound error number if id not found
-	ErrNotFound = -2
+	// ecNegativeID error number if id is negative
+	ecNegativeID = iota
+	// ecNotFound error number if id not found
+	ecNotFound = iota
+	// ecNotConstructed if the interface was called without being constructed first
+	ecNotConstructed = iota
 )
 
 // ErrValueBelowZero error generated if the calu is below zero
-var ErrValueBelowZero = &Error{Message: "id below 0", Code: ErrNegativeID}
+var ErrValueBelowZero = &Error{Message: "id below 0", Code: ecNegativeID}
 
 // ErrIDNotFound error if the requested ID is not in the store
-var ErrIDNotFound = &Error{Message: "id not found", Code: ErrNotFound}
+var ErrIDNotFound = &Error{Message: "id not found", Code: ecNotFound}
 
 // ErrNotConstructed returned if the interface was called without
 // first constructing the underlaying structure.
-var ErrNotConstructed = errors.New("store not created")
+var ErrNotConstructed = &Error{Message: "store not created", Code: ecNotConstructed}

@@ -13,12 +13,15 @@ func (s MapStore) length() int {
 }
 
 // CreatePuppy add a puppy to storage
+// choose a unique member id that is currently not in the collection
 // but will modify the member ID.
 func (s MapStore) CreatePuppy(p *Puppy) (int32, error) {
 	if s == nil {
 		return 0, ErrNotConstructed
 	}
-	p.ID = rand.Int31()
+	for notUnique := true; notUnique; p.ID = rand.Int31() {
+		_, notUnique = s[p.ID]
+	}
 	sp := *p
 	s[p.ID] = &sp
 	return p.ID, nil
@@ -45,8 +48,7 @@ func (s MapStore) UpdatePuppy(id int32, puppy *Puppy) error {
 	if s == nil {
 		return ErrNotConstructed
 	}
-	_, err := s.ReadPuppy(id)
-	if err != nil {
+	if _, err := s.ReadPuppy(id); err != nil {
 		return err
 	}
 	puppy.ID = id
@@ -60,8 +62,7 @@ func (s MapStore) DeletePuppy(id int32) error {
 	if s == nil {
 		return ErrNotConstructed
 	}
-	_, err := s.ReadPuppy(id)
-	if err != nil {
+	if _, err := s.ReadPuppy(id); err != nil {
 		return err
 	}
 	delete(s, id)
